@@ -1,117 +1,150 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import BookmarksScreen from './src/screens/Bookmarks';
+import HomeScreen from './src/screens/Home';
+import InboxScreen from './src/screens/Inbox';
+import NotificationsScreen from './src/screens/Notifications';
+import ProfileScreen from './src/screens/Profile';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import DormDetailsComponent from './src/components/DormDetails';
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+import ChatRoomComponent from './src/components/ChatRoom';
+
+import EditProfileComponent from './src/components/profileScreen/EditProfile';
+import ChangePasswordComponent from './src/components/profileScreen/ChangePassword';
+import PaymentGatewayComponent from './src/components/profileScreen/PaymentGateway';
+import VerificationComponent from './src/components/profileScreen/Verification';
+
+const uid = 12345;
+
+const HomeStack = createNativeStackNavigator();
+
+function HomeStackScreen() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="Explore" component={HomeScreen} />
+      <HomeStack.Screen name="Dorm Details" component={DormDetailsComponent} />
+    </HomeStack.Navigator>
   );
-};
+}
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+const BookmarksStack = createNativeStackNavigator();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function BookmarksStackScreen() {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <BookmarksStack.Navigator>
+      <BookmarksStack.Screen name="Bookmarks" component={BookmarksScreen} />
+      <BookmarksStack.Screen
+        name="Dorm Details"
+        component={DormDetailsComponent}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    </BookmarksStack.Navigator>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const NotificationsStack = createNativeStackNavigator();
+
+function NotificationsStackScreen() {
+  return (
+    <NotificationsStack.Navigator>
+      <NotificationsStack.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+      />
+      <NotificationsStack.Screen
+        name="Dorm Details"
+        component={DormDetailsComponent}
+      />
+    </NotificationsStack.Navigator>
+  );
+}
+
+const InboxStack = createNativeStackNavigator();
+
+function InboxStackScreen() {
+  return (
+    <InboxStack.Navigator>
+      <InboxStack.Screen name="Inbox" component={InboxScreen} />
+      <InboxStack.Screen name="Chat Room" component={ChatRoomComponent} />
+    </InboxStack.Navigator>
+  );
+}
+
+const ProfileStack = createNativeStackNavigator();
+
+function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{userId: uid}}
+      />
+      <ProfileStack.Screen
+        name="Edit Profile"
+        component={EditProfileComponent}
+      />
+      <ProfileStack.Screen
+        name="Change Password"
+        component={ChangePasswordComponent}
+      />
+      <ProfileStack.Screen
+        name="Payments"
+        component={PaymentGatewayComponent}
+      />
+      <ProfileStack.Screen
+        name="Verification"
+        component={VerificationComponent}
+      />
+    </ProfileStack.Navigator>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+function RootNavigator() {
+  return (
+    <Tab.Navigator
+      initialRouteName={'ExploreTab'}
+      screenOptions={{headerShown: false}}>
+      <Tab.Screen
+        name="ExploreTab"
+        component={HomeStackScreen}
+        options={{title: 'Explore'}}
+      />
+      <Tab.Screen
+        name="BookmarksTab"
+        component={BookmarksStackScreen}
+        options={{title: 'Bookmarks'}}
+      />
+      <Tab.Screen
+        name="NotificationsTab"
+        component={NotificationsStackScreen}
+        options={{title: 'Notifications'}}
+      />
+      <Tab.Screen
+        name="InboxTab"
+        component={InboxStackScreen}
+        options={{title: 'Inbox'}}
+      />
+      <Tab.Screen
+        name="ProfileTab"
+        component={ProfileStackScreen}
+        options={{title: 'Profile'}}
+      />
+    </Tab.Navigator>
+  );
+}
+
+function App() {
+  return (
+    <NavigationContainer>
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}
 
 export default App;
