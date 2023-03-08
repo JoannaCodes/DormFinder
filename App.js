@@ -54,10 +54,6 @@ function NotificationsStackScreen() {
         name="Notifications"
         component={NotificationsScreen}
       />
-      <NotificationsStack.Screen
-        name="Dorm Details"
-        component={DormDetailsComponent}
-      />
     </NotificationsStack.Navigator>
   );
 }
