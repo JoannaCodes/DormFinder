@@ -17,14 +17,23 @@ import EditProfileComponent from './src/components/profileScreen/EditProfile';
 import ChangePasswordComponent from './src/components/profileScreen/ChangePassword';
 import PaymentGatewayComponent from './src/components/profileScreen/PaymentGateway';
 import VerificationComponent from './src/components/profileScreen/Verification';
+import {Button} from 'react-native';
 
 const uid = 12345;
 
 const HomeStack = createNativeStackNavigator();
 
-function HomeStackScreen() {
+function HomeStackScreen({navigation}) {
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+      screenOptions={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('ProfileTab')}
+            title="Profile"
+          />
+        ),
+      }}>
       <HomeStack.Screen name="Explore" component={HomeScreen} />
       <HomeStack.Screen name="Dorm Details" component={DormDetailsComponent} />
     </HomeStack.Navigator>
@@ -33,9 +42,17 @@ function HomeStackScreen() {
 
 const BookmarksStack = createNativeStackNavigator();
 
-function BookmarksStackScreen() {
+function BookmarksStackScreen({navigation}) {
   return (
-    <BookmarksStack.Navigator>
+    <BookmarksStack.Navigator
+      screenOptions={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('ProfileTab')}
+            title="Profile"
+          />
+        ),
+      }}>
       <BookmarksStack.Screen name="Bookmarks" component={BookmarksScreen} />
       <BookmarksStack.Screen
         name="Dorm Details"
@@ -47,9 +64,17 @@ function BookmarksStackScreen() {
 
 const NotificationsStack = createNativeStackNavigator();
 
-function NotificationsStackScreen() {
+function NotificationsStackScreen({navigation}) {
   return (
-    <NotificationsStack.Navigator>
+    <NotificationsStack.Navigator
+      screenOptions={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('ProfileTab')}
+            title="Profile"
+          />
+        ),
+      }}>
       <NotificationsStack.Screen
         name="Notifications"
         component={NotificationsScreen}
@@ -60,9 +85,17 @@ function NotificationsStackScreen() {
 
 const InboxStack = createNativeStackNavigator();
 
-function InboxStackScreen() {
+function InboxStackScreen({navigation}) {
   return (
-    <InboxStack.Navigator>
+    <InboxStack.Navigator
+      screenOptions={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('ProfileTab')}
+            title="Profile"
+          />
+        ),
+      }}>
       <InboxStack.Screen name="Inbox" component={InboxScreen} />
       <InboxStack.Screen name="Chat Room" component={ChatRoomComponent} />
     </InboxStack.Navigator>
@@ -105,7 +138,12 @@ function RootNavigator() {
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
-      screenOptions={{headerShown: false}}>
+      screenOptions={({route}) => ({
+        headerShown: false,
+        tabBarButton: ['ProfileTab'].includes(route.name)
+          ? () => null
+          : undefined,
+      })}>
       <Tab.Screen
         name="ExploreTab"
         component={HomeStackScreen}
