@@ -17,6 +17,10 @@ const Profile = ({route, navigation}) => {
         onPress={() => navigation.navigate('Change Password')}
       />
       <Button
+        title="Go to Dorm Listing"
+        onPress={() => navigation.navigate('Dorm Listing', {userId: uid})}
+      />
+      <Button
         title="Go to Verification"
         onPress={() => navigation.navigate('Verification', {userId: uid})}
       />

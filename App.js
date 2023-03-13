@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -17,7 +18,7 @@ import EditProfileComponent from './src/components/profileScreen/EditProfile';
 import ChangePasswordComponent from './src/components/profileScreen/ChangePassword';
 import PaymentGatewayComponent from './src/components/profileScreen/PaymentGateway';
 import VerificationComponent from './src/components/profileScreen/Verification';
-import {Button} from 'react-native';
+import DormListingComponent from './src/components/profileScreen/DormListing';
 
 const uid = 12345;
 
@@ -25,16 +26,19 @@ const HomeStack = createNativeStackNavigator();
 
 function HomeStackScreen({navigation}) {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerRight: () => (
-          <Button
-            onPress={() => navigation.navigate('ProfileTab')}
-            title="Profile"
-          />
-        ),
-      }}>
-      <HomeStack.Screen name="Explore" component={HomeScreen} />
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="Explore"
+        component={HomeScreen}
+        options={{
+          headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate('ProfileTab')}
+              title="Profile"
+            />
+          ),
+        }}
+      />
       <HomeStack.Screen name="Dorm Details" component={DormDetailsComponent} />
     </HomeStack.Navigator>
   );
@@ -44,16 +48,19 @@ const BookmarksStack = createNativeStackNavigator();
 
 function BookmarksStackScreen({navigation}) {
   return (
-    <BookmarksStack.Navigator
-      screenOptions={{
-        headerRight: () => (
-          <Button
-            onPress={() => navigation.navigate('ProfileTab')}
-            title="Profile"
-          />
-        ),
-      }}>
-      <BookmarksStack.Screen name="Bookmarks" component={BookmarksScreen} />
+    <BookmarksStack.Navigator>
+      <BookmarksStack.Screen
+        name="Bookmarks"
+        component={BookmarksScreen}
+        options={{
+          headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate('ProfileTab')}
+              title="Profile"
+            />
+          ),
+        }}
+      />
       <BookmarksStack.Screen
         name="Dorm Details"
         component={DormDetailsComponent}
@@ -87,16 +94,19 @@ const InboxStack = createNativeStackNavigator();
 
 function InboxStackScreen({navigation}) {
   return (
-    <InboxStack.Navigator
-      screenOptions={{
-        headerRight: () => (
-          <Button
-            onPress={() => navigation.navigate('ProfileTab')}
-            title="Profile"
-          />
-        ),
-      }}>
-      <InboxStack.Screen name="Inbox" component={InboxScreen} />
+    <InboxStack.Navigator>
+      <InboxStack.Screen
+        name="Inbox"
+        component={InboxScreen}
+        options={{
+          headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate('ProfileTab')}
+              title="Profile"
+            />
+          ),
+        }}
+      />
       <InboxStack.Screen name="Chat Room" component={ChatRoomComponent} />
     </InboxStack.Navigator>
   );
@@ -119,6 +129,10 @@ function ProfileStackScreen() {
       <ProfileStack.Screen
         name="Change Password"
         component={ChangePasswordComponent}
+      />
+      <ProfileStack.Screen
+        name="Dorm Listing"
+        component={DormListingComponent}
       />
       <ProfileStack.Screen
         name="Payments"
