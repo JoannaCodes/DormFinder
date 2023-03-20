@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {Button} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -20,131 +23,7 @@ import PaymentGatewayComponent from './src/components/profileScreen/PaymentGatew
 import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 
-const uid = 12345;
-
-const HomeStack = createNativeStackNavigator();
-
-function HomeStackScreen({navigation}) {
-  return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen
-        name="Explore"
-        component={HomeScreen}
-        options={{
-          headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate('ProfileTab')}
-              title="Profile"
-            />
-          ),
-        }}
-      />
-      <HomeStack.Screen name="Dorm Details" component={DormDetailsComponent} />
-    </HomeStack.Navigator>
-  );
-}
-
-const BookmarksStack = createNativeStackNavigator();
-
-function BookmarksStackScreen({navigation}) {
-  return (
-    <BookmarksStack.Navigator>
-      <BookmarksStack.Screen
-        name="Bookmarks"
-        component={BookmarksScreen}
-        options={{
-          headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate('ProfileTab')}
-              title="Profile"
-            />
-          ),
-        }}
-      />
-      <BookmarksStack.Screen
-        name="Dorm Details"
-        component={DormDetailsComponent}
-      />
-    </BookmarksStack.Navigator>
-  );
-}
-
-const NotificationsStack = createNativeStackNavigator();
-
-function NotificationsStackScreen({navigation}) {
-  return (
-    <NotificationsStack.Navigator
-      screenOptions={{
-        headerRight: () => (
-          <Button
-            onPress={() => navigation.navigate('ProfileTab')}
-            title="Profile"
-          />
-        ),
-      }}>
-      <NotificationsStack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-      />
-    </NotificationsStack.Navigator>
-  );
-}
-
-const InboxStack = createNativeStackNavigator();
-
-function InboxStackScreen({navigation}) {
-  return (
-    <InboxStack.Navigator>
-      <InboxStack.Screen
-        name="Inbox"
-        component={InboxScreen}
-        options={{
-          headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate('ProfileTab')}
-              title="Profile"
-            />
-          ),
-        }}
-      />
-      <InboxStack.Screen name="Chat Room" component={ChatRoomComponent} />
-    </InboxStack.Navigator>
-  );
-}
-
-const ProfileStack = createNativeStackNavigator();
-
-function ProfileStackScreen() {
-  return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        initialParams={{userId: uid}}
-      />
-      <ProfileStack.Screen
-        name="Edit Profile"
-        component={EditProfileComponent}
-      />
-      <ProfileStack.Screen
-        name="Change Password"
-        component={ChangePasswordComponent}
-      />
-      <ProfileStack.Screen
-        name="Dorm Listing"
-        component={DormListingComponent}
-      />
-      <ProfileStack.Screen
-        name="Payments"
-        component={PaymentGatewayComponent}
-      />
-      <ProfileStack.Screen
-        name="Verification"
-        component={VerificationComponent}
-      />
-    </ProfileStack.Navigator>
-  );
-}
+const userId = 'User ID';
 
 const Tab = createBottomTabNavigator();
 
@@ -152,45 +31,77 @@ function RootNavigator() {
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
-      screenOptions={({route}) => ({
-        headerShown: false,
+      screenOptions={({route, navigation}) => ({
         tabBarButton: ['ProfileTab'].includes(route.name)
           ? () => null
           : undefined,
+        headerRight: () => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+          return routeName === 'Profile' ? null : (
+            <Button
+              onPress={() =>
+                navigation.navigate('ProfileTab', {
+                  screen: 'Profile',
+                  userId: userId,
+                })
+              }
+              title="Profile"
+            />
+          );
+        },
+        headerRightContainerStyle: {paddingRight: 16},
       })}>
       <Tab.Screen
         name="ExploreTab"
-        component={HomeStackScreen}
+        component={HomeScreen}
         options={{title: 'Explore'}}
       />
       <Tab.Screen
         name="BookmarksTab"
-        component={BookmarksStackScreen}
+        component={BookmarksScreen}
         options={{title: 'Bookmarks'}}
       />
       <Tab.Screen
         name="NotificationsTab"
-        component={NotificationsStackScreen}
+        component={NotificationsScreen}
         options={{title: 'Notifications'}}
       />
       <Tab.Screen
         name="InboxTab"
-        component={InboxStackScreen}
+        component={InboxScreen}
         options={{title: 'Inbox'}}
       />
       <Tab.Screen
         name="ProfileTab"
-        component={ProfileStackScreen}
+        component={ProfileScreen}
         options={{title: 'Profile'}}
       />
     </Tab.Navigator>
   );
 }
 
+const Stack = createNativeStackNavigator();
+
 function App() {
   return (
     <NavigationContainer>
-      <RootNavigator />
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={RootNavigator}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="Dorm Details" component={DormDetailsComponent} />
+        <Stack.Screen name="Chat Room" component={ChatRoomComponent} />
+        <Stack.Screen name="Edit Profile" component={EditProfileComponent} />
+        <Stack.Screen
+          name="Change Password"
+          component={ChangePasswordComponent}
+        />
+        <Stack.Screen name="Dorm Listing" component={DormListingComponent} />
+        <Stack.Screen name="Payments" component={PaymentGatewayComponent} />
+        <Stack.Screen name="Verification" component={VerificationComponent} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
