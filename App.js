@@ -23,6 +23,9 @@ import PaymentGatewayComponent from './src/components/profileScreen/PaymentGatew
 import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 
+import LoginScreen from './src/screens/LoginScreen'
+import SignUpScreen from './src/screens/SignUpScreen'
+
 const userId = 'User ID';
 
 const Tab = createBottomTabNavigator();
