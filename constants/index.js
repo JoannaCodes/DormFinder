@@ -1,0 +1,1 @@
+export const BASE_URL = "http://192.168.2.7/dormfinder_php/index.php"

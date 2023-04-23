@@ -18,6 +18,10 @@ import ChangePasswordComponent from './src/components/profileScreen/ChangePasswo
 import PaymentGatewayComponent from './src/components/profileScreen/PaymentGateway';
 import VerificationComponent from './src/components/profileScreen/Verification';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs([/Warning: /]);
+
 const uid = 12345;
 
 const HomeStack = createNativeStackNavigator();
@@ -135,12 +139,10 @@ function RootNavigator() {
   );
 }
 
-function App() {
+export default function App(){
   return (
     <NavigationContainer>
       <RootNavigator />
     </NavigationContainer>
   );
 }
-
-export default App;
