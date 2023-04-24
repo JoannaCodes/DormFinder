@@ -6,8 +6,6 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 
 const ChangePassword = ({route}) => {
-  const uid = route.params.userId;
-
   const [isLoading, setIsLoading] = React.useState(false);
 
   const initialValues = {

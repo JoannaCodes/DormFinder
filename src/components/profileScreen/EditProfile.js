@@ -5,12 +5,9 @@ import {PrimaryBtn, GhostBtn} from '../others/Buttons';
 import {Formik} from 'formik';
 
 const EditProfile = ({route}) => {
-  const uid = route.params.userId;
-
   const [isLoading, setIsLoading] = React.useState(false);
 
   const initialValues = {
-    name: uid,
     email: 'john@example.com',
     phone: '09123456789',
   };

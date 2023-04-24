@@ -23,7 +23,6 @@ import PaymentGatewayComponent from './src/components/profileScreen/PaymentGatew
 import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 
-<<<<<<< HEAD
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
@@ -108,9 +107,6 @@ function ProfileStackScreen() {
     </ProfileStack.Navigator>
   );
 }
-=======
-const userId = 'User ID';
->>>>>>> 94c74105714618eb06f88c02cb22b21d25a023e2
 
 const Tab = createBottomTabNavigator();
 
@@ -129,7 +125,6 @@ function RootNavigator() {
               onPress={() =>
                 navigation.navigate('ProfileTab', {
                   screen: 'Profile',
-                  userId: userId,
                 })
               }
               title="Profile"
@@ -167,13 +162,9 @@ function RootNavigator() {
   );
 }
 
-<<<<<<< HEAD
-export default function App(){
-=======
 const Stack = createNativeStackNavigator();
 
-function App() {
->>>>>>> 94c74105714618eb06f88c02cb22b21d25a023e2
+export default function App(){
   return (
     <NavigationContainer>
       <Stack.Navigator>
