@@ -60,6 +60,10 @@ export default function Profile({navigation}) {
         onPress={() => navigation.navigate('Change Password')}
       />
       <Button
+        title="Go to Dorm Listing"
+        onPress={() => navigation.navigate('Dorm Listing')}
+      />
+      <Button
         title="Go to Verification"
         onPress={() => navigation.navigate('Verification')}
       />
