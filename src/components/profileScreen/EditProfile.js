@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   KeyboardAvoidingView,
+  Button,
 } from 'react-native';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -15,23 +16,54 @@ import {BASE_URL} from '../../../constants';
 import axios from 'axios';
 
 export default function EditProfile() {
-  async function _updateAccount(values) {
+  const [user, setUser] = useState('');
+
+  useEffect(() => {
     try {
-      const formData = new FormData();
-      formData.append('tag', 'update_account');
-      formData.append('userref', 62);
-      formData.append('loginCredential', values.loginCredential);
+      let URL = BASE_URL;
+      let uid = 1;
 
-      const response = await axios.post(BASE_URL, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      Alert.alert('Message', response.data);
+      axios
+        .get(`${URL}?tag=get_account&userref=${uid}`)
+        .then(response => {
+          var output = JSON.parse(response.data);
+          setUser(output);
+        })
+        .catch(() => {
+          Alert.alert('Message', 'Network Error, Please Try Again');
+        });
     } catch (err) {
-      console.log(err);
+      Alert.alert('Error Message', err);
     }
+  }, []);
+
+  function _updateAccount(values) {
+    Alert.alert('Update Account', 'Continue Updating Account?', [
+      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'Update',
+        onPress: async () => {
+          try {
+            const formData = new FormData();
+            formData.append('tag', 'update_account');
+            formData.append('userref', 1);
+            formData.append('identifier', values.loggedUser);
+
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(response => {
+                Alert.alert('Message', response.data);
+              });
+          } catch (err) {
+            Alert.alert('Error Message', err);
+          }
+        },
+      },
+    ]);
   }
 
   function _deleteAccount() {
@@ -47,16 +79,19 @@ export default function EditProfile() {
             try {
               const formData = new FormData();
               formData.append('tag', 'delete_account');
-              formData.append('userref', 62);
+              formData.append('userref', 1);
 
-              const response = await axios.post(BASE_URL, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              });
-              Alert.alert('Message', response.data);
+              await axios
+                .post(BASE_URL, formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then(response => {
+                  Alert.alert('Message', response.data);
+                });
             } catch (err) {
-              console.log(err);
+              Alert.alert('Error Message', err);
             }
           },
         },
@@ -67,7 +102,7 @@ export default function EditProfile() {
   const Separator = () => <View style={styles.separator} />;
 
   const validationSchema = Yup.object().shape({
-    loginCredential: Yup.string()
+    loggedUser: Yup.string()
       .required('This is required')
       .test('is-email-or-phone', 'Invalid', function (value) {
         // regular expressions to validate email and phone number
@@ -87,55 +122,51 @@ export default function EditProfile() {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Formik
-        initialValues={{loginCredential: 'user@gmail.com'}}
+        enableReinitialize
+        initialValues={{loggedUser: user}}
         validationSchema={validationSchema}
         onSubmit={_updateAccount}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <View style={styles.section}>
-            <Text style={styles.label}>Email or Phone Number</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('loginCredential')}
-              onBlur={handleBlur('loginCredential')}
-              value={values.loginCredential}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            {errors.email && touched.email && (
-              <Text style={{color: 'red'}}>{errors.email}</Text>
-            )}
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonlbl}>Save</Text>
-            </TouchableOpacity>
-          </View>
+        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.label}>Email or Phone Number</Text>
+              <TextInput
+                style={[styles.input, errors.loggedUser && styles.inputError]}
+                onChangeText={handleChange('loggedUser')}
+                onBlur={handleBlur('loggedUser')}
+                value={values.loggedUser}
+              />
+              {errors.loggedUser && (
+                <Text style={styles.errorText}>{errors.loggedUser}</Text>
+              )}
+            </View>
+            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
+            <View style={styles.section}>
+              <Separator />
+              <View
+                style={[
+                  styles.section,
+                  {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  },
+                ]}>
+                <Text style={{flex: 1, flexShrink: 1}}>
+                  All of your account data, including your listings, will be
+                  gone if you delete your account.
+                </Text>
+                <TouchableOpacity
+                  style={styles.deletebtn}
+                  onPress={_deleteAccount}>
+                  <Text style={styles.deletebtnlbl}>Delete Account</Text>
+                </TouchableOpacity>
+              </View>
+              <Separator />
+            </View>
+          </>
         )}
       </Formik>
-      <Separator />
-      <View
-        style={[
-          styles.section,
-          {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          },
-        ]}>
-        <Text style={{flex: 1, flexShrink: 1}}>
-          All of your account data, including your listings, will be gone if you
-          delete your account.
-        </Text>
-        <TouchableOpacity style={styles.deletebtn} onPress={_deleteAccount}>
-          <Text style={styles.deletebtnlbl}>Delete Account</Text>
-        </TouchableOpacity>
-      </View>
-      <Separator />
     </KeyboardAvoidingView>
   );
 }
@@ -145,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     overflow: 'hidden',
-    padding: 16,
+    paddingHorizontal: 16,
   },
   section: {
     marginVertical: 24,
@@ -158,23 +189,16 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10,
-    marginBottom: 20,
     width: '100%',
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 2,
   },
-  button: {
-    backgroundColor: '#0E898B',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    alignItems: 'center',
-    elevation: 4,
+  inputError: {
+    borderColor: 'red',
   },
-  buttonlbl: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+  errorText: {
+    color: 'red',
   },
   deletebtn: {
     borderWidth: 1,

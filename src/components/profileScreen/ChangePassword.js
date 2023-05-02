@@ -1,100 +1,130 @@
-/* eslint-disable react-native/no-inline-styles */
-import {StyleSheet, View, Text, TextInput} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Alert, Button} from 'react-native';
 import React from 'react';
-import {PrimaryBtn} from '../others/Buttons';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {BASE_URL} from '../../../constants';
+import axios from 'axios';
 
 const ChangePassword = ({route}) => {
-  const [isLoading, setIsLoading] = React.useState(false);
+  function _changePassword(values) {
+    Alert.alert('Change Password', 'Continue Updating Account?', [
+      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'Change',
+        onPress: async () => {
+          try {
+            const formData = new FormData();
+            formData.append('tag', 'change_password');
+            formData.append('userref', 1);
+            formData.append('currentpassword', values.currentpassword);
+            formData.append('newpassword', values.newpassword);
 
-  const initialValues = {
-    currentPass: '12345',
-    newPass: '67890',
-    confirmPass: '67890',
-  };
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(response => {
+                Alert.alert('Message', response.data);
+                console.log(response.data);
+              });
+          } catch (err) {
+            console.log(err);
+          }
+        },
+      },
+    ]);
+  }
 
   const validationSchema = Yup.object().shape({
-    currentPass: Yup.string().required('Current password is required'),
-    newPass: Yup.string()
+    currentpassword: Yup.string().required('Current password is required'),
+    newpassword: Yup.string()
       .min(8, 'Password must be at least 8 characters')
       .required('New password is required'),
-    confirmPass: Yup.string()
-      .oneOf([Yup.ref('newPass'), null], 'Passwords must match')
+    confirmpassword: Yup.string()
+      .oneOf([Yup.ref('newpassword'), null], 'Passwords must match')
       .required('Confirm new password is required'),
   });
-
-  const handleFormSubmit = values => {
-    setIsLoading(true);
-    console.log('Form values:', values);
-    setIsLoading(false);
-  };
 
   return (
     <View style={styles.container}>
       <Formik
-        initialValues={initialValues}
-        onSubmit={handleFormSubmit}
+        initialValues={{
+          currentpassword: '',
+          newpassword: '',
+          confirmpassword: '',
+        }}
+        onSubmit={_changePassword}
         validationSchema={validationSchema}>
-        {({handleChange, handleSubmit, values, errors, touched}) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <>
             <View style={styles.section}>
-              <Text style={styles.label}>Current Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  touched.currentPass &&
-                    errors.currentPass &&
-                    styles.inputError,
-                ]}
-                onChangeText={handleChange('currentPass')}
-                value={values.currentPass}
-                secureTextEntry={true}
-              />
-              {touched.currentPass && errors.currentPass && (
-                <Text style={styles.errorText}>{errors.currentPass}</Text>
-              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Current Password</Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    touched.currentpassword &&
+                      errors.currentpassword &&
+                      styles.inputError,
+                  ]}
+                  onChangeText={handleChange('currentpassword')}
+                  onBlur={handleBlur('currentpassword')}
+                  value={values.currentpassword}
+                  secureTextEntry={true}
+                />
+                {touched.currentpassword && errors.currentpassword && (
+                  <Text style={styles.errorText}>{errors.currentpassword}</Text>
+                )}
+              </View>
 
-              <Text style={styles.label}>New Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  touched.newPass && errors.newPass && styles.inputError,
-                ]}
-                onChangeText={handleChange('newPass')}
-                value={values.newPass}
-                secureTextEntry={true}
-              />
-              {touched.newPass && errors.newPass && (
-                <Text style={styles.errorText}>{errors.newPass}</Text>
-              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>New Password</Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    touched.newpassword && errors.newpassword
+                      ? styles.inputError
+                      : null,
+                  ]}
+                  onChangeText={handleChange('newpassword')}
+                  onBlur={handleBlur('newpassword')}
+                  value={values.newpassword}
+                  secureTextEntry={true}
+                />
+                {touched.newpassword && errors.newpassword && (
+                  <Text style={styles.errorText}>{errors.newpassword}</Text>
+                )}
+              </View>
 
-              <Text style={styles.label}>Confirm Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  touched.confirmPass &&
-                    errors.confirmPass &&
-                    styles.inputError,
-                ]}
-                onChangeText={handleChange('confirmPass')}
-                value={values.confirmPass}
-                secureTextEntry={true}
-              />
-              {touched.confirmPass && errors.confirmPass && (
-                <Text style={styles.errorText}>{errors.confirmPass}</Text>
-              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Confirm Password</Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    touched.confirmpassword &&
+                      errors.confirmpassword &&
+                      styles.inputError,
+                  ]}
+                  onChangeText={handleChange('confirmpassword')}
+                  onBlur={handleBlur('confirmpassword')}
+                  value={values.confirmpassword}
+                  secureTextEntry={true}
+                />
+                {touched.confirmpassword && errors.confirmpassword && (
+                  <Text style={styles.errorText}>{errors.confirmpassword}</Text>
+                )}
+              </View>
             </View>
-
-            <View style={styles.section}>
-              <PrimaryBtn
-                title={isLoading ? 'Loading...' : 'Update Password'}
-                onPress={handleSubmit}
-                buttonStyle={{height: 45}}
-                textStyle={{textAlign: 'center'}}
-                textColor="#FFFFFF"
-              />
-            </View>
+            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
           </>
         )}
       </Formik>
@@ -107,24 +137,28 @@ export default ChangePassword;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+    overflow: 'hidden',
+    paddingHorizontal: 16,
   },
   section: {
-    padding: 16,
+    marginVertical: 24,
     justifyContent: 'space-between',
+    width: '100%',
+  },
+  inputContainer: {
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   input: {
-    borderColor: '#D9D9D9',
-    borderWidth: 1,
+    padding: 10,
+    width: '100%',
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
-    elevation: 4,
-    padding: 10,
-    marginBottom: 10,
+    elevation: 2,
   },
   inputError: {
     borderColor: 'red',
