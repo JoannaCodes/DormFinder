@@ -1,1 +1,1 @@
-export const BASE_URL = "http://192.168.2.7/dormfinder_php/index.php"
+export const BASE_URL = "http://192.168.1.9/DormFinder-Admin/index.php"
