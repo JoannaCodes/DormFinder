@@ -23,6 +23,8 @@ import PaymentGatewayComponent from './src/components/profileScreen/PaymentGatew
 import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 
+import Login from './src/screens/Login';
+
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
