@@ -15,7 +15,8 @@ import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import {BASE_URL, DORM_DATA, HEI, AMENITIES} from '../../constants';
+import {BASE_URL} from '../../constants';
+import {DORM_DATA, HEI, AMENITIES} from '../../constants/constants';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
