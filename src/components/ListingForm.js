@@ -16,7 +16,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import {BASE_URL} from '../../constants';
-import {DORM_DATA, HEI, AMENITIES} from '../../constants/constants';
+import {DORM_DATA, HEI, AMENITIES} from '../../constants/values';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
