@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Toast from 'react-native-toast-message';
 
 import BookmarksScreen from './src/screens/Bookmarks';
 import HomeScreen from './src/screens/Home';
@@ -88,18 +89,21 @@ const Stack = createNativeStackNavigator();
 
 export default function App(){
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={RootNavigator} options={{headerShown: false}} />
-        <Stack.Screen name="Dorm Details" component={DormDetailsComponent} />
-        <Stack.Screen name="Chat Room" component={ChatRoomComponent} />
-        <Stack.Screen name="Edit Profile" component={EditProfileComponent} />
-        <Stack.Screen name="Change Password" component={ChangePasswordComponent} />
-        <Stack.Screen name="Dorm Listing" component={DormListingComponent} />
-        <Stack.Screen name="Payments" component={PaymentGatewayComponent} />
-        <Stack.Screen name="Verification" component={VerificationComponent} />
-        <Stack.Screen name="Create Dorm Listing" component={ListingFormComponent} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={RootNavigator} options={{headerShown: false}} />
+          <Stack.Screen name="Dorm Details" component={DormDetailsComponent} />
+          <Stack.Screen name="Chat Room" component={ChatRoomComponent} />
+          <Stack.Screen name="Edit Profile" component={EditProfileComponent} />
+          <Stack.Screen name="Change Password" component={ChangePasswordComponent} />
+          <Stack.Screen name="Dorm Listing" component={DormListingComponent} />
+          <Stack.Screen name="Payments" component={PaymentGatewayComponent} />
+          <Stack.Screen name="Verification" component={VerificationComponent} />
+          <Stack.Screen name="Create Dorm Listing" component={ListingFormComponent} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast/>
+    </>
   );
 }
