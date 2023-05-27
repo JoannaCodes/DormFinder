@@ -76,14 +76,12 @@ const DormListing = ({navigation}) => {
       <View style={styles.emptyContainer}>
         {status === 'Failed' ? (
           <>
-            <View>
-              <Image
-                source={require('../../../assets/error_upsketch.png')}
-                style={{height: 360, width: 360}}
-                resizeMode="cover"
-              />
-              <Text style={styles.emptyTitle}>Network Error</Text>
-            </View>
+            <Image
+              source={require('../../../assets/error_upsketch.png')}
+              style={{height: 360, width: 360}}
+              resizeMode="cover"
+            />
+            <Text style={styles.emptyTitle}>Network Error</Text>
           </>
         ) : (
           <>
