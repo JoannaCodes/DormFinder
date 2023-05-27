@@ -1,44 +1,59 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
 import {
-  StyleSheet,
-  View,
-  TextInput,
-  Text,
-  TouchableOpacity,
   Alert,
-  KeyboardAvoidingView,
   Button,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
 import {BASE_URL} from '../../../constants';
+import {Formik} from 'formik';
+import {Toast} from 'react-native-toast-message';
+import * as Yup from 'yup';
 import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+
+const Separator = () => {
+  return (
+    <View
+      height={1}
+      width={'100%'}
+      backgroundColor={'#CCCCCC'}
+      style={{marginVertical: 5}}
+    />
+  );
+};
 
 export default function EditProfile() {
   const [user, setUser] = useState('');
+  let URL = BASE_URL;
+  let uid = 'LhVQ3FMv6d6lW';
 
   useEffect(() => {
-    try {
-      let URL = BASE_URL;
-      let uid = 1;
-
-      axios
-        .get(`${URL}?tag=get_account&userref=${uid}`)
-        .then(response => {
+    const fetchAccount = async () => {
+      try {
+        axios.get(`${URL}?tag=get_account&userref=${uid}`).then(response => {
           var output = JSON.parse(response.data);
-          setUser(output);
-        })
-        .catch(() => {
-          Alert.alert('Message', 'Network Error, Please Try Again');
+          setUser(output.identifier);
         });
-    } catch (err) {
-      Alert.alert('Error Message', err);
-    }
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Network error. Please check your connection and try again',
+        });
+      }
+    };
+
+    fetchAccount();
   }, []);
 
   function _updateAccount(values) {
-    Alert.alert('Update Account', 'Continue Updating Account?', [
+    Alert.alert('Dorm Finder', 'Continue updating account?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Update',
@@ -46,7 +61,7 @@ export default function EditProfile() {
           try {
             const formData = new FormData();
             formData.append('tag', 'update_account');
-            formData.append('userref', 1);
+            formData.append('userref', uid);
             formData.append('identifier', values.loggedUser);
 
             await axios
@@ -56,10 +71,18 @@ export default function EditProfile() {
                 },
               })
               .then(response => {
-                Alert.alert('Message', response.data);
+                Toast.show({
+                  type: 'success',
+                  text1: 'Dorm Finder',
+                  text2: response.data,
+                });
               });
-          } catch (err) {
-            Alert.alert('Error Message', err);
+          } catch (error) {
+            Toast.show({
+              type: 'error',
+              text1: 'Dorm Finder',
+              text2: error,
+            });
           }
         },
       },
@@ -68,7 +91,7 @@ export default function EditProfile() {
 
   function _deleteAccount() {
     Alert.alert(
-      'Delete Account',
+      'Dorm Finder',
       'Are you sure you want to delete your account? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
@@ -79,7 +102,7 @@ export default function EditProfile() {
             try {
               const formData = new FormData();
               formData.append('tag', 'delete_account');
-              formData.append('userref', 1);
+              formData.append('userref', uid);
 
               await axios
                 .post(BASE_URL, formData, {
@@ -88,18 +111,24 @@ export default function EditProfile() {
                   },
                 })
                 .then(response => {
-                  Alert.alert('Message', response.data);
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: response.data,
+                  });
                 });
-            } catch (err) {
-              Alert.alert('Error Message', err);
+            } catch (error) {
+              Toast.show({
+                type: 'error',
+                text1: 'Dorm Finder',
+                text2: 'An error occured. Please try again.',
+              });
             }
           },
         },
       ],
     );
   }
-
-  const Separator = () => <View style={styles.separator} />;
 
   const validationSchema = Yup.object().shape({
     loggedUser: Yup.string()
@@ -129,16 +158,21 @@ export default function EditProfile() {
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
           <>
             <View style={styles.section}>
-              <Text style={styles.label}>Email or Phone Number</Text>
-              <TextInput
-                style={[styles.input, errors.loggedUser && styles.inputError]}
-                onChangeText={handleChange('loggedUser')}
-                onBlur={handleBlur('loggedUser')}
-                value={values.loggedUser}
-              />
-              {errors.loggedUser && (
-                <Text style={styles.errorText}>{errors.loggedUser}</Text>
-              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email or Phone Number</Text>
+                <TextInput
+                  style={styles.input}
+                  value={values.loggedUser}
+                  placeholder="Email"
+                  placeholderTextColor="#CCCCCC"
+                  onChangeText={handleChange('loggedUser')}
+                  onBlur={handleBlur('loggedUser')}
+                  keyboardType="email-address"
+                />
+                {errors.loggedUser && (
+                  <Text style={styles.error}>{errors.loggedUser}</Text>
+                )}
+              </View>
             </View>
             <Button onPress={handleSubmit} title="Save" color="#0E898B" />
             <View style={styles.section}>
@@ -179,7 +213,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   section: {
-    marginVertical: 24,
+    marginVertical: 12,
     justifyContent: 'space-between',
     width: '100%',
   },
@@ -187,9 +221,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
+  inputContainer: {
+    marginVertical: 12,
+  },
   input: {
-    padding: 10,
     width: '100%',
+    padding: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 2,
@@ -197,7 +234,7 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: 'red',
   },
-  errorText: {
+  error: {
     color: 'red',
   },
   deletebtn: {
@@ -212,10 +249,5 @@ const styles = StyleSheet.create({
   deletebtnlbl: {
     color: '#FF0000',
     fontWeight: 'bold',
-  },
-  separator: {
-    borderBottomColor: '#0E898B',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginVertical: 5,
   },
 });

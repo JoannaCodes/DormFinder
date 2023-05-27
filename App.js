@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
 import {Button} from 'react-native';
 import {
@@ -6,7 +7,12 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Toast from 'react-native-toast-message';
+import Toast, {
+  BaseToast,
+  ErrorToast,
+  InfoToast,
+  SuccessToast,
+} from 'react-native-toast-message';
 
 import BookmarksScreen from './src/screens/Bookmarks';
 import HomeScreen from './src/screens/Home';
@@ -27,9 +33,64 @@ import ListingFormComponent from './src/components/ListingForm';
 
 import Login from './src/screens/Login';
 
-import { LogBox } from 'react-native';
+import {LogBox} from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
+
+const toastConfig = {
+  // Success Toast
+  success: props => (
+    <SuccessToast
+      {...props}
+      style={{borderLeftColor: '#00C851', elevation: 50}}
+      text1Style={{
+        fontSize: 16,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+  /* Error Toast */
+  error: props => (
+    <ErrorToast
+      {...props}
+      style={{borderLeftColor: '#ff4444', elevation: 50}}
+      text1Style={{
+        fontSize: 16,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+  /* Info Toast */
+  info: props => (
+    <InfoToast
+      {...props}
+      style={{borderLeftColor: '#33b5e5', elevation: 50}}
+      text1Style={{
+        fontSize: 16,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+  /* Warning Toast */
+  warning: props => (
+    <BaseToast
+      {...props}
+      style={{borderLeftColor: '#ffbb33', elevation: 50}}
+      text1Style={{
+        fontSize: 16,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -45,11 +106,7 @@ function RootNavigator() {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
           return routeName === 'Profile' ? null : (
             <Button
-              onPress={() =>
-                navigation.navigate('ProfileTab', {
-                  screen: 'Profile',
-                })
-              }
+              onPress={() => navigation.navigate('Profile Tab')}
               title="Profile"
             />
           );
@@ -76,34 +133,35 @@ function RootNavigator() {
         component={InboxScreen}
         options={{title: 'Inbox'}}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="ProfileTab"
         component={ProfileScreen}
         options={{title: 'Profile'}}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }
 
 const Stack = createNativeStackNavigator();
 
-export default function App(){
+export default function App() {
   return (
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={RootNavigator} options={{headerShown: false}} />
+          <Stack.Screen name="Home" component={RootNavigator} options={{headerShown: false}}/>
+          <Stack.Screen name="Profile Tab" component={ProfileScreen} options={{title: 'Profile'}}/>
           <Stack.Screen name="Dorm Details" component={DormDetailsComponent} />
           <Stack.Screen name="Chat Room" component={ChatRoomComponent} />
           <Stack.Screen name="Edit Profile" component={EditProfileComponent} />
-          <Stack.Screen name="Change Password" component={ChangePasswordComponent} />
+          <Stack.Screen name="Change Password" component={ChangePasswordComponent}/>
           <Stack.Screen name="Dorm Listing" component={DormListingComponent} />
           <Stack.Screen name="Payments" component={PaymentGatewayComponent} />
           <Stack.Screen name="Verification" component={VerificationComponent} />
-          <Stack.Screen name="Create Dorm Listing" component={ListingFormComponent} />
+          <Stack.Screen name="Dorm Listing Form" component={ListingFormComponent}/>
         </Stack.Navigator>
       </NavigationContainer>
-      <Toast/>
+      <Toast config={toastConfig} />
     </>
   );
 }

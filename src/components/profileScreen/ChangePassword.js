@@ -1,9 +1,10 @@
-import {StyleSheet, View, Text, TextInput, Alert, Button} from 'react-native';
-import React from 'react';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
 import {BASE_URL} from '../../../constants';
+import {Formik} from 'formik';
+import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Toast} from 'react-native-toast-message';
+import * as Yup from 'yup';
 import axios from 'axios';
+import React from 'react';
 
 const ChangePassword = ({route}) => {
   function _changePassword(values) {
@@ -26,11 +27,18 @@ const ChangePassword = ({route}) => {
                 },
               })
               .then(response => {
-                Alert.alert('Message', response.data);
-                console.log(response.data);
+                Toast.show({
+                  type: 'success',
+                  text1: 'Dorm Finder',
+                  text2: response.data,
+                });
               });
-          } catch (err) {
-            console.log(err);
+          } catch (error) {
+            Toast.show({
+              type: 'error',
+              text1: 'Dorm Finder',
+              text2: 'An error occured. Please try again.',
+            });
           }
         },
       },
@@ -38,13 +46,13 @@ const ChangePassword = ({route}) => {
   }
 
   const validationSchema = Yup.object().shape({
-    currentpassword: Yup.string().required('Current password is required'),
+    currentpassword: Yup.string().required('This is required'),
     newpassword: Yup.string()
       .min(8, 'Password must be at least 8 characters')
-      .required('New password is required'),
+      .required('This is required'),
     confirmpassword: Yup.string()
       .oneOf([Yup.ref('newpassword'), null], 'Passwords must match')
-      .required('Confirm new password is required'),
+      .required('This is required'),
   });
 
   return (
@@ -70,57 +78,48 @@ const ChangePassword = ({route}) => {
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Current Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.currentpassword &&
-                      errors.currentpassword &&
-                      styles.inputError,
-                  ]}
+                  style={styles.input}
+                  placeholder="Enter current password"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('currentpassword')}
                   onBlur={handleBlur('currentpassword')}
                   value={values.currentpassword}
                   secureTextEntry={true}
                 />
                 {touched.currentpassword && errors.currentpassword && (
-                  <Text style={styles.errorText}>{errors.currentpassword}</Text>
+                  <Text style={styles.error}>{errors.currentpassword}</Text>
                 )}
               </View>
 
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>New Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.newpassword && errors.newpassword
-                      ? styles.inputError
-                      : null,
-                  ]}
+                  style={styles.input}
+                  placeholder="Must be atleast 8 characters"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('newpassword')}
                   onBlur={handleBlur('newpassword')}
                   value={values.newpassword}
                   secureTextEntry={true}
                 />
                 {touched.newpassword && errors.newpassword && (
-                  <Text style={styles.errorText}>{errors.newpassword}</Text>
+                  <Text style={styles.error}>{errors.newpassword}</Text>
                 )}
               </View>
 
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Confirm Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.confirmpassword &&
-                      errors.confirmpassword &&
-                      styles.inputError,
-                  ]}
+                  style={styles.input}
+                  placeholder="Must be atleast 8 characters"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('confirmpassword')}
                   onBlur={handleBlur('confirmpassword')}
                   value={values.confirmpassword}
                   secureTextEntry={true}
                 />
                 {touched.confirmpassword && errors.confirmpassword && (
-                  <Text style={styles.errorText}>{errors.confirmpassword}</Text>
+                  <Text style={styles.error}>{errors.confirmpassword}</Text>
                 )}
               </View>
             </View>
@@ -142,20 +141,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   section: {
-    marginVertical: 24,
+    marginVertical: 12,
     justifyContent: 'space-between',
     width: '100%',
-  },
-  inputContainer: {
-    marginBottom: 16,
   },
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
   },
+  inputContainer: {
+    marginVertical: 12,
+  },
   input: {
-    padding: 10,
     width: '100%',
+    padding: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 2,
@@ -163,8 +162,7 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: 'red',
   },
-  errorText: {
+  error: {
     color: 'red',
-    marginBottom: 10,
   },
 });

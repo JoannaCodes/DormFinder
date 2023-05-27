@@ -1,74 +1,70 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Button,
-  Alert,
-  Dimensions,
-} from 'react-native';
 import React, {useState, useEffect} from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {BASE_URL} from '../../../constants';
 import axios from 'axios';
 
+const Separator = () => {
+  return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
+};
+
 const DormListing = ({navigation}) => {
-  const [dorms, setDorms] = useState('');
+  let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
+  const [isLoading, setLoading] = useState(true);
+  const [status, setStatus] = useState('Success');
+  const [dorms, setDorms] = useState('');
 
   useEffect(() => {
-    try {
-      let URL = BASE_URL;
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${URL}?tag=get_dorms&userref=${uid}`);
+        var output = JSON.parse(response.data);
+        setDorms(output);
+        setLoading(false);
+      } catch (error) {
+        setStatus('Failed');
+        setLoading(false);
+      }
+    };
 
-      axios
-        .get(`${URL}?tag=get_dorms&userref=${uid}`)
-        .then(response => {
-          var output = JSON.parse(response.data);
-          setDorms(output);
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [uid]);
+    fetchData();
+  }, []);
 
   const renderItem = ({item}) => {
     const images = item.images.split(',');
     return (
       <View style={styles.card}>
-        <Image source={{uri: images[0]}} style={styles.image} />
-        <View style={styles.info}>
-          <Text style={styles.name}>{item.name}</Text>
+        <Image
+          source={{
+            uri: `http://192.168.0.12/DormFinder-Admin/uploads/dormImages/${item.dormref}/${images[0]}`,
+          }}
+          style={styles.image}
+        />
+        <View style={styles.cardBody}>
+          <Text style={styles.cardTitle}>{item.name}</Text>
+          <Separator />
           <View style={styles.action}>
-            <Button
-              title="✏️"
-              color="#0E898B"
-              onPress={() => {
-                navigation.navigate('Create Dorm Listing', {
-                  dormref: item.id,
-                  userref: item.userref,
-                  editmode: true,
-                });
-              }}
-            />
-            <Button
-              title="📊"
-              color="#0E898B"
-              onPress={() => {
-                Alert.alert('Message', item.id);
-              }}
-            />
-            <Button
-              title="🗑️"
-              color="#0E898B"
-              onPress={() => {
-                Alert.alert('Message', item.id);
-              }}
-            />
+            <TouchableOpacity style={styles.btnContainer}>
+              <Text>✏️</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btnContainer}>
+              <Text>🗑️</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btnContainer}>
+              <Text>📊</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -77,34 +73,63 @@ const DormListing = ({navigation}) => {
 
   const renderEmpty = () => {
     return (
-      <View style={styles.container}>
-        <Text style={{fontSize: 32, fontWeight: 'bold'}}>No Dorm Listing</Text>
-        <Text>Tap "+ Create Listing" to Add Your Dorm</Text>
+      <View style={styles.emptyContainer}>
+        {status === 'Failed' ? (
+          <>
+            <View>
+              <Image
+                source={require('../../../assets/error_upsketch.png')}
+                style={{height: 360, width: 360}}
+                resizeMode="cover"
+              />
+              <Text style={styles.emptyTitle}>Network Error</Text>
+            </View>
+          </>
+        ) : (
+          <>
+            <Image
+              source={require('../../../assets/house_upsketch.png')}
+              style={{height: 360, width: 360}}
+              resizeMode="cover"
+            />
+            <Text style={styles.emptyTitle}>No Dorm Listing</Text>
+            <Text>Tap ➕ to Add Your Dorm</Text>
+          </>
+        )}
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={dorms}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        horizontal={false}
-        numColumns={2}
-        ListEmptyComponent={renderEmpty}
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate('Create Dorm Listing', {
-            userref: uid,
-            editmode: false,
-          })
-        }>
-        <Text style={styles.buttonText}>+ Create Listing</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      {isLoading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#0E898B" />
+        </View>
+      ) : (
+        <>
+          <FlatList
+            contentContainerStyle={{flexGrow: 1}}
+            data={dorms}
+            horizontal={false}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={renderEmpty}
+            numColumns={2}
+            renderItem={renderItem}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate('Dorm Listing Form', {
+                userref: uid,
+                editmode: false,
+              })
+            }>
+            <Text style={styles.buttonText}>➕</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -118,13 +143,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
   },
+  emptyContainer: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  btnContainer: {
+    elevation: 2,
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#0E898B',
+    padding: 10,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   button: {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    bottom: 16,
+    right: 16,
     backgroundColor: '#0E898B',
-    borderRadius: 30,
-    padding: 15,
+    borderRadius: 20,
+    padding: 18,
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,
@@ -147,18 +194,19 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'cover',
   },
-  info: {
-    padding: 10, // Add some padding
+  cardBody: {
+    padding: 10,
   },
-  name: {
-    fontSize: 18, // Set font size
-    fontWeight: 'bold', // Set font weight
-    marginBottom: 5, // Add some margin bottom
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   action: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    padding: 8,
   },
 });

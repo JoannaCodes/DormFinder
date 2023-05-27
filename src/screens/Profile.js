@@ -1,81 +1,164 @@
 /* eslint-disable react-native/no-inline-styles */
-import React,{useState,useEffect} from 'react'
-import {Modal,KeyboardAvoidingView,View,Text,AsyncStorage,SafeAreaView,StyleSheet,Button,Image,Alert, ToastAndroid, TouchableOpacity,TextInput,FlatList,ScrollView} from 'react-native'
-import {initialStyles} from '../styles/initial'
-import axios from 'axios'
-import {BASE_URL} from '../../constants'
-import DocumentPicker from 'react-native-document-picker';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {BASE_URL} from '../../constants';
+import {Toast} from 'react-native-toast-message';
+import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+
+const Separator = () => {
+  return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
+};
 
 export default function Profile({navigation}) {
-  async function _sendDocument() {
-       try {
-    const result = await DocumentPicker.pick({
-      type: [
-        DocumentPicker.types.pdf,
-        DocumentPicker.types.docx,
-      ],
-    });
+  const [user, setUser] = useState('');
+  let URL = BASE_URL;
+  let uid = 'LhVQ3FMv6d6lW';
 
-    if (!result) {
-      console.log('No document selected');
-      return;
-    }
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        axios.get(`${URL}?tag=get_account&userref=${uid}`).then(response => {
+          var output = JSON.parse(response.data);
+          setUser(output);
+        });
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Network error. Please check your connection and try again',
+        });
+      }
+    };
 
-        const formData = new FormData();
-    formData.append('tag', 'upload_image');
-    formData.append('document', {
-      uri: result[0]['uri'],
-      type: result[0]['type'],
-      name: result[0]['name'],
-    });
+    fetchAccount();
+  }, []);
 
-    const response = await axios.post(BASE_URL, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('Upload success:', response.data);
-
-    Alert.alert('Upload success', 'The document file was successfully uploaded to the server.');
-
-    // Do something with the selected file
-  } catch (err) {
-    if (DocumentPicker.isCancel(err)) {
-      console.log('User cancelled document picker');
-    } else {
-      console.log('Document picker error:', err);
-    }
-  }
-  }
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      
-      <Button
-        title="Go to Edit Profile"
-        onPress={() => navigation.navigate('Edit Profile')}
-      />
-      <Button
-        title="Go to Change Password"
-        onPress={() => navigation.navigate('Change Password')}
-      />
-      <Button
-        title="Go to Dorm Listing"
-        onPress={() => navigation.navigate('Dorm Listing')}
-      />
-      <Button
-        title="Go to Verification"
-        onPress={() => navigation.navigate('Verification')}
-      />
-      <Button
-        title="Go to Payments"
-        onPress={() => navigation.navigate('Payments')}
-      />
-      <Button
-        title="Send Document"
-        onPress={_sendDocument}
-      />
-    </View>
-  );
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView>
+        <View style={[styles.section, {alignItems: 'center'}]}>
+          <View style={styles.imageContainer}>
+            <Image source={{uri: user.imageUrl}} style={styles.image} />
+            <TouchableOpacity style={styles.editbtn}>
+              <Text>✏️</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.name}>{user.username}</Text>
+          <Text style={styles.verificationStatus}>
+            {user.is_verified === 1 ? 'Verified' : null}
+          </Text>
+        </View>
 
-};
+        <Separator />
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Account Settings</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Edit Profile')}>
+            <Text>Edit Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Change Password')}>
+            <Text>Change Password</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Dorm Listing Settings</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Dorm Listing')}>
+            <Text>Dorm Listing</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Verification')}>
+            <Text>Verification</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Payments')}>
+            <Text>Payments</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity style={styles.logoutbtn}>
+            <Text>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    padding: 8,
+  },
+  section: {
+    marginVertical: 16,
+    width: '100%',
+    paddingHorizontal: 8,
+  },
+  imageContainer: {
+    width: 100,
+    height: 100,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 50,
+  },
+  editbtn: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#0E898B',
+    padding: 5,
+    borderRadius: 20,
+    elevation: 4,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  verificationStatus: {
+    color: '#0E898B',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  label: {
+    fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#FFFFFF',
+    padding: 22,
+    marginVertical: 8,
+    borderRadius: 5,
+    elevation: 4,
+  },
+  logoutbtn: {
+    backgroundColor: '#0E898B',
+    alignItems: 'center',
+    padding: 11,
+    borderRadius: 5,
+    elevation: 4,
+  },
+});
