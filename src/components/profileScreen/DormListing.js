@@ -48,7 +48,7 @@ const DormListing = ({navigation}) => {
       <View style={styles.card}>
         <Image
           source={{
-            uri: `http://192.168.0.12/DormFinder-Admin/uploads/dormImages/${item.dormref}/${images[0]}`,
+            uri: `http://192.168.0.12/DormFinder-Admin/uploads/dormImages/${item.id}/${images[0]}`,
           }}
           style={styles.image}
         />
