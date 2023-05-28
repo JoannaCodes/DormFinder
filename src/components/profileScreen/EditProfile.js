@@ -50,7 +50,7 @@ export default function EditProfile() {
     };
 
     fetchAccount();
-  }, []);
+  }, [user, uid]);
 
   function _updateAccount(values) {
     Alert.alert('Dorm Finder', 'Continue updating account?', [
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
   },
   section: {
     marginVertical: 12,

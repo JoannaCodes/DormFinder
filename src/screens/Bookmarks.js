@@ -42,7 +42,7 @@ const Bookmarks = ({navigation}) => {
     };
 
     fetchData();
-  }, []);
+  }, [dorms, uid]);
 
   const renderItem = ({item}) => {
     const images = item.images.split(',');
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 8,
     fontSize: 16,
+    backgroundColor: '#FFFFFF',
   },
   emptyContainer: {
     // flex: 1,

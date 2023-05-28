@@ -40,7 +40,7 @@ const DormListing = ({navigation}) => {
     };
 
     fetchData();
-  }, []);
+  }, [dorms, uid]);
 
   const renderItem = ({item}) => {
     const images = item.images.split(',');
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
+    backgroundColor: '#FFFFFF',
   },
   emptyContainer: {
     // flex: 1,

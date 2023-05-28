@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
   },
   section: {
     marginVertical: 12,
