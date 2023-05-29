@@ -32,6 +32,7 @@ import DormListingComponent from './src/components/profileScreen/DormListing';
 import ListingFormComponent from './src/components/ListingForm';
 
 import Login from './src/screens/Login';
+import SignUp from './src/screens/SignUp';
 
 import {LogBox} from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']);
@@ -142,6 +143,54 @@ function RootNavigator() {
   );
 }
 
+const AppStack = createNativeStackNavigator();
+
+function RootApp(params) {
+  return (
+    <AppStack.Navigator>
+      <AppStack.Screen name="Home" component={RootNavigator} options={{headerShown: false}}/>
+      <AppStack.Screen name="Profile Tab" component={ProfileScreen} options={{title: 'Profile'}}/>
+      <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
+      <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
+      <AppStack.Screen name="Edit Profile" component={EditProfileComponent} />
+      <AppStack.Screen name="Change Password" component={ChangePasswordComponent}/>
+      <AppStack.Screen name="Dorm Listing" component={DormListingComponent} />
+      <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
+      <AppStack.Screen name="Verification" component={VerificationComponent} />
+      <AppStack.Screen name="Dorm Listing Form" component={ListingFormComponent}/>
+    </AppStack.Navigator>
+  );
+}
+
+const AuthStack = createNativeStackNavigator();
+
+function Auth(params) {
+  return (
+    <AuthStack.Navigator initialRouteName="Signup">
+      <AuthStack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false,
+          animation: 'slide_from_left',
+          animationTypeForReplace: 'push',
+          presentation: 'formSheet',
+        }}
+      />
+      <AuthStack.Screen
+        name="Signup"
+        component={SignUp}
+        options={{
+          headerShown: false,
+          animation: 'slide_from_right',
+          animationTypeForReplace: 'push',
+          presentation: 'formSheet',
+        }}
+      />
+    </AuthStack.Navigator>
+  );
+}
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -149,16 +198,8 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={RootNavigator} options={{headerShown: false}}/>
-          <Stack.Screen name="Profile Tab" component={ProfileScreen} options={{title: 'Profile'}}/>
-          <Stack.Screen name="Dorm Details" component={DormDetailsComponent} />
-          <Stack.Screen name="Chat Room" component={ChatRoomComponent} />
-          <Stack.Screen name="Edit Profile" component={EditProfileComponent} />
-          <Stack.Screen name="Change Password" component={ChangePasswordComponent}/>
-          <Stack.Screen name="Dorm Listing" component={DormListingComponent} />
-          <Stack.Screen name="Payments" component={PaymentGatewayComponent} />
-          <Stack.Screen name="Verification" component={VerificationComponent} />
-          <Stack.Screen name="Dorm Listing Form" component={ListingFormComponent}/>
+          <Stack.Screen name="Authentication" component={Auth} options={{headerShown: false}}/>
+          <Stack.Screen name="Main" component={RootApp} options={{headerShown: false}} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} />
