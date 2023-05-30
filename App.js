@@ -226,7 +226,7 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Main">
+        <Stack.Navigator>
           <Stack.Screen
             name="Splash"
             component={SplashScreen}
