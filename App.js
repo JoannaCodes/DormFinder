@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
-import {Button} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
@@ -13,6 +13,7 @@ import Toast, {
   InfoToast,
   SuccessToast,
 } from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import BookmarksScreen from './src/screens/Bookmarks';
 import HomeScreen from './src/screens/Home';
@@ -107,12 +108,30 @@ function RootNavigator() {
         headerRight: () => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
           return routeName === 'Profile' ? null : (
-            <Button
-              onPress={() => navigation.navigate('Profile Tab')}
-              title="Profile"
-            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Profile Tab')}>
+              <Icon name="account-circle" size={40} color="gray" />
+            </TouchableOpacity>
           );
         },
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+
+          if (route.name === 'ExploreTab') {
+            iconName = 'explore';
+          } else if (route.name === 'BookmarksTab') {
+            iconName = 'bookmark';
+          } else if (route.name === 'NotificationsTab') {
+            iconName = 'notifications';
+          } else if (route.name === 'InboxTab') {
+            iconName = 'mail';
+          }
+
+          // You can return any component that you like here!
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#0E898B',
+        tabBarInactiveTintColor: 'gray',
         headerRightContainerStyle: {paddingRight: 16},
       })}>
       <Tab.Screen
@@ -135,11 +154,6 @@ function RootNavigator() {
         component={InboxScreen}
         options={{title: 'Inbox'}}
       />
-      {/* <Tab.Screen
-        name="ProfileTab"
-        component={ProfileScreen}
-        options={{title: 'Profile'}}
-      /> */}
     </Tab.Navigator>
   );
 }
@@ -149,16 +163,30 @@ const AppStack = createNativeStackNavigator();
 function RootApp(params) {
   return (
     <AppStack.Navigator>
-      <AppStack.Screen name="Home" component={RootNavigator} options={{headerShown: false}}/>
-      <AppStack.Screen name="Profile Tab" component={ProfileScreen} options={{title: 'Profile'}}/>
+      <AppStack.Screen
+        name="Home"
+        component={RootNavigator}
+        options={{headerShown: false}}
+      />
+      <AppStack.Screen
+        name="Profile Tab"
+        component={ProfileScreen}
+        options={{title: 'Profile'}}
+      />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
       <AppStack.Screen name="Edit Profile" component={EditProfileComponent} />
-      <AppStack.Screen name="Change Password" component={ChangePasswordComponent}/>
+      <AppStack.Screen
+        name="Change Password"
+        component={ChangePasswordComponent}
+      />
       <AppStack.Screen name="Dorm Listing" component={DormListingComponent} />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Verification" component={VerificationComponent} />
-      <AppStack.Screen name="Dorm Listing Form" component={ListingFormComponent}/>
+      <AppStack.Screen
+        name="Dorm Listing Form"
+        component={ListingFormComponent}
+      />
     </AppStack.Navigator>
   );
 }
@@ -198,10 +226,22 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false}} />
-          <Stack.Screen name="Authentication" component={Auth} options={{headerShown: false}}/>
-          <Stack.Screen name="Main" component={RootApp} options={{headerShown: false}} />
+        <Stack.Navigator initialRouteName="Main">
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Authentication"
+            component={Auth}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Main"
+            component={RootApp}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} />

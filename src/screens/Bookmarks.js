@@ -3,20 +3,19 @@
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
-  AppState,
   FlatList,
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../constants';
-import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import {useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 
 import ReviewForm from '../components/ReviewForm';
 
@@ -91,9 +90,9 @@ const Bookmarks = ({navigation}) => {
   const renderItem = ({item}) => {
     const images = item.images.split(',');
     return (
-      <TouchableHighlight
-        activeOpacity={0.6}
-        underlayColor="#DDDDDD"
+      <TouchableOpacity
+        activeOpacity={0.5}
+        underlayColor="#CCCCCC"
         onPress={() => navigation.navigate('Dorm Details')}>
         <View style={styles.card}>
           <Image
@@ -106,36 +105,33 @@ const Bookmarks = ({navigation}) => {
             <View style={styles.details}>
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.cardText}>{item.price}</Text>
-              <Text>{item.rating}</Text>
             </View>
             <Separator />
             <View style={styles.action}>
               <TouchableOpacity
-                style={styles.btnContainer}
+                style={[styles.btnContainer, {marginEnd: 4}]}
                 onPress={() => {
                   setModalVisible(true);
                   setSelectedDorm(item.dormref);
                   // console.log(item.dormref);
                 }}>
-                <Text>📝</Text>
+                <Icon name="star-rate" size={18} color="#0E898B" />
+                <Text style={{marginLeft: 10}}>Write a review</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnContainer}>
-                <Text>💬</Text>
+              <TouchableOpacity style={[styles.btnContainer, {marginStart: 4}]}>
+                <Icon name="message" size={18} color="#0E898B" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnContainer}>
-                <Text>💲</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.btnContainer}
                 onPress={() => {
                   _deleteBookmark(item.dormref);
                 }}>
-                <Text>❌</Text>
-              </TouchableOpacity>
+                <Icon name="delete" size={18} color="#0E898B" />
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   };
 
@@ -211,6 +207,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 1,
     elevation: 2,
     borderRadius: 4,
     backgroundColor: '#FFFFFF',
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   action: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     padding: 8,
   },

@@ -11,11 +11,12 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, USER_UPLOADS} from '../../constants';
-import Toast from 'react-native-toast-message';
 import {launchImageLibrary} from 'react-native-image-picker';
-import axios from 'axios';
 import {useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
+import Toast from 'react-native-toast-message';
 
 const UserProfile = () => {
   const [user, setUser] = useState('');
@@ -129,10 +130,9 @@ const UserProfile = () => {
                 underlayColor={'#CCCCCC'}
                 style={styles.editbtn}
                 onPress={() => {
-                  // setEditMode(false);
                   pickImage();
                 }}>
-                <Text>📷</Text>
+                <Icon name="camera-alt" size={18} color="#FFFFFF" />
               </TouchableHighlight>
             </>
           ) : (
@@ -151,7 +151,7 @@ const UserProfile = () => {
                   setUsername(user.username);
                   setImage(`${USER_UPLOADS}/${uid}/${user.imageUrl}`);
                 }}>
-                <Text>✏️</Text>
+                <Icon name="mode-edit" size={18} color="#FFFFFF" />
               </TouchableHighlight>
             </>
           )}
@@ -193,9 +193,12 @@ const UserProfile = () => {
         ) : (
           <>
             <Text style={styles.name}>{user.username}</Text>
-            <Text style={styles.verificationStatus}>
-              {user.is_verified === 1 ? 'Verified' : null}
-            </Text>
+            {user.is_verified === 1 ? (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={styles.verificationStatus}>Verified</Text>
+                <Icon name="verified" size={18} color="#CCCCCC" />
+              </View>
+            ) : null}
           </>
         )}
       </View>

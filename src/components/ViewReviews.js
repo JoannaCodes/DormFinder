@@ -12,19 +12,22 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, USER_UPLOADS} from '../../constants';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
-import {useFocusEffect} from '@react-navigation/native';
 
 const ViewReviews = ({visible, onClose, dormref}) => {
   let URL = BASE_URL;
   const [reviews, setReviews] = useState('');
+  const [rating, setRating] = useState(0);
   const [isLoading, setLoading] = useState(true);
   const [status, setStatus] = useState('Success');
 
   useFocusEffect(
     React.useCallback(() => {
+      setLoading(true);
       fetchReviews();
     }, [dormref]),
   );
@@ -34,14 +37,22 @@ const ViewReviews = ({visible, onClose, dormref}) => {
       .get(`${URL}?tag=get_reviews&dormref=${dormref}`)
       .then(response => {
         setReviews(JSON.parse(response.data));
+        const output = JSON.parse(response.data);
+        const ratings = output.map(val => {
+          return val.rating;
+        });
+        const totalRatings = ratings.reduce((a, b) => a + b, 0);
+        const averageRating = totalRatings / ratings.length;
+        setRating(averageRating);
       })
       .catch(error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: error,
+          text2: 'An error occured. Please try again',
         });
         setStatus('Failed');
+        console.log(error);
       })
       .finally(() => {
         setLoading(false);
@@ -71,12 +82,16 @@ const ViewReviews = ({visible, onClose, dormref}) => {
               {Array(5)
                 .fill(null)
                 .map((_, index) => (
-                  <Text key={index} style={styles.star}>
-                    {item.rating >= index + 1 ? '⭐' : '☆'}
+                  <Text key={index}>
+                    {item.rating >= index + 1 ? (
+                      <Icon name="star-rate" size={18} color="gold" />
+                    ) : (
+                      <Icon name="star-outline" size={18} color="#0E898B" />
+                    )}
                   </Text>
                 ))}
             </View>
-            <Text>{item.createdAt}</Text>
+            <Text style={{marginStart: 16}}>{item.createdAt}</Text>
           </View>
         </View>
         <Text>{item.comment}</Text>
@@ -119,8 +134,28 @@ const ViewReviews = ({visible, onClose, dormref}) => {
               Rating and Reviews
             </Text>
             <TouchableOpacity onPress={handleDismiss}>
-              <Text>❌</Text>
+              <Icon name="close" size={30} color="#FF0000" />
             </TouchableOpacity>
+          </View>
+          <View style={styles.total}>
+            <View
+              style={[
+                styles.stars,
+                {flexGrow: 1, justifyContent: 'space-around'},
+              ]}>
+              {Array(5)
+                .fill(null)
+                .map((_, index) => (
+                  <Text key={index}>
+                    {rating >= index + 1 ? (
+                      <Icon name="star-rate" size={30} color="gold" />
+                    ) : (
+                      <Icon name="star-outline" size={30} color="#0E898B" />
+                    )}
+                  </Text>
+                ))}
+            </View>
+            <Text>Total rating</Text>
           </View>
           <SafeAreaView style={styles.reviews}>
             {isLoading ? (
@@ -164,6 +199,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 16,
   },
+  total: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 16,
+    margin: 16,
+  },
   reviews: {
     flex: 1,
     justifyContent: 'center',
@@ -199,7 +240,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginEnd: 16,
   },
   emptyContainer: {
     flex: 1,

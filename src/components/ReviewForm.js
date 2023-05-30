@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {BASE_URL} from '../../constants';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -98,7 +99,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
                 Dorm Review
               </Text>
               <TouchableOpacity onPress={handleDismiss}>
-                <Text>❌</Text>
+                <Icon name="close" size={30} color="#FF0000" />
               </TouchableOpacity>
             </View>
             <View style={styles.stars}>
@@ -109,14 +110,11 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
                   onPress={() => setStarRating(option)}
                   key={option}>
                   <Animated.View style={animatedScaleStyle}>
-                    <Text
-                      style={
-                        starRating >= option
-                          ? styles.starSelected
-                          : styles.starUnselected
-                      }>
-                      {starRating >= option ? '⭐' : '☆'}
-                    </Text>
+                    {starRating >= option ? (
+                      <Icon name="star-rate" size={30} color="gold" />
+                    ) : (
+                      <Icon name="star-outline" size={30} color="#0E898B" />
+                    )}
                   </Animated.View>
                 </TouchableWithoutFeedback>
               ))}

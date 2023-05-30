@@ -14,9 +14,10 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../../constants';
-import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import {useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 
 import ViewReviews from '../ViewReviews';
 
@@ -116,7 +117,7 @@ const DormListing = ({navigation}) => {
           <Separator />
           <View style={styles.action}>
             <TouchableOpacity style={styles.btnContainer}>
-              <Text>✏️</Text>
+              <Icon name="mode-edit" size={18} color="#0E898B" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
@@ -125,14 +126,14 @@ const DormListing = ({navigation}) => {
                 setSelectedDorm(item.id);
                 console.log('dormref:', item.id);
               }}>
-              <Text>📊</Text>
+              <Icon name="insights" size={18} color="#0E898B" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
                 _deleteDorm(item.id);
               }}>
-              <Text>🗑️</Text>
+              <Icon name="delete" size={18} color="#0E898B" />
             </TouchableOpacity>
           </View>
         </View>
@@ -160,7 +161,10 @@ const DormListing = ({navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.emptyTitle}>No Dorm Listing</Text>
-            <Text>Tap ➕ to Add Your Dorm</Text>
+            <Text>
+              Tap "<Icon name="delete" size={18} color="#0E898B" />" to Add Your
+              Dorm
+            </Text>
           </>
         )}
       </View>
@@ -192,7 +196,7 @@ const DormListing = ({navigation}) => {
                 editmode: false,
               })
             }>
-            <Text style={styles.buttonText}>➕</Text>
+            <Icon name="add" size={30} color="#FFFFFF" />
           </TouchableOpacity>
         </>
       )}
@@ -244,15 +248,10 @@ const styles = StyleSheet.create({
     right: 16,
     backgroundColor: '#0E898B',
     borderRadius: 20,
-    padding: 18,
+    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   card: {
     margin: 8,
@@ -280,6 +279,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
+    paddingTop: 8,
   },
 });
