@@ -1,45 +1,61 @@
+/* eslint-disable react-native/no-inline-styles */
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
-import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
-import {Toast} from 'react-native-toast-message';
 import * as Yup from 'yup';
 import axios from 'axios';
-import React from 'react';
+import React, {useState} from 'react';
+import Toast from 'react-native-toast-message';
 
 const ChangePassword = ({route}) => {
-  function _changePassword(values) {
-    Alert.alert('Change Password', 'Continue Updating Account?', [
+  const [loading, setLoading] = useState(false);
+  let uid = 'LhVQ3FMv6d6lW';
+
+  function _changePassword(values, {resetForm}) {
+    Alert.alert('Dorm Finder', 'Continue changing password?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Change',
         onPress: async () => {
-          try {
-            const formData = new FormData();
-            formData.append('tag', 'change_password');
-            formData.append('userref', 1);
-            formData.append('currentpassword', values.currentpassword);
-            formData.append('newpassword', values.newpassword);
+          setLoading(true);
+          const formData = new FormData();
+          formData.append('tag', 'change_password');
+          formData.append('userref', uid);
+          formData.append('currentpassword', values.currentpassword);
+          formData.append('newpassword', values.newpassword);
 
-            await axios
-              .post(BASE_URL, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-              .then(response => {
-                Toast.show({
-                  type: 'success',
-                  text1: 'Dorm Finder',
-                  text2: response.data,
-                });
+          await axios
+            .post(BASE_URL, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            .then(response => {
+              Toast.show({
+                type: 'success',
+                text1: 'Dorm Finder',
+                text2: response.data,
               });
-          } catch (error) {
-            Toast.show({
-              type: 'error',
-              text1: 'Dorm Finder',
-              text2: 'An error occured. Please try again.',
+              resetForm();
+            })
+            .catch(error => {
+              Toast.show({
+                type: 'error',
+                text1: 'Dorm Finder',
+                text2: 'An error occured. Please try again.',
+              });
+            })
+            .finally(() => {
+              setLoading(false);
             });
-          }
         },
       },
     ]);
@@ -123,7 +139,13 @@ const ChangePassword = ({route}) => {
                 )}
               </View>
             </View>
-            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              {loading ? (
+                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+              ) : (
+                <Text style={{color: '#FFFFFF'}}>Save</Text>
+              )}
+            </TouchableOpacity>
           </>
         )}
       </Formik>
@@ -165,5 +187,12 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#0E898B',
+    borderRadius: 5,
+    elevation: 4,
+    padding: 11,
   },
 });
