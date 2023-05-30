@@ -33,6 +33,7 @@ import ListingFormComponent from './src/components/ListingForm';
 
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
+import SplashScreen from './src/screens/SplashScreen';
 
 import {LogBox} from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']);
@@ -166,7 +167,7 @@ const AuthStack = createNativeStackNavigator();
 
 function Auth(params) {
   return (
-    <AuthStack.Navigator initialRouteName="Signup">
+    <AuthStack.Navigator initialRouteName="Login">
       <AuthStack.Screen
         name="Login"
         component={Login}
@@ -198,6 +199,7 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false}} />
           <Stack.Screen name="Authentication" component={Auth} options={{headerShown: false}}/>
           <Stack.Screen name="Main" component={RootApp} options={{headerShown: false}} />
         </Stack.Navigator>

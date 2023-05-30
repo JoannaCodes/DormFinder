@@ -8,11 +8,13 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, StackActions} from '@react-navigation/native';
 import Axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 //
 import BackgroundImg from '../../assets/img/bg-transferent.png';
+import Google from '../../assets/img/google-logo.png';
 
 export default function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -28,8 +30,18 @@ export default function Login() {
         password: password,
       });
 
-      if (data.status == 'success') {
-        alert('User Login Successfully');
+      console.log(data);
+
+      const userData = {
+        email: data.data.email,
+        uid: data.data.id,
+      };
+
+      if (data.status === 'success') {
+        await AsyncStorage.setItem('user_data', JSON.stringify(userData));
+        await AsyncStorage.setItem('isUserLogin', 'true');
+      
+        navigation.dispatch(StackActions.replace('Main'));
       } else {
         alert('User Not Found');
       }
@@ -53,10 +65,11 @@ export default function Login() {
       <View style={styles.bottomBackgroundImgContainer}></View>
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
-          <FontAwsome name="angle-left" size={30} color="#fff" />
+          {/* <Icon name="arrow-back-ios" size={30} color="#fff" /> */}
+
 
           <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
-            Hi!
+            Welcome!
           </Text>
         </View>
         <View style={styles.formBottomContainer}>
@@ -82,8 +95,8 @@ export default function Login() {
                 />
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <FontAwsome
-                    name={isPasswordVisible ? 'eye-slash' : 'eye'}
+                  <Icon
+                    name={isPasswordVisible ? 'visibility' : 'visibility-off'}
                     size={20}
                   />
                 </TouchableOpacity>
@@ -116,9 +129,7 @@ export default function Login() {
                 },
               ]}>
               <Image
-                source={{
-                  uri: 'https://img.flaticon.com/icons/png/512/2702/2702602.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF',
-                }}
+                source={Google}
                 style={{height: 30, width: 30}}
               />
               <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
@@ -126,9 +137,9 @@ export default function Login() {
             </TouchableOpacity>
             {/*  */}
             {/*  */}
-            <View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Don't Have An Account</Text>
+                <Text style={{color: '#fff'}}>Don't Have An Account?</Text>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('Signup');
@@ -136,7 +147,7 @@ export default function Login() {
                   <Text
                     style={{
                       marginLeft: 5,
-                      color: '#02C38E',
+                      color: 'teal',
                       fontWeight: 'bold',
                     }}>
                     Signup
@@ -146,8 +157,7 @@ export default function Login() {
               <TouchableOpacity>
                 <Text
                   style={{
-                    marginLeft: 5,
-                    color: '#02C38E',
+                    color: 'teal',
                     fontWeight: 'bold',
                   }}>
                   Forget Your Password ?
@@ -204,14 +214,14 @@ const styles = StyleSheet.create({
   customInputContainer: {
     marginVertical: 10,
     borderWidth: 2,
-    borderColor: '#02C38E',
+    borderColor: 'teal',
     backgroundColor: '#fff',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: '#02C38E',
+    backgroundColor: 'teal',
     padding: 10,
     alignItems: 'center',
     marginVertical: 10,
