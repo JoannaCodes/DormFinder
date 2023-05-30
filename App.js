@@ -163,30 +163,16 @@ const AppStack = createNativeStackNavigator();
 function RootApp(params) {
   return (
     <AppStack.Navigator>
-      <AppStack.Screen
-        name="Home"
-        component={RootNavigator}
-        options={{headerShown: false}}
-      />
-      <AppStack.Screen
-        name="Profile Tab"
-        component={ProfileScreen}
-        options={{title: 'Profile'}}
-      />
+      <AppStack.Screen name="Home" component={RootNavigator} options={{headerShown: false}}/>
+      <AppStack.Screen name="Profile Tab" component={ProfileScreen} options={{title: 'Profile'}}/>
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
       <AppStack.Screen name="Edit Profile" component={EditProfileComponent} />
-      <AppStack.Screen
-        name="Change Password"
-        component={ChangePasswordComponent}
-      />
+      <AppStack.Screen name="Change Password" component={ChangePasswordComponent}/>
       <AppStack.Screen name="Dorm Listing" component={DormListingComponent} />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Verification" component={VerificationComponent} />
-      <AppStack.Screen
-        name="Dorm Listing Form"
-        component={ListingFormComponent}
-      />
+      <AppStack.Screen name="Dorm Listing Form" component={ListingFormComponent}/>
     </AppStack.Navigator>
   );
 }
@@ -227,21 +213,9 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
-            name="Splash"
-            component={SplashScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Authentication"
-            component={Auth}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Main"
-            component={RootApp}
-            options={{headerShown: false}}
-          />
+          <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false}}/>
+          <Stack.Screen name="Authentication" component={Auth} options={{headerShown: false}}/>
+          <Stack.Screen name="Main" component={RootApp} options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} />
