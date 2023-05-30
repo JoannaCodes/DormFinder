@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -12,8 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../../constants';
+import {BASE_URL, DORM_UPLOADS} from '../../../constants';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import {useFocusEffect} from '@react-navigation/native';
+
+import ViewReviews from '../ViewReviews';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
@@ -23,24 +28,78 @@ const DormListing = ({navigation}) => {
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
   const [isLoading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('Success');
   const [dorms, setDorms] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${URL}?tag=get_dorms&userref=${uid}`);
-        var output = JSON.parse(response.data);
-        setDorms(output);
-        setLoading(false);
-      } catch (error) {
-        setStatus('Failed');
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [uid]),
+  );
 
-    fetchData();
-  }, [dorms, uid]);
+  const fetchData = async () => {
+    await axios
+      .get(`${URL}?tag=get_dorms&userref=${uid}`)
+      .then(response => {
+        setDorms(JSON.parse(response.data));
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Network error. Please check your connection and try again',
+        });
+        setStatus('Failed');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const _deleteDorm = dormref => {
+    Alert.alert(
+      'Dorm Finder',
+      'Are you sure you want to delete this dorm listing? This action cannot be undone.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'delete',
+          onPress: async () => {
+            const formData = new FormData();
+            formData.append('tag', 'delete_dorm');
+            formData.append('userref', uid);
+            formData.append('dormref', dormref);
+
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(response => {
+                Toast.show({
+                  type: 'success',
+                  text1: 'Dorm Finder',
+                  text2: response.data,
+                });
+                setLoading(true);
+                fetchData();
+              })
+              .catch(error => {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Dorm Finder',
+                  text2: 'An error occured. Please try again',
+                });
+              });
+          },
+        },
+      ],
+    );
+  };
 
   const renderItem = ({item}) => {
     const images = item.images.split(',');
@@ -48,7 +107,7 @@ const DormListing = ({navigation}) => {
       <View style={styles.card}>
         <Image
           source={{
-            uri: `http://192.168.0.12/DormFinder-Admin/uploads/dormImages/${item.id}/${images[0]}`,
+            uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`,
           }}
           style={styles.image}
         />
@@ -59,11 +118,21 @@ const DormListing = ({navigation}) => {
             <TouchableOpacity style={styles.btnContainer}>
               <Text>✏️</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnContainer}>
-              <Text>🗑️</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnContainer}>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => {
+                setModalVisible(true);
+                setSelectedDorm(item.id);
+                console.log('dormref:', item.id);
+              }}>
               <Text>📊</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => {
+                _deleteDorm(item.id);
+              }}>
+              <Text>🗑️</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -127,6 +196,11 @@ const DormListing = ({navigation}) => {
           </TouchableOpacity>
         </>
       )}
+      <ViewReviews
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        dormref={selectedDorm}
+      />
     </SafeAreaView>
   );
 };

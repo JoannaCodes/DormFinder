@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
+  AppState,
   FlatList,
   Image,
   SafeAreaView,
@@ -12,8 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, DORM_UPLOADS} from '../../constants';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import {useFocusEffect} from '@react-navigation/native';
+
+import ReviewForm from '../components/ReviewForm';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
@@ -21,37 +26,79 @@ const Separator = () => {
 
 const Bookmarks = ({navigation}) => {
   let URL = BASE_URL;
-  let uid = 'qzPHvK8kHTy3i';
+  let uid = 'LhVQ3FMv6d6lW';
   const [isLoading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('Success');
   const [dorms, setDorms] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${URL}?tag=get_bookmarks&userref=${uid}`,
-        );
-        var output = JSON.parse(response.data);
-        setDorms(output);
-        setLoading(false);
-      } catch (error) {
-        setStatus('Failed');
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [uid]),
+  );
 
-    fetchData();
-  }, [dorms, uid]);
+  const fetchData = async () => {
+    await axios
+      .get(`${URL}?tag=get_bookmarks&userref=${uid}`)
+      .then(response => {
+        setDorms(JSON.parse(response.data));
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Network error. Please check your connection and try again',
+        });
+        setStatus('Failed');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const _deleteBookmark = async dormref => {
+    const formData = new FormData();
+    formData.append('tag', 'delete_bookmark');
+    formData.append('userref', uid);
+    formData.append('dormref', dormref);
+
+    await axios
+      .post(BASE_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        Toast.show({
+          type: 'success',
+          text1: 'Dorm Finder',
+          text2: response.data,
+        });
+        setLoading(true);
+        fetchData();
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: error,
+        });
+      });
+  };
 
   const renderItem = ({item}) => {
     const images = item.images.split(',');
     return (
-      <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD">
+      <TouchableHighlight
+        activeOpacity={0.6}
+        underlayColor="#DDDDDD"
+        onPress={() => navigation.navigate('Dorm Details')}>
         <View style={styles.card}>
           <Image
             source={{
-              uri: `http://192.168.0.12/DormFinder-Admin/uploads/dormImages/${item.dormref}/${images[0]}`,
+              uri: `${DORM_UPLOADS}/${item.dormref}/${images[0]}`,
             }}
             style={styles.cardImage}
           />
@@ -63,7 +110,13 @@ const Bookmarks = ({navigation}) => {
             </View>
             <Separator />
             <View style={styles.action}>
-              <TouchableOpacity style={styles.btnContainer}>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={() => {
+                  setModalVisible(true);
+                  setSelectedDorm(item.dormref);
+                  // console.log(item.dormref);
+                }}>
                 <Text>📝</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnContainer}>
@@ -72,7 +125,11 @@ const Bookmarks = ({navigation}) => {
               <TouchableOpacity style={styles.btnContainer}>
                 <Text>💲</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnContainer}>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={() => {
+                  _deleteBookmark(item.dormref);
+                }}>
                 <Text>❌</Text>
               </TouchableOpacity>
             </View>
@@ -124,6 +181,12 @@ const Bookmarks = ({navigation}) => {
           renderItem={renderItem}
         />
       )}
+      <ReviewForm
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        userref={uid}
+        dormref={selectedDorm}
+      />
     </SafeAreaView>
   );
 };

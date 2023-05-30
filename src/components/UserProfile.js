@@ -10,11 +10,12 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, USER_UPLOADS} from '../../constants';
 import Toast from 'react-native-toast-message';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
-import React, {useState, useEffect} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useState} from 'react';
 
 const UserProfile = () => {
   const [user, setUser] = useState('');
@@ -26,67 +27,71 @@ const UserProfile = () => {
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
 
-  useEffect(() => {
-    const fetchAccount = async () => {
-      try {
-        axios.get(`${URL}?tag=get_account&userref=${uid}`).then(response => {
-          var output = JSON.parse(response.data);
-          setUser(output);
-        });
-      } catch (error) {
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAccount();
+    }, [uid]),
+  );
+
+  const fetchAccount = async () => {
+    await axios
+      .get(`${URL}?tag=get_account&userref=${uid}`)
+      .then(response => {
+        setUser(JSON.parse(response.data));
+      })
+      .catch(error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
           text2: 'Network error. Please check your connection and try again',
         });
-      }
-    };
-
-    fetchAccount();
-  }, [user, uid]);
+      });
+  };
 
   function _updateAccount() {
-    try {
-      const parts = image.split('/');
-      const imageUrl = parts[7].replace('${', '').replace('}', '');
+    const parts = image.split('/');
+    const imageUrl = parts[7].replace('${', '').replace('}', '');
 
-      if (username === user.username && imageUrl === user.imageUrl) {
-        setEditMode(false);
-      } else {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('tag', 'update_profile');
-        formData.append('userref', uid);
-        formData.append('image', {
-          uri: imageData[0].uri,
-          name: imageData[0].fileName,
-          type: imageData[0].type,
-        });
-        formData.append('username', username);
-
-        axios
-          .post(BASE_URL, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-          .then(response => {
-            setLoading(false);
-            setEditMode(false);
-            console.log(response.data);
-            Toast.show({
-              type: 'success',
-              text1: 'Dorm Finder',
-              text2: response.data,
-            });
-          });
-      }
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Dorm Finder',
-        text2: 'An error occured, Please Try Again',
+    if (username === user.username && imageUrl === user.imageUrl) {
+      setEditMode(false);
+    } else {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('tag', 'update_profile');
+      formData.append('userref', uid);
+      formData.append('image', {
+        uri: imageData[0].uri,
+        name: imageData[0].fileName,
+        type: imageData[0].type,
       });
+      formData.append('username', username);
+
+      axios
+        .post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log(response.data);
+          Toast.show({
+            type: 'success',
+            text1: 'Dorm Finder',
+            text2: response.data,
+          });
+        })
+        .catch(error => {
+          Toast.show({
+            type: 'error',
+            text1: 'Dorm Finder',
+            text2: 'An error occured. Please try again',
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+          setEditMode(false);
+          fetchAccount();
+        });
     }
   }
 
@@ -134,7 +139,7 @@ const UserProfile = () => {
             <>
               <Image
                 source={{
-                  uri: `http://192.168.0.12/DormFinder-Admin/uploads/userImages/${uid}/${user.imageUrl}`,
+                  uri: `${USER_UPLOADS}/${uid}/${user.imageUrl}`,
                 }}
                 style={styles.image}
               />
@@ -144,9 +149,7 @@ const UserProfile = () => {
                 onPress={() => {
                   setEditMode(true);
                   setUsername(user.username);
-                  setImage(
-                    `http://192.168.0.12/DormFinder-Admin/uploads/userImages/${uid}/${user.imageUrl}`,
-                  );
+                  setImage(`${USER_UPLOADS}/${uid}/${user.imageUrl}`);
                 }}>
                 <Text>✏️</Text>
               </TouchableHighlight>
@@ -236,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     bottom: 0,
     elevation: 4,
-    padding: 5,
+    padding: 8,
     position: 'absolute',
     right: 0,
   },
@@ -264,5 +267,13 @@ const styles = StyleSheet.create({
     elevation: 4,
     padding: 8,
     flex: 1,
+  },
+  placeholder: {
+    width: '60%',
+    height: 15,
+    borderRadius: 2,
+    backgroundColor: '#CCCCCC',
+    borderColor: '#CCCCCC',
+    marginBottom: 8,
   },
 });

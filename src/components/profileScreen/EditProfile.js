@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import {
+  ActivityIndicator,
   Alert,
-  Button,
   KeyboardAvoidingView,
   StyleSheet,
   Text,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
-import {Toast} from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import * as Yup from 'yup';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
@@ -30,27 +30,29 @@ const Separator = () => {
 
 export default function EditProfile() {
   const [user, setUser] = useState('');
+  const [loading, setLoading] = useState(false);
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
 
   useEffect(() => {
-    const fetchAccount = async () => {
-      try {
-        axios.get(`${URL}?tag=get_account&userref=${uid}`).then(response => {
-          var output = JSON.parse(response.data);
-          setUser(output.identifier);
-        });
-      } catch (error) {
+    fetchAccount();
+  }, [uid]);
+
+  const fetchAccount = async () => {
+    axios
+      .get(`${URL}?tag=get_account&userref=${uid}`)
+      .then(response => {
+        var output = JSON.parse(response.data);
+        setUser(output.identifier);
+      })
+      .catch(error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
           text2: 'Network error. Please check your connection and try again',
         });
-      }
-    };
-
-    fetchAccount();
-  }, [user, uid]);
+      });
+  };
 
   function _updateAccount(values) {
     Alert.alert('Dorm Finder', 'Continue updating account?', [
@@ -58,32 +60,36 @@ export default function EditProfile() {
       {
         text: 'Update',
         onPress: async () => {
-          try {
-            const formData = new FormData();
-            formData.append('tag', 'update_account');
-            formData.append('userref', uid);
-            formData.append('identifier', values.loggedUser);
+          setLoading(true);
+          const formData = new FormData();
+          formData.append('tag', 'update_account');
+          formData.append('userref', uid);
+          formData.append('identifier', values.loggedUser);
 
-            await axios
-              .post(BASE_URL, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-              .then(response => {
-                Toast.show({
-                  type: 'success',
-                  text1: 'Dorm Finder',
-                  text2: response.data,
-                });
+          await axios
+            .post(BASE_URL, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            .then(response => {
+              Toast.show({
+                type: 'success',
+                text1: 'Dorm Finder',
+                text2: response.data,
               });
-          } catch (error) {
-            Toast.show({
-              type: 'error',
-              text1: 'Dorm Finder',
-              text2: error,
+            })
+            .catch(error => {
+              Toast.show({
+                type: 'error',
+                text1: 'Dorm Finder',
+                text2: 'An error occured. Please try again',
+              });
+            })
+            .finally(() => {
+              setLoading(false);
+              fetchAccount();
             });
-          }
         },
       },
     ]);
@@ -99,31 +105,34 @@ export default function EditProfile() {
           text: 'Delete',
           style: 'delete',
           onPress: async () => {
-            try {
-              const formData = new FormData();
-              formData.append('tag', 'delete_account');
-              formData.append('userref', uid);
+            const formData = new FormData();
+            formData.append('tag', 'delete_account');
+            formData.append('userref', uid);
 
-              await axios
-                .post(BASE_URL, formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
-                .then(response => {
-                  Toast.show({
-                    type: 'success',
-                    text1: 'Dorm Finder',
-                    text2: response.data,
-                  });
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(response => {
+                Toast.show({
+                  type: 'success',
+                  text1: 'Dorm Finder',
+                  text2: response.data,
                 });
-            } catch (error) {
-              Toast.show({
-                type: 'error',
-                text1: 'Dorm Finder',
-                text2: 'An error occured. Please try again.',
+              })
+              .catch(error => {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Dorm Finder',
+                  text2: 'An error occured. Please try again.',
+                });
+              })
+              .finally(() => {
+                // Logout user
+                // Set uid to ''
               });
-            }
           },
         },
       ],
@@ -174,7 +183,26 @@ export default function EditProfile() {
                 )}
               </View>
             </View>
-            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
+            <TouchableOpacity
+              onPress={handleSubmit}
+              disabled={
+                values.loggedUser.length === 0 || values.loggedUser === user
+              }
+              style={[
+                styles.button,
+                {
+                  backgroundColor:
+                    values.loggedUser.length === 0 || values.loggedUser === user
+                      ? '#CCCCCC'
+                      : '#0E898B',
+                },
+              ]}>
+              {loading ? (
+                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+              ) : (
+                <Text style={{color: '#FFFFFF'}}>Submit</Text>
+              )}
+            </TouchableOpacity>
             <View style={styles.section}>
               <Separator />
               <View
@@ -237,6 +265,13 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#0E898B',
+    borderRadius: 5,
+    elevation: 4,
+    padding: 11,
   },
   deletebtn: {
     borderWidth: 1,
