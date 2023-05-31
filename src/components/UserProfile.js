@@ -240,6 +240,8 @@ const styles = StyleSheet.create({
   editbtn: {
     backgroundColor: '#0E898B',
     borderRadius: 20,
+    borderColor: '#CCCCCC',
+    borderWidth: 2,
     bottom: 0,
     elevation: 4,
     padding: 8,

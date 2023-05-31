@@ -21,7 +21,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const starRatingOptions = [1, 2, 3, 4, 5];
-  const [starRating, setStarRating] = useState(1);
+  const [starRating, setStarRating] = useState(0);
   const animatedButtonScale = new Animated.Value(1);
 
   async function _postReview() {
