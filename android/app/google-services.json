@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "152129696735",
+    "firebase_url": "https://dormfinder-5e354-default-rtdb.firebaseio.com",
+    "project_id": "dormfinder-5e354",
+    "storage_bucket": "dormfinder-5e354.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152129696735:android:c67fcefc3ea37ecb8d8a6a",
+        "android_client_info": {
+          "package_name": "com.dormfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152129696735-amku2vp20edimd7m7uaf6vqiabq8ne38.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dormfinder",
+            "certificate_hash": "c506ec5dced96b4f83847842acda6446e98ccde8"
+          }
+        },
+        {
+          "client_id": "152129696735-6v6gjrvupt0bdckgjp8tf6b145jq73tb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsd4B4xOP0HiWEwNzTjJFsW9oF820q0Fk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152129696735-6v6gjrvupt0bdckgjp8tf6b145jq73tb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
