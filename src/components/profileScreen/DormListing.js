@@ -37,7 +37,6 @@ const DormListing = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setLoading(true);
       fetchData();
     }, [uid]),
   );

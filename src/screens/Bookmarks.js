@@ -35,7 +35,6 @@ const Bookmarks = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setLoading(true);
       fetchData();
     }, [uid]),
   );
