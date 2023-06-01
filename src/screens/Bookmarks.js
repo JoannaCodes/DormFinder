@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  RefreshControl,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -118,7 +119,9 @@ const Bookmarks = ({navigation}) => {
                 <Icon name="star-rate" size={18} color="#0E898B" />
                 <Text style={{marginLeft: 10}}>Write a review</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.btnContainer, {marginStart: 4}]}>
+              <TouchableOpacity
+                style={[styles.btnContainer, {marginStart: 4}]}
+                onPress={() => navigation.navigate('Chat Room')}>
                 <Icon name="message" size={18} color="#0E898B" />
               </TouchableOpacity>
               {/* <TouchableOpacity
@@ -146,6 +149,14 @@ const Bookmarks = ({navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.emptyTitle}>Network Error</Text>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => {
+                setLoading(true);
+                fetchData();
+              }}>
+              <Text>Try Again</Text>
+            </TouchableOpacity>
           </>
         ) : (
           <>
@@ -175,6 +186,13 @@ const Bookmarks = ({navigation}) => {
           keyExtractor={item => item.id}
           ListEmptyComponent={renderEmpty}
           renderItem={renderItem}
+          refreshControl={
+            <RefreshControl
+              //refresh control used for the Pull to Refresh
+              refreshing={isLoading}
+              onRefresh={fetchData}
+            />
+          }
         />
       )}
       <ReviewForm
@@ -236,6 +254,7 @@ const styles = StyleSheet.create({
     flex: 2,
     height: 150,
     resizeMode: 'cover',
+    backgroundColor: '#CCCCCC',
   },
   cardBody: {
     flex: 3,

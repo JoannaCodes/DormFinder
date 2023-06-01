@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  RefreshControl,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -152,6 +153,14 @@ const DormListing = ({navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.emptyTitle}>Network Error</Text>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => {
+                setLoading(true);
+                fetchData();
+              }}>
+              <Text>Try Again</Text>
+            </TouchableOpacity>
           </>
         ) : (
           <>
@@ -187,6 +196,13 @@ const DormListing = ({navigation}) => {
             ListEmptyComponent={renderEmpty}
             numColumns={2}
             renderItem={renderItem}
+            refreshControl={
+              <RefreshControl
+                //refresh control used for the Pull to Refresh
+                refreshing={isLoading}
+                onRefresh={fetchData}
+              />
+            }
           />
           <TouchableOpacity
             style={styles.button}
@@ -265,6 +281,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'cover',
+    backgroundColor: '#CCCCCC',
   },
   cardBody: {
     padding: 10,

@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   Modal,
+  RefreshControl,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -16,7 +17,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
-import Toast from 'react-native-toast-message';
 
 const ViewReviews = ({visible, onClose, dormref}) => {
   let URL = BASE_URL;
@@ -46,11 +46,6 @@ const ViewReviews = ({visible, onClose, dormref}) => {
         setRating(averageRating);
       })
       .catch(error => {
-        Toast.show({
-          type: 'error',
-          text1: 'Dorm Finder',
-          text2: 'An error occured. Please try again',
-        });
         setStatus('Failed');
         console.log(error);
       })
@@ -61,6 +56,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
 
   const handleDismiss = () => {
     setReviews('');
+    setRating(0);
     onClose();
   };
 
@@ -167,6 +163,13 @@ const ViewReviews = ({visible, onClose, dormref}) => {
                 keyExtractor={item => item.id}
                 ListEmptyComponent={renderEmpty}
                 renderItem={renderItem}
+                refreshControl={
+                  <RefreshControl
+                    //refresh control used for the Pull to Refresh
+                    refreshing={isLoading}
+                    onRefresh={fetchReviews}
+                  />
+                }
               />
             )}
           </SafeAreaView>
