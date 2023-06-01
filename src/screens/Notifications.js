@@ -133,9 +133,14 @@ export default function Notifications({navigation}) {
 		})
 	}
 
+	const clearAll=()=>{
+		axios.get(BASE_URL + "?tag=clearallnotif" + "&userref=" + "1122").then(res=>{
+			Alert.alert('DormFinder', 'All the notifications are cleared.');
+		})
+	}
   return (
 		<View style={{flex: 10, paddingLeft: 20, paddingTop: 20, paddingRight: 20, backgroundColor: '#f1f2f6'}}>
-
+			<Button title="Clear All" onPress={clearAll} />
 			<View style={{marginBottom: 20, display: todayState}}>
 				<Text style={{fontSize: 16,  color:'gray'}}>TODAY</Text>
 				<View style={{width: 'auto', padding: 10, borderRadius: 5, backgroundColor: 'white', flexDirection: 'column'}}>
@@ -174,7 +179,7 @@ export default function Notifications({navigation}) {
 					</View>
 				</View>
 				<View>
-					<View style={{width: 'auto', borderRadius: 5, backgroundColor: 'white', flexDirection: 'column',}}>
+					<View style={{width: 'auto', borderRadius: 5, marginTop: 20,  backgroundColor: 'white', flexDirection: 'column',}}>
 						<TouchableOpacity disabled={showMoreState} style={{padding: 10}} onPress={_ShowMore}>
 							<Text style={{ fontSize: 20, color: colorLabel }}>{showMoreLabel}</Text>
 						</TouchableOpacity>
