@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../../constants';
 import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
@@ -38,22 +39,35 @@ const DormListing = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
-    }, [uid]),
+    }, []),
   );
 
   const fetchData = async () => {
     await axios
       .get(`${URL}?tag=get_dorms&userref=${uid}`)
       .then(response => {
-        setDorms(JSON.parse(response.data));
+        const data = JSON.parse(response.data);
+        setDorms(data);
+
+        // Exclude image URLs from the data
+        const dataWithoutImages = data.map(item => {
+          const {images, ...rest} = item;
+          return rest;
+        });
+
+        AsyncStorage.setItem('dormListing', JSON.stringify(dataWithoutImages));
       })
-      .catch(error => {
+      .catch(async error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
           text2: 'Network error. Please check your connection and try again',
         });
         setStatus('Failed');
+        const storedDorms = await AsyncStorage.getItem('dormListing');
+        if (storedDorms) {
+          setDorms(JSON.parse(storedDorms));
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -104,7 +118,7 @@ const DormListing = ({navigation}) => {
   };
 
   const renderItem = ({item}) => {
-    const images = item.images.split(',');
+    const images = item.images ? item.images.split(',') : [];
     return (
       <View style={styles.card}>
         <Image
@@ -117,7 +131,15 @@ const DormListing = ({navigation}) => {
           <Text style={styles.cardTitle}>{item.name}</Text>
           <Separator />
           <View style={styles.action}>
-            <TouchableOpacity style={styles.btnContainer}>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() =>
+                navigation.navigate('Dorm Listing Form', {
+                  dormref: item.id,
+                  userref: uid,
+                  editmode: true,
+                })
+              }>
               <Icon name="mode-edit" size={18} color="#0E898B" />
             </TouchableOpacity>
             <TouchableOpacity
@@ -125,7 +147,6 @@ const DormListing = ({navigation}) => {
               onPress={() => {
                 setModalVisible(true);
                 setSelectedDorm(item.id);
-                console.log('dormref:', item.id);
               }}>
               <Icon name="insights" size={18} color="#0E898B" />
             </TouchableOpacity>
@@ -152,7 +173,9 @@ const DormListing = ({navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>Network Error</Text>
+            <Text style={styles.emptyTitle}>
+              Cannot retrieve dorm listing at this time. Please try again later.
+            </Text>
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
@@ -189,7 +212,7 @@ const DormListing = ({navigation}) => {
       ) : (
         <>
           <FlatList
-            contentContainerStyle={{flexGrow: 1}}
+            contentContainerStyle={styles.cardContainer}
             data={dorms}
             horizontal={false}
             keyExtractor={item => item.id}
@@ -242,8 +265,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   btnContainer: {
     elevation: 2,
@@ -268,6 +292,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,
+  },
+  cardContainer: {
+    flexGrow: 1,
   },
   card: {
     margin: 8,

@@ -36,18 +36,19 @@ const ViewReviews = ({visible, onClose, dormref}) => {
     await axios
       .get(`${URL}?tag=get_reviews&dormref=${dormref}`)
       .then(response => {
-        setReviews(JSON.parse(response.data));
-        const output = JSON.parse(response.data);
-        const ratings = output.map(val => {
+        const data = JSON.parse(response.data);
+        const ratings = data.map(val => {
           return val.rating;
         });
         const totalRatings = ratings.reduce((a, b) => a + b, 0);
         const averageRating = totalRatings / ratings.length;
+
+        setReviews(data);
         setRating(averageRating);
+        setStatus('Success');
       })
-      .catch(error => {
+      .catch(async error => {
         setStatus('Failed');
-        console.log(error);
       })
       .finally(() => {
         setLoading(false);
@@ -105,7 +106,9 @@ const ViewReviews = ({visible, onClose, dormref}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>Network Error</Text>
+            <Text style={styles.emptyTitle}>
+              Cannot retrieve reviews at this time. Please try again later.
+            </Text>
           </>
         ) : (
           <>
@@ -249,7 +252,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
