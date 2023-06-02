@@ -30,6 +30,8 @@ import COLORS from '../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
 import houses from '../consts/houses';
+//
+import Drawer from '../components/drawer';
 
 const HomeScreen = ({ navigation }) => {
 	PushNotificationConfig.configure();
@@ -68,11 +70,6 @@ const HomeScreen = ({ navigation }) => {
 	  });
 	};
   
-	const optionsList = [
-	//   { title: 'Buy a Home', img: require('../res/images/Illustration/il-bedroom.png') },
-	//   { title: 'Rent a Home', img: require('../res/images/Illustration/il-bedroom.png') },
-	];
-  
 	const categoryList = ['Popular', 'Recommended', 'Nearest'];
   
 	const ListCategories = () => {
@@ -94,24 +91,7 @@ const HomeScreen = ({ navigation }) => {
 		</View>
 	  );
 	};
-  
-	const ListOptions = () => {
-	  return (
-		<View style={style.optionListsContainer}>
-		  {optionsList.map((option, index) => (
-			<View style={style.optionsCard} key={index}>
-			  {/* House image */}
-			  <Image source={option.img} style={style.optionsCardImage} />
-  
-			  {/* Option title */}
-			  <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
-				{option.title}
-			  </Text>
-			</View>
-		  ))}
-		</View>
-	  );
-	};
+
   
 	const Card = ({ house }) => {
 	  return (
@@ -123,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
 			  {/* Title and price container */}
 			  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
 				<Text style={{ fontSize: 16, fontWeight: 'bold' }}>{house.title}</Text>
-				<Text style={{ fontWeight: 'bold', color: COLORS.teal, fontSize: 16 }}>$1,500</Text>
+				<Text style={{ fontWeight: 'bold', color: COLORS.teal, fontSize: 16 }}>₱1,500</Text>
 			  </View>
   
 			  {/* Location text */}
@@ -161,7 +141,6 @@ const HomeScreen = ({ navigation }) => {
 			  <Text style={{ color: COLORS.grey }}>Location</Text>
 			  <Text style={{ color: COLORS.teal, fontSize: 20, fontWeight: 'bold' }}>Manila, Philippines</Text>
 			</View>
-			{/* <Image style={style.profileImage} source={require('../res/images/Illustration/il-bedroom.png')} /> */}
 		  </View>
 	  
 		  {/* Input and sort button container */}
@@ -174,7 +153,10 @@ const HomeScreen = ({ navigation }) => {
 			{/* Make the "tune" icon touchable */}
 			<TouchableOpacity onPress={() => console.log('Sort button pressed')}>
 			  <View style={style.sortBtn}>
-				<Icon name="tune" color={COLORS.white} size={25} />
+				<Icon 
+					name="tune" 
+					color={COLORS.white} 
+					size={25} />
 			  </View>
 			</TouchableOpacity>
 		  </View>

@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  TouchableOpacity, // Import TouchableOpacity
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -21,6 +22,18 @@ const DormDetails = ({navigation, route}) => {
     return <Image source={interior} style={style.interiorImage} />;
   };
 
+  const handleMessageNow = () => {
+    // Handle the "Message Now" button press here
+  };
+
+  const handleFavorite = () => {
+    // Handle the "Favorite" button press here
+  };
+
+  const handleRatingPress = () => {
+    // Handle the rating press here
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -29,19 +42,18 @@ const DormDetails = ({navigation, route}) => {
         <View style={style.backgroundImageContainer}>
           <ImageBackground style={style.backgroundImage} source={house.image}>
             <View style={style.header}>
-              <View style={style.headerBtn}>
-                <Icon
-                  name="arrow-back-ios"
-                  size={20}
-                  onPress={navigation.goBack}
-                />
-              </View>
-              <View style={style.headerBtn}>
+              <TouchableOpacity
+                style={style.headerBtn}
+                onPress={navigation.goBack}>
+                <Icon name="arrow-back-ios" 
+                  size={20} 
+                  style={{ marginL: 10 }}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={style.headerBtn} onPress={handleFavorite}>
                 <Icon name="favorite" size={20} color={COLORS.red} />
-              </View>
+              </TouchableOpacity>
             </View>
           </ImageBackground>
-
         </View>
 
         <View style={style.detailsContainer}>
@@ -50,12 +62,16 @@ const DormDetails = ({navigation, route}) => {
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>
               {house.title}
             </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={style.ratingTag}>
-                <Text style={{color: COLORS.white}}>4.8</Text>
+            <TouchableOpacity onPress={handleRatingPress}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={style.ratingTag}
+                  onPress={handleRatingPress}>
+                  <Text style={{color: COLORS.white}}>4.8</Text>
+                </TouchableOpacity>
+                <Text style={{fontSize: 13, marginLeft: 5}}>155 ratings</Text>
               </View>
-              <Text style={{fontSize: 13, marginLeft: 5}}>155 ratings</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           {/* Location text */}
@@ -104,9 +120,11 @@ const DormDetails = ({navigation, route}) => {
                 Total Price
               </Text>
             </View>
-            <View style={style.bookNowBtn}>
+            <TouchableOpacity
+              style={style.bookNowBtn}
+              onPress={handleMessageNow}>
               <Text style={{color: COLORS.white}}>Message Now</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -135,8 +153,8 @@ const style = StyleSheet.create({
     paddingHorizontal: 10,
   },
   headerBtn: {
-    height: 50,
-    width: 50,
+    height: 40,
+    width: 40,
     backgroundColor: COLORS.white,
     borderRadius: 10,
     justifyContent: 'center',
