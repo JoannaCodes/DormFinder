@@ -13,6 +13,7 @@ import {
 import {BASE_URL, USER_UPLOADS} from '../../constants';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
@@ -31,14 +32,15 @@ const UserProfile = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchAccount();
-    }, [uid]),
+    }, []),
   );
 
   const fetchAccount = async () => {
     await axios
       .get(`${URL}?tag=get_account&userref=${uid}`)
       .then(response => {
-        setUser(JSON.parse(response.data));
+        const data = JSON.parse(response.data);
+        setUser(data);
       })
       .catch(error => {
         Toast.show({
@@ -85,7 +87,7 @@ const UserProfile = () => {
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
-            text2: 'An error occured. Please try again',
+            text2: 'Cannot update profile. Please try again later.',
           });
         })
         .finally(() => {

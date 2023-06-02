@@ -1,20 +1,3 @@
-const DORM_DATA = {
-  address: '',
-  advance_deposit: '',
-  amenities: [],
-  curfew: 0,
-  desc: '',
-  hei: [],
-  minimum_stay: '',
-  name: '',
-  pets: 0,
-  price: '',
-  security_deposit: '',
-  slots: 0,
-  utilities: '',
-  visitors: 0,
-};
-
 const HEI = [
   {label: 'PUP', value: 'PUP'},
   {label: 'UP', value: 'UP'},
@@ -36,4 +19,4 @@ const AMENITIES = [
   {label: 'Wi-Fi', value: 'Wi-Fi'},
 ];
 
-export {DORM_DATA, HEI, AMENITIES};
+export {HEI, AMENITIES};

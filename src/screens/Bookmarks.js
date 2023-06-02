@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../constants';
 import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
@@ -36,60 +37,44 @@ const Bookmarks = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
-    }, [uid]),
+    }, []),
   );
 
   const fetchData = async () => {
     await axios
       .get(`${URL}?tag=get_bookmarks&userref=${uid}`)
       .then(response => {
-        setDorms(JSON.parse(response.data));
+        const data = JSON.parse(response.data);
+        setDorms(data);
+
+        // Exclude image URLs from the data
+        const dataWithoutImages = data.map(item => {
+          const {images, ...rest} = item;
+          return rest;
+        });
+
+        AsyncStorage.setItem('bookmarks', JSON.stringify(dataWithoutImages));
       })
-      .catch(error => {
+      .catch(async error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
           text2: 'Network error. Please check your connection and try again',
         });
         setStatus('Failed');
+        // Retrieve the dorms from AsyncStorage if available
+        const storedDorms = await AsyncStorage.getItem('bookmarks');
+        if (storedDorms) {
+          setDorms(JSON.parse(storedDorms));
+        }
       })
       .finally(() => {
         setLoading(false);
       });
   };
 
-  const _deleteBookmark = async dormref => {
-    const formData = new FormData();
-    formData.append('tag', 'delete_bookmark');
-    formData.append('userref', uid);
-    formData.append('dormref', dormref);
-
-    await axios
-      .post(BASE_URL, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(response => {
-        Toast.show({
-          type: 'success',
-          text1: 'Dorm Finder',
-          text2: response.data,
-        });
-        setLoading(true);
-        fetchData();
-      })
-      .catch(error => {
-        Toast.show({
-          type: 'error',
-          text1: 'Dorm Finder',
-          text2: error,
-        });
-      });
-  };
-
   const renderItem = ({item}) => {
-    const images = item.images.split(',');
+    const images = item.images ? item.images.split(',') : [];
     return (
       <TouchableOpacity
         activeOpacity={0.5}
@@ -124,13 +109,6 @@ const Bookmarks = ({navigation}) => {
                 onPress={() => navigation.navigate('Chat Room')}>
                 <Icon name="message" size={18} color="#0E898B" />
               </TouchableOpacity>
-              {/* <TouchableOpacity
-                style={styles.btnContainer}
-                onPress={() => {
-                  _deleteBookmark(item.dormref);
-                }}>
-                <Icon name="delete" size={18} color="#0E898B" />
-              </TouchableOpacity> */}
             </View>
           </View>
         </View>
@@ -148,7 +126,9 @@ const Bookmarks = ({navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>Network Error</Text>
+            <Text style={styles.emptyTitle}>
+              Cannot retrieve bookmarks at this time. Please try again later.
+            </Text>
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
@@ -161,7 +141,7 @@ const Bookmarks = ({navigation}) => {
         ) : (
           <>
             <Image
-              source={require('../../assets/house_upsketch.png')}
+              source={require('../../assets/empty_upsketch.png')}
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
@@ -181,11 +161,14 @@ const Bookmarks = ({navigation}) => {
         </View>
       ) : (
         <FlatList
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={styles.cardContainer}
           data={dorms}
           keyExtractor={item => item.id}
           ListEmptyComponent={renderEmpty}
           renderItem={renderItem}
+          ItemSeparatorComponent={() => {
+            return <View style={{flex: 1, height: 16}} />;
+          }}
           refreshControl={
             <RefreshControl
               //refresh control used for the Pull to Refresh
@@ -211,8 +194,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 8,
-    fontSize: 16,
     backgroundColor: '#FFFFFF',
   },
   emptyContainer: {
@@ -221,8 +202,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   btnContainer: {
     flexDirection: 'row',
@@ -241,11 +223,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  cardContainer: {
+    flexGrow: 1,
+    padding: 16,
+  },
   card: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: '#FFFFFF',
-    margin: 8,
     borderRadius: 10,
     elevation: 4,
     overflow: 'hidden',
