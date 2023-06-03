@@ -107,12 +107,6 @@ const DormListing = ({navigation}) => {
 
                   setLoading(true);
                   fetchData();
-                } else {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'Dorm Finder',
-                    text2: 'Ooops! Something went wrong. Please try again',
-                  });
                 }
               })
               .catch(error => {

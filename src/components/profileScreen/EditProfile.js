@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
+import {StackActions} from '@react-navigation/native';
 import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -43,8 +44,9 @@ export default function EditProfile({route, navigation}) {
     axios
       .get(`${URL}?tag=get_account&userref=${uid}`)
       .then(response => {
-        var output = JSON.parse(response.data);
-        setUser(output.identifier);
+        const data = JSON.parse(response.data);
+        const {identifier, ...profile} = data;
+        setUser(identifier);
       })
       .catch(error => {
         Toast.show({
@@ -82,12 +84,7 @@ export default function EditProfile({route, navigation}) {
                   text1: 'Dorm Finder',
                   text2: 'Account updated',
                 });
-              } else {
-                Toast.show({
-                  type: 'error',
-                  text1: 'Dorm Finder',
-                  text2: 'Ooops! Something went wrong. Please try again',
-                });
+                fetchAccount();
               }
             })
             .catch(error => {
@@ -99,7 +96,6 @@ export default function EditProfile({route, navigation}) {
             })
             .finally(() => {
               setLoading(false);
-              fetchAccount();
             });
         },
       },
@@ -136,15 +132,8 @@ export default function EditProfile({route, navigation}) {
                     text2: 'Account deleted',
                   });
 
-                  await AsyncStorage.setItem('user_data', JSON.stringify(userData));
-                  await AsyncStorage.setItem('isUserLogin', 'true');
+                  await AsyncStorage.clear();
                   navigation.dispatch(StackActions.replace('Authentication'));
-                } else {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'Dorm Finder',
-                    text2: 'Ooops! Something went wrong. Please try again',
-                  });
                 }
               })
               .catch(error => {

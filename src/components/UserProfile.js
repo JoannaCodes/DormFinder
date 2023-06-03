@@ -38,16 +38,27 @@ const UserProfile = () => {
   const fetchAccount = async () => {
     await axios
       .get(`${URL}?tag=get_account&userref=${uid}`)
-      .then(response => {
+      .then(async response => {
         const data = JSON.parse(response.data);
-        setUser(data);
+        const {id, identifier, password, ...profile} = data;
+        setUser(profile);
+
+        // Exclude image URLs from the data
+        const {imageUrl, ...rest} = profile;
+
+        await AsyncStorage.setItem('user', JSON.stringify(rest));
       })
-      .catch(error => {
+      .catch(async error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
           text2: 'Cannot retrieve user profile at this time. Please try again',
         });
+
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
       });
   };
 
@@ -82,13 +93,7 @@ const UserProfile = () => {
             Toast.show({
               type: 'success',
               text1: 'Dorm Finder',
-              text2: 'Profile updated!',
-            });
-          } else {
-            Toast.show({
-              type: 'error',
-              text1: 'Dorm Finder',
-              text2: 'Ooops! Something went wrong. Please try again',
+              text2: 'Profile updated',
             });
           }
         })

@@ -55,12 +55,6 @@ const ChangePassword = ({route}) => {
                   text1: 'Dorm Finder',
                   text2: 'Current password is incorrect password',
                 });
-              } else {
-                Toast.show({
-                  type: 'error',
-                  text1: 'Dorm Finder',
-                  text2: 'Ooops! Something went wrong. Please try again',
-                });
               }
             })
             .catch(error => {
