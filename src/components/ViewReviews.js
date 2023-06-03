@@ -29,7 +29,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
     React.useCallback(() => {
       setLoading(true);
       fetchReviews();
-    }, [dormref]),
+    }, [visible]),
   );
 
   const fetchReviews = async () => {

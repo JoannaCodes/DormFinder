@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
-import Toast from 'react-native-toast-message';
 import * as Yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
+import Toast from 'react-native-toast-message';
 
 const Separator = () => {
   return (
@@ -28,7 +29,7 @@ const Separator = () => {
   );
 };
 
-export default function EditProfile() {
+export default function EditProfile({route, navigation}) {
   const [user, setUser] = useState('');
   const [loading, setLoading] = useState(false);
   let URL = BASE_URL;
@@ -49,7 +50,7 @@ export default function EditProfile() {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Network error. Please check your connection and try again',
+          text2: 'Cannot retrieve account details. Please try again',
         });
       });
   };
@@ -73,17 +74,27 @@ export default function EditProfile() {
               },
             })
             .then(response => {
-              Toast.show({
-                type: 'success',
-                text1: 'Dorm Finder',
-                text2: response.data,
-              });
+              const message = response.data;
+
+              if (message === 'success') {
+                Toast.show({
+                  type: 'success',
+                  text1: 'Dorm Finder',
+                  text2: 'Account updated',
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Dorm Finder',
+                  text2: 'Ooops! Something went wrong. Please try again',
+                });
+              }
             })
             .catch(error => {
               Toast.show({
                 type: 'error',
                 text1: 'Dorm Finder',
-                text2: 'An error occured. Please try again',
+                text2: 'Cannot update account. Please try again',
               });
             })
             .finally(() => {
@@ -115,23 +126,33 @@ export default function EditProfile() {
                   'Content-Type': 'multipart/form-data',
                 },
               })
-              .then(response => {
-                Toast.show({
-                  type: 'success',
-                  text1: 'Dorm Finder',
-                  text2: response.data,
-                });
+              .then(async response => {
+                const message = response.data;
+
+                if (message === 'success') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: 'Account deleted',
+                  });
+
+                  await AsyncStorage.setItem('user_data', JSON.stringify(userData));
+                  await AsyncStorage.setItem('isUserLogin', 'true');
+                  navigation.dispatch(StackActions.replace('Authentication'));
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Dorm Finder',
+                    text2: 'Ooops! Something went wrong. Please try again',
+                  });
+                }
               })
               .catch(error => {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'An error occured. Please try again.',
+                  text2: 'Cannot delete account. Please try again',
                 });
-              })
-              .finally(() => {
-                // Logout user
-                // Set uid to ''
               });
           },
         },

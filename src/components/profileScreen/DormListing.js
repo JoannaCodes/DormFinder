@@ -96,19 +96,30 @@ const DormListing = ({navigation}) => {
                 },
               })
               .then(response => {
-                Toast.show({
-                  type: 'success',
-                  text1: 'Dorm Finder',
-                  text2: response.data,
-                });
-                setLoading(true);
-                fetchData();
+                const message = response.data;
+
+                if (message === 'success') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: 'Dorm listing deleted',
+                  });
+
+                  setLoading(true);
+                  fetchData();
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Dorm Finder',
+                    text2: 'Ooops! Something went wrong. Please try again',
+                  });
+                }
               })
               .catch(error => {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'An error occured. Please try again',
+                  text2: 'Cannot delete listing. Please try again',
                 });
               });
           },
@@ -288,7 +299,7 @@ const styles = StyleSheet.create({
     right: 16,
     backgroundColor: '#0E898B',
     borderRadius: 20,
-    padding: 12,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,

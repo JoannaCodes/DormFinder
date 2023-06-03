@@ -46,7 +46,7 @@ const UserProfile = () => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Network error. Please check your connection and try again',
+          text2: 'Cannot retrieve user profile at this time. Please try again',
         });
       });
   };
@@ -76,18 +76,28 @@ const UserProfile = () => {
           },
         })
         .then(response => {
-          console.log(response.data);
-          Toast.show({
-            type: 'success',
-            text1: 'Dorm Finder',
-            text2: response.data,
-          });
+          const message = response.data;
+
+          if (message === 'success') {
+            Toast.show({
+              type: 'success',
+              text1: 'Dorm Finder',
+              text2: 'Profile updated!',
+            });
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Dorm Finder',
+              text2: 'Ooops! Something went wrong. Please try again',
+            });
+          }
         })
         .catch(error => {
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
-            text2: 'Cannot update profile. Please try again later.',
+            text2:
+              'Cannot update profile. Please check you network and try again',
           });
         })
         .finally(() => {

@@ -40,17 +40,27 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
         },
       })
       .then(response => {
-        Toast.show({
-          type: 'success',
-          text1: 'Dorm Finder',
-          text2: response.data,
-        });
+        const message = response.data;
+
+        if (message === 'success') {
+          Toast.show({
+            type: 'success',
+            text1: 'Dorm Finder',
+            text2: 'Account updated',
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Dorm Finder',
+            text2: 'Ooops! Something went wrong. Please try again',
+          });
+        }
       })
       .catch(error => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'An error occured. Please Try Again',
+          text2: 'Cannot submit review. Please try again',
         });
       })
       .finally(() => {

@@ -59,7 +59,7 @@ const Bookmarks = ({navigation}) => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Network error. Please check your connection and try again',
+          text2: 'Cannot retrieve bookmarks. Please try again',
         });
         setStatus('Failed');
         // Retrieve the dorms from AsyncStorage if available
