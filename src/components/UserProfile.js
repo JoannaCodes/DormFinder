@@ -10,30 +10,36 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {BASE_URL, USER_UPLOADS} from '../../constants';
+import {BASE_URL} from '../../constants';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 
-const UserProfile = () => {
+const UserProfile = ({route}) => {
+  // const {userref} = route.params;
+  let URL = BASE_URL;
+  let uid = 'LhVQ3FMv6d6lW';
+
   const [user, setUser] = useState('');
   const [username, setUsername] = useState('');
   const [imageData, setImageData] = useState([]);
   const [image, setImage] = useState('');
+  const [status, setStatus] = useState('success');
   const [editMode, setEditMode] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  let URL = BASE_URL;
-  let uid = 'LhVQ3FMv6d6lW';
+  const [isLoading, setLoading] = useState(true);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchAccount();
-    }, []),
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchAccount();
+  //   }, []),
+  // );
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
 
   const fetchAccount = async () => {
     await axios
@@ -49,16 +55,22 @@ const UserProfile = () => {
         await AsyncStorage.setItem('user', JSON.stringify(rest));
       })
       .catch(async error => {
-        Toast.show({
-          type: 'error',
-          text1: 'Dorm Finder',
-          text2: 'Cannot retrieve user profile at this time. Please try again',
-        });
-
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
           setUser(JSON.parse(storedUser));
+        } else {
+          setStatus('failed');
+          // setUser(JSON.parse(storedUser));
+          Toast.show({
+            type: 'error',
+            text1: 'Dorm Finder',
+            text2:
+              'Cannot retrieve user profile at this time. Please try again',
+          });
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -136,89 +148,143 @@ const UserProfile = () => {
     );
   };
 
-  return (
+  return isLoading ? (
     <View style={styles.profile}>
-      <View style={styles.imageContainer}>
-        <View style={styles.container}>
-          {editMode ? (
-            <>
-              <Image source={{uri: image}} style={styles.image} />
-              <TouchableHighlight
-                underlayColor={'#CCCCCC'}
-                style={styles.editbtn}
-                onPress={() => {
-                  pickImage();
-                }}>
-                <Icon name="camera-alt" size={18} color="#FFFFFF" />
-              </TouchableHighlight>
-            </>
-          ) : (
-            <>
-              <Image
-                source={{
-                  uri: `${USER_UPLOADS}/${uid}/${user.imageUrl}`,
-                }}
-                style={styles.image}
-              />
-              <TouchableHighlight
-                underlayColor={'#CCCCCC'}
-                style={styles.editbtn}
-                onPress={() => {
-                  setEditMode(true);
-                  setUsername(user.username);
-                  setImage(`${USER_UPLOADS}/${uid}/${user.imageUrl}`);
-                }}>
-                <Icon name="mode-edit" size={18} color="#FFFFFF" />
-              </TouchableHighlight>
-            </>
-          )}
+      <>
+        <View style={styles.imageContainer}>
+          <View style={styles.container} />
         </View>
-      </View>
 
-      <View style={styles.userContainer}>
-        {editMode ? (
+        <View style={styles.userContainer}>
+          <View
+            style={{
+              width: '80%',
+              height: 20,
+              marginBottom: 8,
+              borderRadius: 5,
+              backgroundColor: '#CCCCCC',
+            }}
+          />
+          <View
+            style={{
+              width: '50%',
+              height: 20,
+              borderRadius: 5,
+              backgroundColor: '#CCCCCC',
+            }}
+          />
+        </View>
+      </>
+    </View>
+  ) : (
+    <View style={styles.profile}>
+      {status === 'failed' ? (
+        <View style={styles.profile}>
           <>
-            <TextInput
-              style={styles.input}
-              value={username}
-              placeholder="Username"
-              placeholderTextColor="#CCCCCC"
-              onChangeText={value => setUsername(value)}
-            />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, {marginEnd: 4}]}
-                onPress={() => {
-                  setEditMode(false);
-                }}>
-                <Text style={{color: '#FFFFFF'}}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, {marginStart: 4}]}
-                onPress={() => {
-                  // setEditMode(false);
-                  _updateAccount();
-                }}>
-                {isLoading ? (
-                  <ActivityIndicator size={'small'} color={'#FFFFFF'} />
-                ) : (
-                  <Text style={{color: '#FFFFFF'}}>Save</Text>
-                )}
-              </TouchableOpacity>
+            <View style={styles.imageContainer}>
+              <View style={styles.container} />
+            </View>
+
+            <View style={styles.userContainer}>
+              <View
+                style={{
+                  width: '80%',
+                  height: 20,
+                  marginBottom: 8,
+                  borderRadius: 5,
+                  backgroundColor: '#CCCCCC',
+                }}
+              />
+              <View
+                style={{
+                  width: '50%',
+                  height: 20,
+                  borderRadius: 5,
+                  backgroundColor: '#CCCCCC',
+                }}
+              />
             </View>
           </>
-        ) : (
-          <>
-            <Text style={styles.name}>{user.username}</Text>
-            {user.is_verified === 1 ? (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.verificationStatus}>Verified</Text>
-                <Icon name="verified" size={18} color="#CCCCCC" />
-              </View>
-            ) : null}
-          </>
-        )}
-      </View>
+        </View>
+      ) : (
+        <>
+          <View style={styles.imageContainer}>
+            <View style={styles.container}>
+              {editMode ? (
+                <>
+                  <Image source={{uri: image}} style={styles.image} />
+                  <TouchableHighlight
+                    underlayColor={'#CCCCCC'}
+                    style={styles.editbtn}
+                    onPress={() => {
+                      pickImage();
+                    }}>
+                    <Icon name="camera-alt" size={18} color="#FFFFFF" />
+                  </TouchableHighlight>
+                </>
+              ) : (
+                <>
+                  <Image source={{uri: user.imageUrl}} style={styles.image} />
+                  <TouchableHighlight
+                    underlayColor={'#CCCCCC'}
+                    style={styles.editbtn}
+                    onPress={() => {
+                      setEditMode(true);
+                      setUsername(user.username);
+                      setImage(user.imageUrl);
+                    }}>
+                    <Icon name="mode-edit" size={18} color="#FFFFFF" />
+                  </TouchableHighlight>
+                </>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.userContainer}>
+            {editMode ? (
+              <>
+                <TextInput
+                  style={styles.input}
+                  value={username}
+                  placeholder="Username"
+                  placeholderTextColor="#CCCCCC"
+                  onChangeText={value => setUsername(value)}
+                />
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={[styles.button, {marginEnd: 4}]}
+                    onPress={() => {
+                      setEditMode(false);
+                    }}>
+                    <Text style={{color: '#FFFFFF'}}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, {marginStart: 4}]}
+                    onPress={() => {
+                      _updateAccount();
+                    }}>
+                    {isLoading ? (
+                      <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+                    ) : (
+                      <Text style={{color: '#FFFFFF'}}>Save</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <Text style={styles.name}>{user.username}</Text>
+                {user.is_verified === 1 ? (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.verificationStatus}>Verified</Text>
+                    <Icon name="verified" size={18} color="#CCCCCC" />
+                  </View>
+                ) : null}
+              </>
+            )}
+          </View>
+        </>
+      )}
     </View>
   );
 };

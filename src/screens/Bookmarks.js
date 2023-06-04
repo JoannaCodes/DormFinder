@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../constants';
-import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -25,20 +24,28 @@ const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
 
-const Bookmarks = ({navigation}) => {
+const Bookmarks = ({route, navigation}) => {
+  // const {userref} = route.params;
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
+
   const [isLoading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('Success');
   const [dorms, setDorms] = useState('');
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, []),
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchData();
+  //   }, []),
+  // );
+
+  useEffect(() => {
+    fetchData();
+
+    return () => {};
+  }, []);
 
   const fetchData = async () => {
     await axios
@@ -59,7 +66,7 @@ const Bookmarks = ({navigation}) => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Cannot retrieve bookmarks. Please try again',
+          text2: 'Cannot retrieve bookmarks. Please try again.',
         });
         setStatus('Failed');
         // Retrieve the dorms from AsyncStorage if available

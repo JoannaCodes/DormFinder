@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -15,7 +15,6 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS} from '../../../constants';
-import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,22 +26,29 @@ const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
 
-const DormListing = ({navigation}) => {
+const DormListing = ({route, navigation}) => {
+  // const {userref} = route.params;
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
-  const [isLoading, setLoading] = useState(true);
+
+  const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDorm, setSelectedDorm] = useState('');
-  const [status, setStatus] = useState('Success');
+  const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, []),
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchData();
+  //   }, []),
+  // );
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     await axios
       .get(`${URL}?tag=get_dorms&userref=${uid}`)
       .then(response => {
@@ -58,15 +64,17 @@ const DormListing = ({navigation}) => {
         AsyncStorage.setItem('dormListing', JSON.stringify(dataWithoutImages));
       })
       .catch(async error => {
-        Toast.show({
-          type: 'error',
-          text1: 'Dorm Finder',
-          text2: 'Network error. Please check your connection and try again',
-        });
-        setStatus('Failed');
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
+        } else {
+          setStatus('failed');
+          // setDorms(JSON.parse(storedDorms));
+          Toast.show({
+            type: 'error',
+            text1: 'Dorm Finder',
+            text2: 'Cannot retrieve dorm listing. Please try again.',
+          });
         }
       })
       .finally(() => {
@@ -171,7 +179,7 @@ const DormListing = ({navigation}) => {
   const renderEmpty = () => {
     return (
       <View style={styles.emptyContainer}>
-        {status === 'Failed' ? (
+        {status === 'failed' ? (
           <>
             <Image
               source={require('../../../assets/error_upsketch.png')}
@@ -198,10 +206,11 @@ const DormListing = ({navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.emptyTitle}>No Dorm Listing</Text>
-            <Text>
-              Tap "<Icon name="delete" size={18} color="#0E898B" />" to Add Your
-              Dorm
-            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text>Tap "</Text>
+              <Icon name="add" size={18} color="#0E898B" />
+              <Text>" to Add YourDorm</Text>
+            </View>
           </>
         )}
       </View>

@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL, USER_UPLOADS} from '../../constants';
+import {BASE_URL} from '../../constants';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -66,12 +66,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
       <View style={styles.card}>
         <View>
           <View style={styles.cardHeader}>
-            <Image
-              source={{
-                uri: `${USER_UPLOADS}/${item.id}/${item.imageUrl}`,
-              }}
-              style={styles.image}
-            />
+            <Image source={{uri: item.imageUrl}} style={styles.image} />
             <Text>{item.username}</Text>
           </View>
           <View style={styles.rating}>
