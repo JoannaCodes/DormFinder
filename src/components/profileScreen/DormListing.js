@@ -67,14 +67,14 @@ const DormListing = ({route, navigation}) => {
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
-        } else {
-          setStatus('failed');
-          // setDorms(JSON.parse(storedDorms));
+
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
             text2: 'Cannot retrieve dorm listing. Please try again.',
           });
+        } else {
+          setStatus('failed');
         }
       })
       .finally(() => {
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
   },

@@ -60,13 +60,6 @@ const UserProfile = ({route}) => {
           setUser(JSON.parse(storedUser));
         } else {
           setStatus('failed');
-          // setUser(JSON.parse(storedUser));
-          Toast.show({
-            type: 'error',
-            text1: 'Dorm Finder',
-            text2:
-              'Cannot retrieve user profile at this time. Please try again',
-          });
         }
       })
       .finally(() => {
