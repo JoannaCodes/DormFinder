@@ -21,7 +21,7 @@ import {Modal,
 		} from 'react-native'
 // import {initialStyles} from '../styles/initial'
 import axios from 'axios'
-import {BASE_URL} from '../../constants'
+import {BASE_URL} from '../../constants/index'
 //
 import PushNotificationConfig from '../components/PushNotificationConfig';
 import PushNotification, {Importance} from 'react-native-push-notification';
@@ -69,8 +69,37 @@ const HomeScreen = ({ navigation }) => {
 		}
 	  });
 	};
+
+	const [dorms, setDorms] = React.useState('');
+
+	const popularDorms = () => {
+		axios.get('$(BASE_URL)?tag=popular_dorm').then(response => {
+			const data = JSON.parse(response.data);
+			setDorms(data);
+		}).catch(error => {
+			console.error(error);
+		});
+	}
+
+	const latestDorms = () => {
+		axios.get('$(BASE_URL)?tag=latest_dorm').then(response => {
+			const data = JSON.parse(response.data);
+			setDorms(data);
+		}).catch(error => {
+			console.error(error);
+		});
+	}
+
+	const nearestDorms = () => {
+		axios.get('$(BASE_URL)?tag=nearest_dorm').then(response => {
+			const data = JSON.parse(response.data);
+			setDorms(data);
+		}).catch(error => {
+			console.error(error);
+		});
+	}
   
-	const categoryList = ['Popular', 'Recommended', 'Nearest'];
+	const categoryList = ['Popular', 'Latest', 'Nearest'];
   
 	const ListCategories = () => {
 	  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);

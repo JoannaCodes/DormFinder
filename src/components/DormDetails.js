@@ -47,7 +47,7 @@ const DormDetails = ({navigation, route}) => {
                 onPress={navigation.goBack}>
                 <Icon name="arrow-back-ios" 
                   size={20} 
-                  style={{ marginL: 10 }}/>
+                  style={{ marginLeft: 10 }}/>
               </TouchableOpacity>
               <TouchableOpacity style={style.headerBtn} onPress={handleFavorite}>
                 <Icon name="favorite" size={20} color={COLORS.red} />
