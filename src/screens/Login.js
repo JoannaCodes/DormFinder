@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,47 +8,54 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation, StackActions} from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 //
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
+import { BASE_URL } from '../../constants/index';
 
 export default function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  //
   const navigation = useNavigation();
 
   const loginUser = async () => {
     try {
-      const {data} = await Axios.post('http://192.168.100.12/api/login.php', {
-        email: email,
-        password: password,
+      const formData = new FormData();
+      formData.append('tag', 'login_app');
+      formData.append('username', username);
+      formData.append('password', password);
+
+      const response = await Axios.post(BASE_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      console.log(data);
+      const data = response.data;
 
-      const userData = {
-        email: data.data.email,
-        uid: data.data.id,
-      };
-
-      if (data.status === 'success') {
-        await AsyncStorage.setItem('user_data', JSON.stringify(userData));
+      if (data.status) {
+        await AsyncStorage.setItem('user_data', JSON.stringify(data));
         await AsyncStorage.setItem('isUserLogin', 'true');
-      
-        navigation.dispatch(StackActions.replace('Main'));
+        navigation.dispatch(StackActions.replace('Main', { uid: data.id }));
+        console.log(data);
       } else {
         alert('User Not Found');
       }
-
-      console.log(data);
     } catch (err) {
-      console.log(err);
+      alert('An error occurred');
+    }
+  };
+
+  const validateLogin = () => {
+    if (username.trim() === '' || password.trim() === '') {
+      alert('Please enter a valid username and password.');
+    } else {
+      loginUser();
     }
   };
 
@@ -66,9 +73,7 @@ export default function Login() {
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
           {/* <Icon name="arrow-back-ios" size={30} color="#fff" /> */}
-
-
-          <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
+          <Text style={{ color: '#fff', fontSize: 30, fontWeight: 'bold' }}>
             Welcome!
           </Text>
         </View>
@@ -76,25 +81,23 @@ export default function Login() {
           <View style={styles.formBottomSubContainer}>
             {/*  */}
             <View style={styles.customInputContainer}>
-              <Text>Email</Text>
               <TextInput
-                style={{padding: 0}}
-                onChangeText={text => setEmail(text)}
+                style={{ padding: 0, color: '#000' }}
+                placeholder="Username"
+                onChangeText={(text) => setUsername(text)}
               />
             </View>
             {/*  */}
             {/*  */}
             <View style={styles.customInputContainer}>
-              <Text>Password</Text>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TextInput
-                  style={{padding: 0}}
+                  style={{ padding: 0 }}
+                  placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
-                  onChangeText={text => setPassword(text)}
+                  onChangeText={(text) => setPassword(text)}
                 />
-                <TouchableOpacity
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Icon
                     name={isPasswordVisible ? 'visibility' : 'visibility-off'}
                     size={20}
@@ -107,15 +110,18 @@ export default function Login() {
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => {
-                loginUser();
-              }}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
+                validateLogin();
+              }}
+            >
+              <Text
+                style={{ color: '#fff', fontWeight: 'bold', fontSize: 17 }}
+              >
                 Login
               </Text>
             </TouchableOpacity>
             {/*  */}
             {/*  */}
-            <Text style={{textAlign: 'center', color: '#fff'}}>Or</Text>
+            <Text style={{ textAlign: 'center', color: '#fff' }}>Or</Text>
             {/*  */}
             {/*  */}
             <TouchableOpacity
@@ -124,32 +130,34 @@ export default function Login() {
                 {
                   backgroundColor: '#fff',
                   flexDirection: 'row',
-                  padding: 20,
+                  padding: 12,
                   justifyContent: 'space-around',
                 },
-              ]}>
-              <Image
-                source={Google}
-                style={{height: 30, width: 30}}
-              />
-              <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
+              ]}
+            >
+              <Image source={Google} style={{ height: 20, width: 20 }} />
+              <Text style={{ fontWeight: 'bold' }}>
+                Continue With Google
+              </Text>
               <View></View>
             </TouchableOpacity>
             {/*  */}
             {/*  */}
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Don't Have An Account?</Text>
+              <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+                <Text style={{ color: '#fff' }}>Don't Have An Account?</Text>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('Signup');
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       marginLeft: 5,
                       color: 'teal',
                       fontWeight: 'bold',
-                    }}>
+                    }}
+                  >
                     Signup
                   </Text>
                 </TouchableOpacity>
@@ -159,8 +167,9 @@ export default function Login() {
                   style={{
                     color: 'teal',
                     fontWeight: 'bold',
-                  }}>
-                  Forget Your Password ?
+                  }}
+                >
+                  Forget Your Password?
                 </Text>
               </TouchableOpacity>
             </View>
@@ -210,6 +219,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'rgba(127,127,127,0.5)',
     padding: 20,
+    marginTop: 50, 
   },
   customInputContainer: {
     marginVertical: 10,
