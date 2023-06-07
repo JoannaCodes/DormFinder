@@ -39,7 +39,7 @@ const HomeScreen = ({navigation}) => {
 
   useEffect(() => {
     // _fetchNotif();
-		console.log(selectedCategoryIndex);
+    console.log(selectedCategoryIndex);
     if (selectedCategoryIndex === 0) {
       popularDorms();
     } else if (setSelectedCategoryIndex === 1) {
@@ -80,7 +80,7 @@ const HomeScreen = ({navigation}) => {
   };
 
   const [dorms, setDorms] = useState('');
-	const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
 
   const popularDorms = () => {
     axios
