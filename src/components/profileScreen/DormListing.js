@@ -27,7 +27,6 @@ const Separator = () => {
 };
 
 const DormListing = ({route, navigation}) => {
-  // const {userref} = route.params;
   let URL = BASE_URL;
   let uid = 'LhVQ3FMv6d6lW';
 
@@ -121,7 +120,7 @@ const DormListing = ({route, navigation}) => {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'Cannot delete listing. Please try again',
+                  text2: 'Cannot delete listing. Please try again.',
                 });
               });
           },

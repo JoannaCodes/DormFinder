@@ -39,19 +39,16 @@ const ChangePassword = ({route}) => {
               },
             })
             .then(response => {
-              const message = response.data;
-              console.log(message);
-
-              if (message === 'success') {
+              if (response.data === 'success') {
                 Toast.show({
                   type: 'success',
                   text1: 'Dorm Finder',
-                  text2: 'Account updated',
+                  text2: 'Password updated',
                 });
                 resetForm();
-              } else if (message === 'incorrect') {
+              } else if (response.data === 'incorrect') {
                 Toast.show({
-                  type: 'error',
+                  type: 'warning',
                   text1: 'Dorm Finder',
                   text2: 'Current password is incorrect password',
                 });
@@ -61,7 +58,7 @@ const ChangePassword = ({route}) => {
               Toast.show({
                 type: 'error',
                 text1: 'Dorm Finder',
-                text2: 'Cannot update password at this time. Please try again',
+                text2: 'Oops! Cannot update password. Please try again.',
               });
             })
             .finally(() => {

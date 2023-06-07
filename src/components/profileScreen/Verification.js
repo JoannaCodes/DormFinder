@@ -1,11 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
-import axios from 'axios';
 import {BASE_URL} from '../../../constants';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import axios from 'axios';
+import DocumentPicker from 'react-native-document-picker';
+import React, {useState} from 'react';
+import Toast from 'react-native-toast-message';
 
 export default function DocumentStatus() {
+  const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [selectedDocumentLabels, setSelectedDocumentLabels] = useState({
     document1: 'No Document Selected',
@@ -44,6 +53,7 @@ export default function DocumentStatus() {
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
     // Check if two documents are selected
     if (documents.length !== 2) {
       Alert.alert('Please select two documents');
@@ -70,12 +80,23 @@ export default function DocumentStatus() {
       },
     });
 
-    console.log('Upload success:', response.data);
-
-    Alert.alert(
-      'Upload success',
-      'The document file was successfully uploaded to the server.',
-    );
+    response
+      .then(response => {
+        Alert.alert(
+          'Upload success',
+          'Documents submitted. Please we will send a notiication once you are verified. Thank you!',
+        );
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Oops! Cannot submit documents. Please try again.',
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -149,8 +170,12 @@ export default function DocumentStatus() {
             {backgroundColor: documents.length !== 2 ? '#CCCCCC' : '#0E898B'},
           ]}
           onPress={handleSubmit}
-          disabled={documents.length !== 2}>
-          <Text style={styles.buttonText}>Submit</Text>
+          disabled={documents.length !== 2 || isLoading}>
+          {isLoading ? (
+            <ActivityIndicator size={'small'} color={'#333333'} />
+          ) : (
+            <Text style={styles.buttonText}>Submit</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

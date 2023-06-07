@@ -45,7 +45,7 @@ const ListingForm = ({route, navigation}) => {
   const [hei, setHei] = useState(HEI);
   const [amenities, setAmenities] = useState(AMENITIES);
 
-  const [images, setImages] = useState('');
+  const [images, setImages] = useState([]);
   const [selectedHei, setSelectedHei] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [initialValues, setInitialValues] = useState({
@@ -79,28 +79,30 @@ const ListingForm = ({route, navigation}) => {
     if (editmode) {
       fetchDormDetails();
     }
-  }, [dormref]);
+  }, [dormref, editmode]);
 
   const fetchDormDetails = async () => {
     await axios
-      .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
+      .get(
+        `${BASE_URL}?tag=get_dorm_details&dormref=${dormref}&userref=${userref}`,
+      )
       .then(response => {
-        var output = JSON.parse(response.data);
-        const fetchedHei = output.hei.split(',');
-        const fetchedAmenities = output.amenities.split(',');
+        const data = JSON.parse(response.data);
+        const fetchedHei = data.hei.split(',');
+        const fetchedAmenities = data.amenities.split(',');
 
         // Set initial values
         setInitialValues(prevState => ({
           ...prevState,
-          address: output.address,
-          advance_deposit: output.advance_deposit,
-          desc: output.desc,
-          minimum_stay: output.minimum_stay,
-          name: output.name,
-          price: output.price,
-          security_deposit: output.security_deposit,
-          slots: output.slots.toString(),
-          utilities: output.utilities,
+          address: data.address,
+          advance_deposit: data.advance_deposit,
+          desc: data.desc,
+          minimum_stay: data.minimum_stay,
+          name: data.name,
+          price: data.price,
+          security_deposit: data.security_deposit,
+          slots: data.slots.toString(),
+          utilities: data.utilities,
         }));
 
         // Set selected HEI
@@ -111,35 +113,35 @@ const ListingForm = ({route, navigation}) => {
 
         // Set checkboxes
         setCheckboxes({
-          pets: Boolean(output.pets),
-          visitors: Boolean(output.visitors),
-          curfew: Boolean(output.curfew),
+          pets: Boolean(data.pets),
+          visitors: Boolean(data.visitors),
+          curfew: Boolean(data.curfew),
         });
       })
-      .catch(err => {
-        console.error(err);
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Dorm Finder',
+          text2: 'Cannot retrieve dorm details at this time. Please try again.',
+        });
       });
   };
 
   async function _createListing() {
-    setIsLoading(true);
     const formData = new FormData();
 
     if (validateInputs()) {
-      formData.append('tag', 'insert_dorm');
+      setIsLoading(true);
 
+      formData.append('tag', 'post_dorm');
+
+      // Append ids
       formData.append('userref', userref);
+
+      // Append text inputs
       for (const key in initialValues) {
         formData.append(key, initialValues[key]);
       }
-
-      images.map((image, index) => {
-        formData.append(`image_${index}`, {
-          uri: image.uri,
-          type: image.type,
-          name: image.fileName,
-        });
-      });
 
       // Append selected HEI
       formData.append('hei', selectedHei.join(','));
@@ -152,6 +154,17 @@ const ListingForm = ({route, navigation}) => {
         formData.append(key, checkboxes[key]);
       }
 
+      // Append images
+      images.forEach((item, i) => {
+        formData.append('images[]', {
+          uri: item.uri,
+          type: item.type,
+          name: item.name,
+        });
+      });
+
+      console.log(formData);
+
       await axios
         .post(BASE_URL, formData, {
           headers: {
@@ -159,47 +172,51 @@ const ListingForm = ({route, navigation}) => {
           },
         })
         .then(response => {
-          Toast.show({
-            type: 'success',
-            text1: 'Dorm Finder',
-            text2: response.data,
-          });
-          navigation.navigate('Dorm Listing');
+          console.lod(response.data);
+          if (response.data === 'success') {
+            Toast.show({
+              type: 'success',
+              text1: 'Dorm Finder',
+              text2: 'Dorm Listed',
+            });
+            navigation.goBack();
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Dorm Finder',
+              text2: 'Dorm not listed. Please try again.',
+            });
+          }
         })
         .catch(error => {
+          console.log(error);
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
-            text2: 'An error occured. Please Try Again',
+            text2: 'An error occured. Please try again.',
           });
         })
         .finally(() => {
           setIsLoading(false);
         });
     }
-
-    console.log(formData);
   }
 
   async function _updateListing() {
-    // setIsLoading(true);
     const formData = new FormData();
 
     if (validateInputs()) {
+      setIsLoading(true);
       formData.append('tag', 'update_dorm');
 
+      // Append ids
+      formData.append('dormref', dormref);
       formData.append('userref', userref);
+
+      // Append text inputs
       for (const key in initialValues) {
         formData.append(key, initialValues[key]);
       }
-
-      images.map((image, index) => {
-        formData.append(`image_${index}`, {
-          uri: image.uri,
-          type: image.type,
-          name: image.fileName,
-        });
-      });
 
       // Append selected HEI
       formData.append('hei', selectedHei.join(','));
@@ -212,6 +229,15 @@ const ListingForm = ({route, navigation}) => {
         formData.append(key, checkboxes[key]);
       }
 
+      // Append images
+      images.forEach((item, i) => {
+        formData.append('images[]', {
+          uri: item.uri,
+          type: item.type,
+          name: item.name,
+        });
+      });
+
       await axios
         .post(BASE_URL, formData, {
           headers: {
@@ -219,26 +245,33 @@ const ListingForm = ({route, navigation}) => {
           },
         })
         .then(response => {
-          Toast.show({
-            type: 'success',
-            text1: 'Dorm Finder',
-            text2: response.data,
-          });
-          navigation.navigate('Dorm Listing');
+          console.log(response.data);
+          if (response.data === 'success') {
+            Toast.show({
+              type: 'success',
+              text1: 'Dorm Finder',
+              text2: 'Dorm Listing Updated',
+            });
+            navigation.goBack();
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Dorm Finder',
+              text2: 'Dorm listing not updated. Please try again.',
+            });
+          }
         })
         .catch(error => {
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
-            text2: 'An error occured. Please Try Again',
+            text2: 'An error occured. Please Try Again.',
           });
         })
         .finally(() => {
           setIsLoading(false);
         });
     }
-
-    console.log(formData);
   }
 
   const validateInputs = () => {
@@ -255,11 +288,14 @@ const ListingForm = ({route, navigation}) => {
       }
     }
 
-    if (images.length === 0) {
-      newErrors.images = true;
-      isValid = false;
-    } else {
-      newErrors.images = false;
+    // Upload images is optional on edit mode
+    if (!editmode) {
+      if (images.length === 0) {
+        newErrors.images = true;
+        isValid = false;
+      } else {
+        newErrors.images = false;
+      }
     }
 
     if (selectedHei.length === 0) {
@@ -315,8 +351,14 @@ const ListingForm = ({route, navigation}) => {
         } else if (response.didCancel) {
           console.log('Image picker dismissed');
         } else {
-          const assets = response.assets;
-          setImages(assets);
+          // const assets = response.assets;
+          // setImages(assets);
+          const selectedImages = response.assets.map(asset => ({
+            uri: asset.uri,
+            type: asset.type,
+            name: asset.fileName,
+          }));
+          setImages(selectedImages);
         }
       },
     );
@@ -332,7 +374,7 @@ const ListingForm = ({route, navigation}) => {
 
   const removeItem = id => {
     let arr = images.filter(function (item) {
-      return item.fileName !== id;
+      return item.name !== id;
     });
     setImages(arr);
     LayoutAnimation.configureNext(layoutAnimConfig);
@@ -342,7 +384,7 @@ const ListingForm = ({route, navigation}) => {
     return (
       <TouchableOpacity
         style={styles.cardContainer}
-        onPress={() => removeItem(item.fileName)}>
+        onPress={() => removeItem(item.name)}>
         <View style={[styles.card]}>
           <Image source={{uri: item.uri}} style={styles.image} />
         </View>
@@ -357,7 +399,8 @@ const ListingForm = ({route, navigation}) => {
           <>
             <Icon name="image" size={30} color={'#CCCCCC'} />
             <Text style={styles.emptyTitle}>
-              Upload images again. Previous dorm images will be overwritten
+              Uploaded images will overwrite existing images. Leave blank if no
+              changes.
             </Text>
             <Text style={{color: '#CCCCCC'}}>Tap the image to remove it</Text>
           </>

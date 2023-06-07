@@ -52,7 +52,7 @@ export default function EditProfile({route, navigation}) {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Cannot retrieve account details. Please try again',
+          text2: 'Cannot retrieve account details. Please try again.',
         });
       });
   };
@@ -91,7 +91,7 @@ export default function EditProfile({route, navigation}) {
               Toast.show({
                 type: 'error',
                 text1: 'Dorm Finder',
-                text2: 'Cannot update account. Please try again',
+                text2: 'Oops! Cannot update account. Please try again.',
               });
             })
             .finally(() => {
@@ -140,7 +140,7 @@ export default function EditProfile({route, navigation}) {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'Cannot delete account. Please try again',
+                  text2: 'Oops! Cannot delete account. Please try again',
                 });
               });
           },
