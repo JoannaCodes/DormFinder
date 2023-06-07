@@ -172,7 +172,7 @@ const ListingForm = ({route, navigation}) => {
           },
         })
         .then(response => {
-          console.lod(response.data);
+          console.log(response.data);
           if (response.data === 'success') {
             Toast.show({
               type: 'success',
@@ -605,7 +605,13 @@ const ListingForm = ({route, navigation}) => {
         <Separator title="Payment and Duration Terms (Optional)" />
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Icon name="info" color={'#0E898B'} size={16} />
-          <Text style={{fontSize: 12}}>'N/A' if not applicable</Text>
+          <Text style={{fontSize: 12}}>
+            'N/A' or leave it blank if not applicable
+          </Text>
+        </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Icon name="info" color={'#0E898B'} size={16} />
+          <Text style={{fontSize: 12}}>Format: "1 month" or "12 months"</Text>
         </View>
         {/* Advance Deposit */}
         <View style={styles.section}>
@@ -642,7 +648,7 @@ const ListingForm = ({route, navigation}) => {
               value={initialValues.utilities}
               placeholder="Utility Exclusivity"
               placeholderTextColor="#CCCCCC"
-              onChangeText={() => handleTextInputChange('utilities')}
+              onChangeText={value => handleTextInputChange('utilities', value)}
             />
           </View>
           <View style={{width: 16}} />
@@ -653,7 +659,9 @@ const ListingForm = ({route, navigation}) => {
               value={initialValues.minimum_stay}
               placeholder="Minimum Stay"
               placeholderTextColor="#CCCCCC"
-              onChangeText={() => handleTextInputChange('minimum_stay')}
+              onChangeText={value =>
+                handleTextInputChange('minimum_stay', value)
+              }
             />
           </View>
         </View>

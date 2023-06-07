@@ -81,7 +81,8 @@ export default function DocumentStatus() {
     });
 
     response
-      .then(response => {
+      .then(() => {
+        // use toast or alert to prompt respose from server if 'success' or 'failed'
         Alert.alert(
           'Upload success',
           'Documents submitted. Please we will send a notiication once you are verified. Thank you!',
@@ -91,7 +92,7 @@ export default function DocumentStatus() {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Oops! Cannot submit documents. Please try again.',
+          text2: 'An error occured. Please try again.',
         });
       })
       .finally(() => {

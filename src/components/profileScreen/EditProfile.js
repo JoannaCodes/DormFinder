@@ -85,13 +85,19 @@ export default function EditProfile({route, navigation}) {
                   text2: 'Account updated',
                 });
                 fetchAccount();
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Dorm Finder',
+                  text2: 'Unable to update account. Please Try Again.',
+                });
               }
             })
             .catch(error => {
               Toast.show({
                 type: 'error',
                 text1: 'Dorm Finder',
-                text2: 'Oops! Cannot update account. Please try again.',
+                text2: 'An error occured. Please try again.',
               });
             })
             .finally(() => {
@@ -134,13 +140,19 @@ export default function EditProfile({route, navigation}) {
 
                   await AsyncStorage.clear();
                   navigation.dispatch(StackActions.replace('Authentication'));
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Dorm Finder',
+                    text2: 'Unable to delete account. Please Try Again.',
+                  });
                 }
               })
               .catch(error => {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'Oops! Cannot delete account. Please try again',
+                  text2: 'An error occured. Please try again',
                 });
               });
           },

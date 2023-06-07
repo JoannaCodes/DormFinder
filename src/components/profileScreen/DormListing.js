@@ -114,13 +114,19 @@ const DormListing = ({route, navigation}) => {
 
                   setLoading(true);
                   fetchData();
+                } else if (message === 'failed') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: 'Unable to delete listing. Please try again.',
+                  });
                 }
               })
               .catch(error => {
                 Toast.show({
                   type: 'error',
                   text1: 'Dorm Finder',
-                  text2: 'Cannot delete listing. Please try again.',
+                  text2: 'An error occured. Please try again.',
                 });
               });
           },

@@ -52,7 +52,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
           Toast.show({
             type: 'error',
             text1: 'Dorm Finder',
-            text2: "Oops! That didn't load right. Please try again.",
+            text2: 'Unable to submit review. Please try again.',
           });
         }
       })
@@ -60,7 +60,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
         Toast.show({
           type: 'error',
           text1: 'Dorm Finder',
-          text2: 'Cannot submit review. Please try again.',
+          text2: 'An error occured. Please try again.',
         });
       })
       .finally(() => {
