@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ImageBackground,
   SafeAreaView,
@@ -9,14 +9,33 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  TouchableOpacity, // Import TouchableOpacity
+  TouchableOpacity, 
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
+import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 const {width} = Dimensions.get('screen');
+
+
 const DormDetails = ({navigation, route}) => {
-  const house = route.params;
+  const dormref = route.params.dormref;
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    axios
+    .get(`${BASE_URL}?tag=dorm_details&dormref=${dormref}`)
+      .then(response => {
+        const data = response.data;
+        setDorms(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
   const InteriorCard = ({interior}) => {
     return <Image source={interior} style={style.interiorImage} />;
