@@ -18,10 +18,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 
-const UserProfile = ({route}) => {
-  // const {userref} = route.params;
+const UserProfile = ({uid}) => {
   let URL = BASE_URL;
-  let uid = 'LhVQ3FMv6d6lW';
 
   const [user, setUser] = useState('');
   const [username, setUsername] = useState('');
@@ -97,7 +95,7 @@ const UserProfile = ({route}) => {
           if (message === 'success') {
             Toast.show({
               type: 'success',
-              text1: 'Dorm Finder',
+              text1: 'UniHive',
               text2: 'Profile updated',
             });
           }
@@ -105,7 +103,7 @@ const UserProfile = ({route}) => {
         .catch(error => {
           Toast.show({
             type: 'error',
-            text1: 'Dorm Finder',
+            text1: 'UniHive',
             text2:
               'Cannot update profile. Please check you network and try again',
           });

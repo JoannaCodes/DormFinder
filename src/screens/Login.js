@@ -41,7 +41,7 @@ export default function Login() {
       if (data.status) {
         await AsyncStorage.setItem('user_data', JSON.stringify(data));
         await AsyncStorage.setItem('isUserLogin', 'true');
-        navigation.dispatch(StackActions.replace('Main', { uid: data.id }));
+        navigation.dispatch(StackActions.replace('Main'));
         console.log(data);
       } else {
         alert('User Not Found');

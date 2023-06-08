@@ -83,9 +83,7 @@ const ListingForm = ({route, navigation}) => {
 
   const fetchDormDetails = async () => {
     await axios
-      .get(
-        `${BASE_URL}?tag=get_dorm_details&dormref=${dormref}&userref=${userref}`,
-      )
+      .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
       .then(response => {
         const data = JSON.parse(response.data);
         const fetchedHei = data.hei.split(',');
@@ -121,7 +119,7 @@ const ListingForm = ({route, navigation}) => {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'Dorm Finder',
+          text1: 'UniHive',
           text2: 'Cannot retrieve dorm details at this time. Please try again.',
         });
       });
@@ -176,14 +174,14 @@ const ListingForm = ({route, navigation}) => {
           if (response.data === 'success') {
             Toast.show({
               type: 'success',
-              text1: 'Dorm Finder',
+              text1: 'UniHive',
               text2: 'Dorm Listed',
             });
             navigation.goBack();
           } else {
             Toast.show({
               type: 'error',
-              text1: 'Dorm Finder',
+              text1: 'UniHive',
               text2: 'Dorm not listed. Please try again.',
             });
           }
@@ -192,7 +190,7 @@ const ListingForm = ({route, navigation}) => {
           console.log(error);
           Toast.show({
             type: 'error',
-            text1: 'Dorm Finder',
+            text1: 'UniHive',
             text2: 'An error occured. Please try again.',
           });
         })
@@ -249,14 +247,14 @@ const ListingForm = ({route, navigation}) => {
           if (response.data === 'success') {
             Toast.show({
               type: 'success',
-              text1: 'Dorm Finder',
+              text1: 'UniHive',
               text2: 'Dorm Listing Updated',
             });
             navigation.goBack();
           } else {
             Toast.show({
               type: 'error',
-              text1: 'Dorm Finder',
+              text1: 'UniHive',
               text2: 'Dorm listing not updated. Please try again.',
             });
           }
@@ -264,7 +262,7 @@ const ListingForm = ({route, navigation}) => {
         .catch(error => {
           Toast.show({
             type: 'error',
-            text1: 'Dorm Finder',
+            text1: 'UniHive',
             text2: 'An error occured. Please Try Again.',
           });
         })

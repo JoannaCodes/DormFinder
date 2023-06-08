@@ -16,11 +16,11 @@ import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 
 const ChangePassword = ({route}) => {
+  const {uid} = route.params;
   const [loading, setLoading] = useState(false);
-  let uid = 'LhVQ3FMv6d6lW';
 
   function _changePassword(values, {resetForm}) {
-    Alert.alert('Dorm Finder', 'Continue changing password?', [
+    Alert.alert('UniHive', 'Continue changing password?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Change',
@@ -42,20 +42,20 @@ const ChangePassword = ({route}) => {
               if (response.data === 'success') {
                 Toast.show({
                   type: 'success',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'Password updated',
                 });
                 resetForm();
               } else if (response.data === 'incorrect') {
                 Toast.show({
                   type: 'warning',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'Current password is incorrect password',
                 });
               } else {
                 Toast.show({
                   type: 'error',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'Unable to update password. Please try again.',
                 });
               }
@@ -63,7 +63,7 @@ const ChangePassword = ({route}) => {
             .catch(error => {
               Toast.show({
                 type: 'error',
-                text1: 'Dorm Finder',
+                text1: 'UniHive',
                 text2: 'An error occured. Please try again.',
               });
             })

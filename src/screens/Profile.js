@@ -5,45 +5,45 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
 } from 'react-native';
 import UserProfile from '../components/UserProfile';
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
 
-export default function Profile({navigation}) {
+export default function Profile({route, navigation}) {
+  const {uid} = route.params;
+  const handleLogOut = async () => {
+    try {
+      Alert.alert('Log out', 'Are you sure you want to log out?', [
+        {
+          text: 'Yes',
+          onPress: async () => {
+            console.log('logout');
+            await AsyncStorage.clear();
 
-const handleLogOut = async() => {
-  try {
-    Alert.alert('Log out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: async () => {
-          console.log('logout');
-          await AsyncStorage.clear();
-
-          navigation.dispatch(StackActions.replace('Authentication'));
+            navigation.dispatch(StackActions.replace('Authentication'));
+          },
         },
-      },
-      {
-        text: 'No',
-      },
-    ]);
-  } catch (err) {
-    console.log(err);
-  }
-};
+        {
+          text: 'No',
+        },
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView>
         <View style={styles.section}>
-          <UserProfile />
+          <UserProfile uid={uid} />
         </View>
 
         <Separator />
@@ -87,7 +87,7 @@ const handleLogOut = async() => {
         {/* Logout section */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.button} onPress={handleLogOut}>
-            <Text style={{ color: '#FFFFFF' }}>Logout</Text>
+            <Text style={{color: '#FFFFFF'}}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

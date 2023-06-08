@@ -82,16 +82,15 @@ export default function DocumentStatus() {
 
     response
       .then(() => {
-        // use toast or alert to prompt respose from server if 'success' or 'failed'
         Alert.alert(
-          'Upload success',
+          'UniHive',
           'Documents submitted. Please we will send a notiication once you are verified. Thank you!',
         );
       })
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'Dorm Finder',
+          text1: 'UniHive',
           text2: 'An error occured. Please try again.',
         });
       })

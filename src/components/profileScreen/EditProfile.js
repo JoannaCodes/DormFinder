@@ -31,10 +31,11 @@ const Separator = () => {
 };
 
 export default function EditProfile({route, navigation}) {
+  const {uid} = route.params;
   const [user, setUser] = useState('');
   const [loading, setLoading] = useState(false);
   let URL = BASE_URL;
-  let uid = 'LhVQ3FMv6d6lW';
+  // let uid = 'LhVQ3FMv6d6lW';
 
   useEffect(() => {
     fetchAccount();
@@ -51,14 +52,14 @@ export default function EditProfile({route, navigation}) {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'Dorm Finder',
+          text1: 'UniHive',
           text2: 'Cannot retrieve account details. Please try again.',
         });
       });
   };
 
   function _updateAccount(values) {
-    Alert.alert('Dorm Finder', 'Continue updating account?', [
+    Alert.alert('UniHive', 'Continue updating account?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Update',
@@ -81,14 +82,14 @@ export default function EditProfile({route, navigation}) {
               if (message === 'success') {
                 Toast.show({
                   type: 'success',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'Account updated',
                 });
                 fetchAccount();
               } else {
                 Toast.show({
                   type: 'error',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'Unable to update account. Please Try Again.',
                 });
               }
@@ -96,7 +97,7 @@ export default function EditProfile({route, navigation}) {
             .catch(error => {
               Toast.show({
                 type: 'error',
-                text1: 'Dorm Finder',
+                text1: 'UniHive',
                 text2: 'An error occured. Please try again.',
               });
             })
@@ -110,7 +111,7 @@ export default function EditProfile({route, navigation}) {
 
   function _deleteAccount() {
     Alert.alert(
-      'Dorm Finder',
+      'UniHive',
       'Are you sure you want to delete your account? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
@@ -134,7 +135,7 @@ export default function EditProfile({route, navigation}) {
                 if (message === 'success') {
                   Toast.show({
                     type: 'success',
-                    text1: 'Dorm Finder',
+                    text1: 'UniHive',
                     text2: 'Account deleted',
                   });
 
@@ -143,7 +144,7 @@ export default function EditProfile({route, navigation}) {
                 } else {
                   Toast.show({
                     type: 'error',
-                    text1: 'Dorm Finder',
+                    text1: 'UniHive',
                     text2: 'Unable to delete account. Please Try Again.',
                   });
                 }
@@ -151,7 +152,7 @@ export default function EditProfile({route, navigation}) {
               .catch(error => {
                 Toast.show({
                   type: 'error',
-                  text1: 'Dorm Finder',
+                  text1: 'UniHive',
                   text2: 'An error occured. Please try again',
                 });
               });

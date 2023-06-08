@@ -27,20 +27,14 @@ const Separator = () => {
 };
 
 const DormListing = ({route, navigation}) => {
+  const {uid} = route.params;
   let URL = BASE_URL;
-  let uid = 'LhVQ3FMv6d6lW';
 
   const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchData();
-  //   }, []),
-  // );
 
   useEffect(() => {
     fetchData();
@@ -53,6 +47,7 @@ const DormListing = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
+        setStatus('success');
 
         // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
@@ -66,6 +61,7 @@ const DormListing = ({route, navigation}) => {
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
+          setStatus('failed');
 
           Toast.show({
             type: 'error',
@@ -146,19 +142,29 @@ const DormListing = ({route, navigation}) => {
           style={styles.image}
         />
         <View style={styles.cardBody}>
-          <Text style={styles.cardTitle}>{item.name}</Text>
+          <Text style={styles.cardTitle} numberOfLines={1} ellipsizeMode="tail">
+            {item.name}
+          </Text>
           <Separator />
           <View style={styles.action}>
             <TouchableOpacity
-              style={styles.btnContainer}
+              style={[
+                styles.btnContainer,
+                status === 'failed' && styles.failedButton, // Apply different style if status is "failed"
+              ]}
+              disabled={status === 'failed'}
               onPress={() =>
-                navigation.navigate('Dorm Listing Form', {
+                navigation.navigate('Listing Form', {
                   dormref: item.id,
                   userref: uid,
                   editmode: true,
                 })
               }>
-              <Icon name="mode-edit" size={18} color="#0E898B" />
+              <Icon
+                name="mode-edit"
+                size={18}
+                color={status === 'failed' ? '#888888' : '#0E898B'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
@@ -249,7 +255,7 @@ const DormListing = ({route, navigation}) => {
           <TouchableOpacity
             style={styles.button}
             onPress={() =>
-              navigation.navigate('Dorm Listing Form', {
+              navigation.navigate('Listing Form', {
                 userref: uid,
                 editmode: false,
               })
@@ -343,5 +349,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 8,
+  },
+  failedButton: {
+    opacity: 0.5,
   },
 });

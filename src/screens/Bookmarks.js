@@ -25,26 +25,18 @@ const Separator = () => {
 };
 
 const Bookmarks = ({route, navigation}) => {
-  // const {userref} = route.params;
+  const {uid} = route.params;
   let URL = BASE_URL;
-  let uid = 'LhVQ3FMv6d6lW';
+  // let uid = 'LhVQ3FMv6d6lW';
 
   const [isLoading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDorm, setSelectedDorm] = useState('');
-  const [status, setStatus] = useState('Success');
+  const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchData();
-  //   }, []),
-  // );
 
   useEffect(() => {
     fetchData();
-
-    return () => {};
   }, []);
 
   const fetchData = async () => {
@@ -53,6 +45,9 @@ const Bookmarks = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
+        setStatus('success');
+        console.log('UID', uid);
+        console.log('bookmarks', data);
 
         // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
@@ -63,12 +58,13 @@ const Bookmarks = ({route, navigation}) => {
         AsyncStorage.setItem('bookmarks', JSON.stringify(dataWithoutImages));
       })
       .catch(async error => {
+        setStatus('failed');
         Toast.show({
           type: 'error',
-          text1: 'Dorm Finder',
+          text1: 'UniHive',
           text2: 'Cannot retrieve bookmarks. Please try again.',
         });
-        setStatus('Failed');
+
         // Retrieve the dorms from AsyncStorage if available
         const storedDorms = await AsyncStorage.getItem('bookmarks');
         if (storedDorms) {
@@ -96,8 +92,13 @@ const Bookmarks = ({route, navigation}) => {
           />
           <View style={styles.cardBody}>
             <View style={styles.details}>
-              <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.cardText}>{item.price}</Text>
+              <Text
+                style={styles.cardTitle}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {item.name}
+              </Text>
+              <Text style={styles.cardText}>₱{item.price}</Text>
             </View>
             <Separator />
             <View style={styles.action}>
@@ -126,7 +127,7 @@ const Bookmarks = ({route, navigation}) => {
   const renderEmpty = () => {
     return (
       <View style={styles.emptyContainer}>
-        {status === 'Failed' ? (
+        {status === 'failed' ? (
           <>
             <Image
               source={require('../../assets/error_upsketch.png')}
@@ -153,7 +154,11 @@ const Bookmarks = ({route, navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.emptyTitle}>No Bookmarks</Text>
-            <Text>Tap "❤️" to add the dorm that interests you</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text>Tap "</Text>
+              <Icon name="favorite" size={18} color="red" />
+              <Text>" to add the dorm that interests you</Text>
+            </View>
           </>
         )}
       </View>
@@ -209,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
   },
