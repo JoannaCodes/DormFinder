@@ -100,7 +100,6 @@ const toastConfig = {
 const Tab = createBottomTabNavigator();
 
 function RootNavigator({route}) {
-  const {uid} = route.params;
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
@@ -142,19 +141,16 @@ function RootNavigator({route}) {
         name="BookmarksTab"
         component={BookmarksScreen}
         options={{title: 'Bookmarks'}}
-        initialParams={{uid}}
       />
       <Tab.Screen
         name="NotificationsTab"
         component={NotificationsScreen}
         options={{title: 'Notifications'}}
-        initialParams={{uid}}
       />
       <Tab.Screen
         name="InboxTab"
         component={InboxScreen}
         options={{title: 'Inbox'}}
-        initialParams={{uid}}
       />
     </Tab.Navigator>
   );
@@ -163,46 +159,26 @@ function RootNavigator({route}) {
 const AppStack = createNativeStackNavigator();
 
 function RootApp({route}) {
-  const {uid} = route.params;
   return (
     <AppStack.Navigator>
       <AppStack.Screen
         name="Home"
         component={RootNavigator}
         options={{headerShown: false}}
-        initialParams={{uid}}
       />
       <AppStack.Screen
         name="Profile Tab"
         component={ProfileScreen}
         options={{title: 'Profile'}}
-        initialParams={{uid}}
-      />
-      <AppStack.Screen
-        name="Chat Room"
-        component={ChatRoomComponent}
-        initialParams={{uid}}
-      />
-      <AppStack.Screen
-        name="Edit Profile"
-        component={EditProfileComponent}
-        initialParams={{uid}}
       />
       <AppStack.Screen
         name="Change Password"
         component={ChangePasswordComponent}
-        initialParams={{uid}}
       />
-      <AppStack.Screen
-        name="Dorm Listing"
-        component={DormListingComponent}
-        initialParams={{uid}}
-      />
-      <AppStack.Screen
-        name="Verification"
-        component={VerificationComponent}
-        initialParams={{uid}}
-      />
+      <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
+      <AppStack.Screen name="Edit Profile" component={EditProfileComponent} />
+      <AppStack.Screen name="Dorm Listing" component={DormListingComponent} />
+      <AppStack.Screen name="Verification" component={VerificationComponent} />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Listing Form" component={ListingFormComponent} />
@@ -242,17 +218,6 @@ function Auth() {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [uid, setUid] = useState(null);
-
-  useEffect(() => {
-    AsyncStorage.getItem('user_data').then(userData => {
-      const storedUser = JSON.parse(userData);
-      if (storedUser) {
-        setUid(storedUser.id);
-      }
-    });
-  }, []);
-
   return (
     <>
       <NavigationContainer>
@@ -266,7 +231,6 @@ export default function App() {
             name="Main"
             component={RootApp}
             options={{headerShown: false}}
-            initialParams={{uid}}
           />
           <Stack.Screen
             name="Authentication"
