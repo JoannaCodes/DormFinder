@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,13 +8,24 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
-import { BASE_URL } from '../../constants/index';
+import {BASE_URL} from '../../constants/index';
+
+const Separator = ({title}) => {
+  return (
+    <View style={styles.separator}>
+      <View style={styles.line} />
+      <Text style={{marginHorizontal: 5, color: '#FFFFFF'}}>{title}</Text>
+      <View style={styles.line} />
+    </View>
+  );
+};
 
 export default function Signup() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -22,35 +34,45 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const navigation = useNavigation();
 
-  const signupUser = async () => {
-    const formData = new FormData();
-    formData.append('tag', 'signup_app');
-    formData.append('email', email);
-    formData.append('username', username);
-    formData.append('password', password);
+  const handleSignUp = async mode => {
+    if (mode === 'google') {
+      Alert.alert('Signup with google');
+      // google signup logic here
+    } else {
+      if (validateSignup()) {
+        const formData = new FormData();
+        formData.append('tag', 'signup_app');
+        formData.append('email', email);
+        formData.append('username', username);
+        formData.append('password', password);
 
-    try {
-      await Axios.post(BASE_URL, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      alert('User Created Successfully');
-    } catch (err) {
-      alert('User Not Created');
+        await Axios.post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+          .then(() => {
+            Alert.alert('User Created');
+            navigation.navigate('Login');
+          })
+          .catch(error => {
+            Alert.alert('User Not Created');
+          });
+      }
     }
   };
 
   const validateSignup = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email format regular expression
+    let isValid = true;
 
     if (email.trim() === '' || !emailRegex.test(email)) {
-      alert('Please enter a valid email.');
+      isValid = false;
     } else if (username.trim() === '' || password.trim() === '') {
-      alert('Please enter a username and password.');
-    } else {
-      signupUser();
+      isValid = false;
     }
+
+    return isValid;
   };
 
   return (
@@ -63,13 +85,13 @@ export default function Signup() {
           resizeMode="contain"
         />
       </View>
-      <View style={styles.bottomBackgroundImgContainer}></View>
+      <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Icon name="arrow-back-ios" size={30} color="#fff" />
           </TouchableOpacity>
-          <Text style={{ color: '#fff', fontSize: 30, fontWeight: 'bold' }}>
+          <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
             Register
           </Text>
         </View>
@@ -77,29 +99,31 @@ export default function Signup() {
           <View style={styles.formBottomSubContainer}>
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{ padding: 0 }}
+                style={{padding: 0}}
                 placeholder="Email"
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={text => setEmail(text)}
               />
             </View>
 
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{ padding: 0 }}
+                style={{padding: 0}}
                 placeholder="Username"
-                onChangeText={(text) => setUsername(text)}
+                onChangeText={text => setUsername(text)}
               />
             </View>
 
             <View style={styles.customInputContainer}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
-                  style={{ padding: 0 }}
+                  style={{padding: 0}}
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
-                  onChangeText={(text) => setPassword(text)}
+                  onChangeText={text => setPassword(text)}
                 />
-                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                <TouchableOpacity
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Icon
                     name={isPasswordVisible ? 'visibility' : 'visibility-off'}
                     size={20}
@@ -110,14 +134,13 @@ export default function Signup() {
 
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={() => validateSignup()}
-            >
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 17 }}>
+              onPress={() => handleSignUp()}>
+              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
                 Signup
               </Text>
             </TouchableOpacity>
 
-            <Text style={{ textAlign: 'center', color: '#fff' }}>Or</Text>
+            <Separator title={'Or'} />
 
             <TouchableOpacity
               style={[
@@ -128,31 +151,22 @@ export default function Signup() {
                   padding: 12,
                   justifyContent: 'space-around',
                 },
-              ]}
-            >
-              <Image
-                source={Google}
-                style={{ height: 20, width: 20 }}
-              />
-              <Text style={{ fontWeight: 'bold' }}>Continue With Google</Text>
-              <View></View>
+              ]}>
+              <Image source={Google} style={{height: 20, width: 20}} />
+              <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
+              <View />
             </TouchableOpacity>
 
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                <Text style={{ color: '#fff' }}>Already Have An Account?</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('Login');
-                  }}
-                >
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={{flexDirection: 'row', marginVertical: 10}}>
+                <Text style={{color: '#fff'}}>Already Have An Account?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text
                     style={{
                       marginLeft: 5,
                       color: 'teal',
                       fontWeight: 'bold',
-                    }}
-                  >
+                    }}>
                     Login
                   </Text>
                 </TouchableOpacity>
@@ -169,6 +183,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#050907',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#CCCCCC',
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -221,4 +245,3 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-

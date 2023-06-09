@@ -67,7 +67,7 @@ export default function EditProfile({route, navigation}) {
           const formData = new FormData();
           formData.append('tag', 'update_account');
           formData.append('userref', user);
-          formData.append('identifier', values.loggedUser);
+          formData.append('identifier', values.user);
 
           await axios
             .post(BASE_URL, formData, {
@@ -162,7 +162,7 @@ export default function EditProfile({route, navigation}) {
   }
 
   const validationSchema = Yup.object().shape({
-    loggedUser: Yup.string()
+    user: Yup.string()
       .required('This is required')
       .test('is-email-or-phone', 'Invalid', function (value) {
         // regular expressions to validate email and phone number
@@ -205,12 +205,12 @@ export default function EditProfile({route, navigation}) {
             </View>
             <TouchableOpacity
               onPress={handleSubmit}
-              disabled={values.user.length === 0 || values.user === user}
+              disabled={values.user.trim() === '' || values.user === handle}
               style={[
                 styles.button,
                 {
                   backgroundColor:
-                    values.user.length === 0 || values.user === user
+                    values.user.trim() === '' || values.user === handle
                       ? '#CCCCCC'
                       : '#0E898B',
                 },

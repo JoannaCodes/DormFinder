@@ -5,7 +5,6 @@ import {TouchableOpacity} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
-  StackActions,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -40,6 +39,7 @@ import SignUp from './src/screens/SignUp';
 import SplashScreen from './src/screens/SplashScreen';
 
 import {LogBox} from 'react-native';
+import {useEffect} from 'react';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
 
@@ -207,59 +207,100 @@ function RootApp({route}) {
   );
 }
 
-const AuthStack = createNativeStackNavigator();
-
-function Auth() {
-  return (
-    <AuthStack.Navigator initialRouteName="Login">
-      <AuthStack.Screen
-        name="Login"
-        component={Login}
-        options={{
-          headerShown: false,
-          animation: 'slide_from_left',
-          animationTypeForReplace: 'push',
-          presentation: 'formSheet',
-        }}
-      />
-      <AuthStack.Screen
-        name="Signup"
-        component={SignUp}
-        options={{
-          headerShown: false,
-          animation: 'slide_from_right',
-          animationTypeForReplace: 'push',
-          presentation: 'formSheet',
-        }}
-      />
-    </AuthStack.Navigator>
-  );
-}
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const user = 'LhVQ3FMv6d6lW';
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkLoginStatus();
+    AsyncStorage.removeItem('user');
+    // AsyncStorage.clear();
+  }, []);
+
+  const handleLogin = async user => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
+        setUser(user);
+      });
+    } catch (error) {
+      console.log('Login Failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear().then(() => {
+        setUser(null);
+      });
+    } catch (error) {
+      console.log('Logout failed:', error);
+    }
+  };
+
+  const checkLoginStatus = async () => {
+    try {
+      await AsyncStorage.getItem('user').then(data => {
+        if (data) {
+          setUser(JSON.parse(data));
+        }
+      });
+    } catch (error) {
+      console.log('Error checking login status:', error);
+    } finally {
+      setInterval(() => {
+        setIsLoading(false);
+      }, 3000);
+    }
+  };
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
-            name="Splash"
-            component={SplashScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Main"
-            component={RootApp}
-            options={{headerShown: false}}
-            initialParams={{user}}
-          />
-          <Stack.Screen
-            name="Authentication"
-            component={Auth}
-            options={{headerShown: false}}
-          />
+          {user ? (
+            <Stack.Screen
+              name="App"
+              component={RootApp}
+              initialParams={{user}}
+              options={{
+                headerShown: false,
+                animation: 'flip',
+                animationTypeForReplace: user === null ? 'pop' : 'push',
+              }}
+            />
+          ) : (
+            <>
+              <Stack.Screen
+                name="Login"
+                // component={Login}
+                options={{
+                  headerShown: false,
+                  animation: 'slide_from_left',
+                  animationTypeForReplace: user === null ? 'pop' : 'push',
+                  presentation: 'formSheet',
+                }}>
+                {() => <Login onLogin={handleLogin} />}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Signup"
+                component={SignUp}
+                options={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                  animationTypeForReplace: 'push',
+                  presentation: 'formSheet',
+                }}
+              />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} />

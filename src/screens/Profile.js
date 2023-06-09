@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import UserProfile from '../components/UserProfile';
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions} from '@react-navigation/native';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
@@ -24,19 +22,16 @@ export default function Profile({route, navigation}) {
       Alert.alert('Log out', 'Are you sure you want to log out?', [
         {
           text: 'Yes',
-          onPress: async () => {
-            console.log('logout');
-            await AsyncStorage.clear().then(() => {
-              navigation.dispatch(StackActions.replace('Authentication'));
-            });
+          onPress: () => {
+            // handleLogout();
           },
         },
         {
           text: 'No',
         },
       ]);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 

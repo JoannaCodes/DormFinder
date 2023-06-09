@@ -50,10 +50,10 @@ const UserProfile = ({uid}) => {
         // Exclude image URLs from the data
         const {imageUrl, ...rest} = profile;
 
-        await AsyncStorage.setItem('user', JSON.stringify(rest));
+        await AsyncStorage.setItem('user-profile', JSON.stringify(rest));
       })
       .catch(async error => {
-        const storedUser = await AsyncStorage.getItem('user');
+        const storedUser = await AsyncStorage.getItem('user-profile');
         if (storedUser) {
           setUser(JSON.parse(storedUser));
         } else {
@@ -66,10 +66,7 @@ const UserProfile = ({uid}) => {
   };
 
   function _updateAccount() {
-    const parts = image.split('/');
-    const imageUrl = parts[7].replace('${', '').replace('}', '');
-
-    if (username === user.username && imageUrl === user.imageUrl) {
+    if (username === user.username && image === user.imageUrl) {
       setEditMode(false);
     } else {
       setLoading(true);
