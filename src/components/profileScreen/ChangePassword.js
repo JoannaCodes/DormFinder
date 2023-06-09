@@ -16,7 +16,7 @@ import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 
 const ChangePassword = ({route}) => {
-  const {uid} = route.params;
+  const {user} = route.params;
   const [loading, setLoading] = useState(false);
 
   function _changePassword(values, {resetForm}) {
@@ -28,7 +28,7 @@ const ChangePassword = ({route}) => {
           setLoading(true);
           const formData = new FormData();
           formData.append('tag', 'change_password');
-          formData.append('userref', uid);
+          formData.append('userref', user);
           formData.append('currentpassword', values.currentpassword);
           formData.append('newpassword', values.newpassword);
 

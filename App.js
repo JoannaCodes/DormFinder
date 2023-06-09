@@ -1,10 +1,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
+  StackActions,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -100,6 +101,7 @@ const toastConfig = {
 const Tab = createBottomTabNavigator();
 
 function RootNavigator({route}) {
+  const {user} = route.params;
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
@@ -141,16 +143,19 @@ function RootNavigator({route}) {
         name="BookmarksTab"
         component={BookmarksScreen}
         options={{title: 'Bookmarks'}}
+        initialParams={{user}}
       />
       <Tab.Screen
         name="NotificationsTab"
         component={NotificationsScreen}
         options={{title: 'Notifications'}}
+        initialParams={{user}}
       />
       <Tab.Screen
         name="InboxTab"
         component={InboxScreen}
         options={{title: 'Inbox'}}
+        initialParams={{user}}
       />
     </Tab.Navigator>
   );
@@ -159,26 +164,42 @@ function RootNavigator({route}) {
 const AppStack = createNativeStackNavigator();
 
 function RootApp({route}) {
+  const {user} = route.params;
   return (
     <AppStack.Navigator>
       <AppStack.Screen
         name="Home"
         component={RootNavigator}
         options={{headerShown: false}}
+        initialParams={{user}}
       />
       <AppStack.Screen
         name="Profile Tab"
         component={ProfileScreen}
         options={{title: 'Profile'}}
+        initialParams={{user}}
       />
       <AppStack.Screen
         name="Change Password"
         component={ChangePasswordComponent}
+        initialParams={{user}}
+      />
+      <AppStack.Screen
+        name="Edit Profile"
+        component={EditProfileComponent}
+        initialParams={{user}}
+      />
+      <AppStack.Screen
+        name="Dorm Listing"
+        component={DormListingComponent}
+        initialParams={{user}}
+      />
+      <AppStack.Screen
+        name="Verification"
+        component={VerificationComponent}
+        initialParams={{user}}
       />
       <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
-      <AppStack.Screen name="Edit Profile" component={EditProfileComponent} />
-      <AppStack.Screen name="Dorm Listing" component={DormListingComponent} />
-      <AppStack.Screen name="Verification" component={VerificationComponent} />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Listing Form" component={ListingFormComponent} />
@@ -218,6 +239,7 @@ function Auth() {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const user = 'LhVQ3FMv6d6lW';
   return (
     <>
       <NavigationContainer>
@@ -231,6 +253,7 @@ export default function App() {
             name="Main"
             component={RootApp}
             options={{headerShown: false}}
+            initialParams={{user}}
           />
           <Stack.Screen
             name="Authentication"

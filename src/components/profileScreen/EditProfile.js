@@ -31,23 +31,22 @@ const Separator = () => {
 };
 
 export default function EditProfile({route, navigation}) {
-  const {uid} = route.params;
-  const [user, setUser] = useState('');
+  const {user} = route.params;
+  const [handle, setHandle] = useState('');
   const [loading, setLoading] = useState(false);
   let URL = BASE_URL;
-  // let uid = 'LhVQ3FMv6d6lW';
 
   useEffect(() => {
     fetchAccount();
-  }, [uid]);
+  }, []);
 
   const fetchAccount = async () => {
     axios
-      .get(`${URL}?tag=get_account&userref=${uid}`)
+      .get(`${URL}?tag=get_account&userref=${user}`)
       .then(response => {
         const data = JSON.parse(response.data);
         const {identifier, ...profile} = data;
-        setUser(identifier);
+        setHandle(identifier);
       })
       .catch(error => {
         Toast.show({
@@ -67,7 +66,7 @@ export default function EditProfile({route, navigation}) {
           setLoading(true);
           const formData = new FormData();
           formData.append('tag', 'update_account');
-          formData.append('userref', uid);
+          formData.append('userref', user);
           formData.append('identifier', values.loggedUser);
 
           await axios
@@ -121,7 +120,7 @@ export default function EditProfile({route, navigation}) {
           onPress: async () => {
             const formData = new FormData();
             formData.append('tag', 'delete_account');
-            formData.append('userref', uid);
+            formData.append('userref', user);
 
             await axios
               .post(BASE_URL, formData, {
@@ -184,7 +183,7 @@ export default function EditProfile({route, navigation}) {
     <KeyboardAvoidingView style={styles.container}>
       <Formik
         enableReinitialize
-        initialValues={{loggedUser: user}}
+        initialValues={{user: handle}}
         validationSchema={validationSchema}
         onSubmit={_updateAccount}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
@@ -194,28 +193,24 @@ export default function EditProfile({route, navigation}) {
                 <Text style={styles.label}>Email or Phone Number</Text>
                 <TextInput
                   style={styles.input}
-                  value={values.loggedUser}
+                  value={values.user}
                   placeholder="Email"
                   placeholderTextColor="#CCCCCC"
-                  onChangeText={handleChange('loggedUser')}
-                  onBlur={handleBlur('loggedUser')}
+                  onChangeText={handleChange('user')}
+                  onBlur={handleBlur('user')}
                   keyboardType="email-address"
                 />
-                {errors.loggedUser && (
-                  <Text style={styles.error}>{errors.loggedUser}</Text>
-                )}
+                {errors.user && <Text style={styles.error}>{errors.user}</Text>}
               </View>
             </View>
             <TouchableOpacity
               onPress={handleSubmit}
-              disabled={
-                values.loggedUser.length === 0 || values.loggedUser === user
-              }
+              disabled={values.user.length === 0 || values.user === user}
               style={[
                 styles.button,
                 {
                   backgroundColor:
-                    values.loggedUser.length === 0 || values.loggedUser === user
+                    values.user.length === 0 || values.user === user
                       ? '#CCCCCC'
                       : '#0E898B',
                 },

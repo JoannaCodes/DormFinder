@@ -27,7 +27,7 @@ const Separator = () => {
 };
 
 const DormListing = ({route, navigation}) => {
-  const {uid} = route.params;
+  const {user} = route.params;
   let URL = BASE_URL;
 
   const [isLoading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ const DormListing = ({route, navigation}) => {
   const fetchData = async () => {
     setLoading(true);
     await axios
-      .get(`${URL}?tag=get_dorms&userref=${uid}`)
+      .get(`${URL}?tag=get_dorms&userref=${user}`)
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
@@ -89,7 +89,7 @@ const DormListing = ({route, navigation}) => {
           onPress: async () => {
             const formData = new FormData();
             formData.append('tag', 'delete_dorm');
-            formData.append('userref', uid);
+            formData.append('userref', user);
             formData.append('dormref', dormref);
 
             await axios
@@ -156,7 +156,7 @@ const DormListing = ({route, navigation}) => {
               onPress={() =>
                 navigation.navigate('Listing Form', {
                   dormref: item.id,
-                  userref: uid,
+                  userref: user,
                   editmode: true,
                 })
               }>
@@ -256,7 +256,7 @@ const DormListing = ({route, navigation}) => {
             style={styles.button}
             onPress={() =>
               navigation.navigate('Listing Form', {
-                userref: uid,
+                userref: user,
                 editmode: false,
               })
             }>

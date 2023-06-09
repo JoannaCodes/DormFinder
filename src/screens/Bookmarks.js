@@ -25,9 +25,8 @@ const Separator = () => {
 };
 
 const Bookmarks = ({route, navigation}) => {
-  const {uid} = route.params;
+  const {user} = route.params;
   let URL = BASE_URL;
-  // let uid = 'LhVQ3FMv6d6lW';
 
   const [isLoading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -41,13 +40,11 @@ const Bookmarks = ({route, navigation}) => {
 
   const fetchData = async () => {
     await axios
-      .get(`${URL}?tag=get_bookmarks&userref=${uid}`)
+      .get(`${URL}?tag=get_bookmarks&userref=${user}`)
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
         setStatus('success');
-        console.log('UID', uid);
-        console.log('bookmarks', data);
 
         // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
@@ -193,7 +190,7 @@ const Bookmarks = ({route, navigation}) => {
       <ReviewForm
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        userref={uid}
+        userref={user}
         dormref={selectedDorm}
       />
     </SafeAreaView>

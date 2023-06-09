@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {
   KeyboardAvoidingView,
   ScrollView,
@@ -17,7 +18,7 @@ const Separator = () => {
 };
 
 export default function Profile({route, navigation}) {
-  const {uid} = route.params;
+  const {user} = route.params;
   const handleLogOut = async () => {
     try {
       Alert.alert('Log out', 'Are you sure you want to log out?', [
@@ -25,9 +26,9 @@ export default function Profile({route, navigation}) {
           text: 'Yes',
           onPress: async () => {
             console.log('logout');
-            await AsyncStorage.clear();
-
-            navigation.dispatch(StackActions.replace('Authentication'));
+            await AsyncStorage.clear().then(() => {
+              navigation.dispatch(StackActions.replace('Authentication'));
+            });
           },
         },
         {
@@ -43,7 +44,7 @@ export default function Profile({route, navigation}) {
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView>
         <View style={styles.section}>
-          <UserProfile uid={uid} />
+          <UserProfile uid={user} />
         </View>
 
         <Separator />

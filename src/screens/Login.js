@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { useNavigation, StackActions } from '@react-navigation/native';
+import {useNavigation, StackActions} from '@react-navigation/native';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 //
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
-import { BASE_URL } from '../../constants/index';
+import {BASE_URL} from '../../constants/index';
 
 export default function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -39,9 +39,11 @@ export default function Login() {
       const data = response.data;
 
       if (data.status) {
-        await AsyncStorage.setItem('user_data', JSON.stringify(data));
-        await AsyncStorage.setItem('isUserLogin', 'true');
-        navigation.dispatch(StackActions.replace('Main'));
+        await AsyncStorage.setItem('user_data', JSON.stringify(data)).then(
+          () => {
+            navigation.dispatch(StackActions.replace('Main'));
+          },
+        );
         console.log(data);
       } else {
         alert('User Not Found');
@@ -69,11 +71,11 @@ export default function Login() {
           resizeMode="contain"
         />
       </View>
-      <View style={styles.bottomBackgroundImgContainer}></View>
+      <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
           {/* <Icon name="arrow-back-ios" size={30} color="#fff" /> */}
-          <Text style={{ color: '#fff', fontSize: 30, fontWeight: 'bold' }}>
+          <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
             Welcome!
           </Text>
         </View>
@@ -82,22 +84,24 @@ export default function Login() {
             {/*  */}
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{ padding: 0, color: '#000' }}
+                style={{padding: 0, color: '#000'}}
                 placeholder="Username"
-                onChangeText={(text) => setUsername(text)}
+                onChangeText={text => setUsername(text)}
               />
             </View>
             {/*  */}
             {/*  */}
             <View style={styles.customInputContainer}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
-                  style={{ padding: 0 }}
+                  style={{padding: 0}}
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
-                  onChangeText={(text) => setPassword(text)}
+                  onChangeText={text => setPassword(text)}
                 />
-                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                <TouchableOpacity
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Icon
                     name={isPasswordVisible ? 'visibility' : 'visibility-off'}
                     size={20}
@@ -111,17 +115,14 @@ export default function Login() {
               style={styles.loginButton}
               onPress={() => {
                 validateLogin();
-              }}
-            >
-              <Text
-                style={{ color: '#fff', fontWeight: 'bold', fontSize: 17 }}
-              >
+              }}>
+              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
                 Login
               </Text>
             </TouchableOpacity>
             {/*  */}
             {/*  */}
-            <Text style={{ textAlign: 'center', color: '#fff' }}>Or</Text>
+            <Text style={{textAlign: 'center', color: '#fff'}}>Or</Text>
             {/*  */}
             {/*  */}
             <TouchableOpacity
@@ -133,31 +134,26 @@ export default function Login() {
                   padding: 12,
                   justifyContent: 'space-around',
                 },
-              ]}
-            >
-              <Image source={Google} style={{ height: 20, width: 20 }} />
-              <Text style={{ fontWeight: 'bold' }}>
-                Continue With Google
-              </Text>
-              <View></View>
+              ]}>
+              <Image source={Google} style={{height: 20, width: 20}} />
+              <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
+              <View />
             </TouchableOpacity>
             {/*  */}
             {/*  */}
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                <Text style={{ color: '#fff' }}>Don't Have An Account?</Text>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={{flexDirection: 'row', marginVertical: 10}}>
+                <Text style={{color: '#fff'}}>Don't Have An Account?</Text>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('Signup');
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       marginLeft: 5,
                       color: 'teal',
                       fontWeight: 'bold',
-                    }}
-                  >
+                    }}>
                     Signup
                   </Text>
                 </TouchableOpacity>
@@ -167,8 +163,7 @@ export default function Login() {
                   style={{
                     color: 'teal',
                     fontWeight: 'bold',
-                  }}
-                >
+                  }}>
                   Forget Your Password?
                 </Text>
               </TouchableOpacity>
@@ -219,7 +214,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'rgba(127,127,127,0.5)',
     padding: 20,
-    marginTop: 50, 
+    marginTop: 50,
   },
   customInputContainer: {
     marginVertical: 10,
