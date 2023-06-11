@@ -93,14 +93,14 @@ const ListingForm = ({route, navigation}) => {
         setInitialValues(prevState => ({
           ...prevState,
           address: data.address,
-          advance_deposit: data.advance_deposit,
+          advance_deposit: data.adv_dep,
           desc: data.desc,
-          minimum_stay: data.minimum_stay,
+          minimum_stay: data.min_stay,
           name: data.name,
           price: data.price,
-          security_deposit: data.security_deposit,
+          security_deposit: data.sec_dep,
           slots: data.slots.toString(),
-          utilities: data.utilities,
+          utilities: data.util,
         }));
 
         // Set selected HEI
@@ -156,32 +156,32 @@ const ListingForm = ({route, navigation}) => {
 
       console.log(formData);
 
-      await axios
-        .post(BASE_URL, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(response => {
-          const message = response.data;
-          if (message === 'success') {
-            Toast.show({
-              type: 'success',
-              text1: 'UniHive',
-              text2: 'Dorm Listed',
-            });
-            navigation.goBack();
-          } else if (message === 'failed') {
-            Toast.show({
-              type: 'error',
-              text1: 'UniHive',
-              text2: 'Dorm not listed. Please try again.',
-            });
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      // await axios
+      //   .post(BASE_URL, formData, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   })
+      //   .then(response => {
+      //     const message = response.data;
+      //     if (message === 'success') {
+      //       Toast.show({
+      //         type: 'success',
+      //         text1: 'UniHive',
+      //         text2: 'Dorm Listed',
+      //       });
+      //       navigation.goBack();
+      //     } else if (message === 'failed') {
+      //       Toast.show({
+      //         type: 'error',
+      //         text1: 'UniHive',
+      //         text2: 'Dorm not listed. Please try again.',
+      //       });
+      //     }
+      //   })
+      //   .finally(() => {
+      //     setIsLoading(false);
+      //   });
     }
   }
 
@@ -221,32 +221,32 @@ const ListingForm = ({route, navigation}) => {
         });
       });
 
-      await axios
-        .post(BASE_URL, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(response => {
-          const message = response.data;
-          if (message === 'success') {
-            Toast.show({
-              type: 'success',
-              text1: 'UniHive',
-              text2: 'Dorm Listed',
-            });
-            navigation.goBack();
-          } else if (message === 'failed') {
-            Toast.show({
-              type: 'error',
-              text1: 'UniHive',
-              text2: 'Dorm not listed. Please try again.',
-            });
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      // await axios
+      //   .post(BASE_URL, formData, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   })
+      //   .then(response => {
+      //     const message = response.data;
+      //     if (message === 'success') {
+      //       Toast.show({
+      //         type: 'success',
+      //         text1: 'UniHive',
+      //         text2: 'Dorm Updated',
+      //       });
+      //       navigation.goBack();
+      //     } else if (message === 'failed') {
+      //       Toast.show({
+      //         type: 'error',
+      //         text1: 'UniHive',
+      //         text2: 'Dorm not updated. Please try again.',
+      //       });
+      //     }
+      //   })
+      //   .finally(() => {
+      //     setIsLoading(false);
+      //   });
     }
   }
 
@@ -406,6 +406,7 @@ const ListingForm = ({route, navigation}) => {
   return (
     <ScrollView style={styles.scrollcontainer}>
       <KeyboardAvoidingView style={styles.container}>
+        {/* Images */}
         <SafeAreaView
           style={[styles.cardContainer, errors.images && styles.error]}>
           <FlatList
@@ -426,9 +427,8 @@ const ListingForm = ({route, navigation}) => {
             <Text style={{color: '#FFFFFF'}}>Upload Images</Text>
           </TouchableOpacity>
         </View>
-        {/*  */}
-        <Separator title="Basic Information" />
         {/* Name */}
+        <Separator title="Basic Information" />
         <TextInput
           style={[styles.input, errors.name && styles.error]}
           value={initialValues.name}
@@ -462,6 +462,20 @@ const ListingForm = ({route, navigation}) => {
           </View>
         </View>
         {/* Address */}
+        <View
+          style={{
+            backgroundColor: '#0E898B',
+            padding: 5,
+            borderRadius: 5,
+            marginTop: 5,
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon name="info" color={'white'} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+              Example: 303 Recto Ave, Binondo, Manila
+            </Text>
+          </View>
+        </View>
         <TextInput
           style={[styles.input, errors.address && styles.error]}
           value={initialValues.address}
@@ -579,15 +593,33 @@ const ListingForm = ({route, navigation}) => {
         </View>
         {/* Payment and Duration Terms */}
         <Separator title="Payment and Duration Terms (Optional)" />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Icon name="info" color={'#0E898B'} size={16} />
-          <Text style={{fontSize: 12}}>
-            'N/A' or leave it blank if not applicable
-          </Text>
+        <View
+          style={{
+            backgroundColor: '#0E898B',
+            padding: 5,
+            borderRadius: 5,
+            marginTop: 5,
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon name="info" color={'white'} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+              Use 'N/A' or leave it blank if not applicable
+            </Text>
+          </View>
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Icon name="info" color={'#0E898B'} size={16} />
-          <Text style={{fontSize: 12}}>Format: "1 month" or "12 months"</Text>
+        <View
+          style={{
+            backgroundColor: '#0E898B',
+            padding: 5,
+            borderRadius: 5,
+            marginTop: 5,
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon name="info" color={'white'} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+              Please follow this format: "1 month" or "12 months"
+            </Text>
+          </View>
         </View>
         {/* Advance Deposit */}
         <View style={styles.section}>
