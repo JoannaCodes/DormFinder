@@ -95,15 +95,14 @@ const UserProfile = ({uid}) => {
               text1: 'UniHive',
               text2: 'Profile updated',
             });
+          } else if (message === 'failed') {
+            Toast.show({
+              type: 'error',
+              text1: 'UniHive',
+              text2:
+                'Cannot update profile. Please check you network and try again',
+            });
           }
-        })
-        .catch(error => {
-          Toast.show({
-            type: 'error',
-            text1: 'UniHive',
-            text2:
-              'Cannot update profile. Please check you network and try again',
-          });
         })
         .finally(() => {
           setLoading(false);

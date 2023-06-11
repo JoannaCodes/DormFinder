@@ -85,20 +85,13 @@ export default function EditProfile({route, navigation}) {
                   text2: 'Account updated',
                 });
                 fetchAccount();
-              } else {
+              } else if (message === 'failed') {
                 Toast.show({
                   type: 'error',
                   text1: 'UniHive',
                   text2: 'Unable to update account. Please Try Again.',
                 });
               }
-            })
-            .catch(error => {
-              Toast.show({
-                type: 'error',
-                text1: 'UniHive',
-                text2: 'An error occured. Please try again.',
-              });
             })
             .finally(() => {
               setLoading(false);
@@ -138,22 +131,17 @@ export default function EditProfile({route, navigation}) {
                     text2: 'Account deleted',
                   });
 
-                  await AsyncStorage.clear();
-                  navigation.dispatch(StackActions.replace('Authentication'));
-                } else {
+                  await AsyncStorage.clear().then(() => {
+                    // logout function
+                    navigation.dispatch(StackActions.replace('Login'));
+                  });
+                } else if (message === 'failed') {
                   Toast.show({
                     type: 'error',
                     text1: 'UniHive',
                     text2: 'Unable to delete account. Please Try Again.',
                   });
                 }
-              })
-              .catch(error => {
-                Toast.show({
-                  type: 'error',
-                  text1: 'UniHive',
-                  text2: 'An error occured. Please try again',
-                });
               });
           },
         },

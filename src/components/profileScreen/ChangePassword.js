@@ -39,18 +39,19 @@ const ChangePassword = ({route}) => {
               },
             })
             .then(response => {
-              if (response.data === 'success') {
+              const message = response.data
+              if (message === 'success') {
                 Toast.show({
                   type: 'success',
                   text1: 'UniHive',
-                  text2: 'Password updated',
+                  text2: 'Password updated.',
                 });
                 resetForm();
-              } else if (response.data === 'incorrect') {
+              } else if (message === 'incorrect') {
                 Toast.show({
                   type: 'warning',
                   text1: 'UniHive',
-                  text2: 'Current password is incorrect password',
+                  text2: 'Current password is incorrect.',
                 });
               } else {
                 Toast.show({
@@ -59,13 +60,6 @@ const ChangePassword = ({route}) => {
                   text2: 'Unable to update password. Please try again.',
                 });
               }
-            })
-            .catch(error => {
-              Toast.show({
-                type: 'error',
-                text1: 'UniHive',
-                text2: 'An error occured. Please try again.',
-              });
             })
             .finally(() => {
               setLoading(false);

@@ -56,13 +56,6 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
           });
         }
       })
-      .catch(error => {
-        Toast.show({
-          type: 'error',
-          text1: 'UniHive',
-          text2: 'An error occured. Please try again.',
-        });
-      })
       .finally(() => {
         setLoading(false);
         setComment('');

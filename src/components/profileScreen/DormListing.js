@@ -61,13 +61,6 @@ const DormListing = ({route, navigation}) => {
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
-          setStatus('failed');
-
-          Toast.show({
-            type: 'error',
-            text1: 'Dorm Finder',
-            text2: 'Cannot retrieve dorm listing. Please try again.',
-          });
         } else {
           setStatus('failed');
         }
@@ -116,14 +109,8 @@ const DormListing = ({route, navigation}) => {
                     text1: 'Dorm Finder',
                     text2: 'Unable to delete listing. Please try again.',
                   });
+                  fetchData();
                 }
-              })
-              .catch(error => {
-                Toast.show({
-                  type: 'error',
-                  text1: 'Dorm Finder',
-                  text2: 'An error occured. Please try again.',
-                });
               });
           },
         },

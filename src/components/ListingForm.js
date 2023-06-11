@@ -115,13 +115,6 @@ const ListingForm = ({route, navigation}) => {
           visitors: Boolean(data.visitors),
           curfew: Boolean(data.curfew),
         });
-      })
-      .catch(error => {
-        Toast.show({
-          type: 'error',
-          text1: 'UniHive',
-          text2: 'Cannot retrieve dorm details at this time. Please try again.',
-        });
       });
   };
 
@@ -170,29 +163,21 @@ const ListingForm = ({route, navigation}) => {
           },
         })
         .then(response => {
-          console.log(response.data);
-          if (response.data === 'success') {
+          const message = response.data;
+          if (message === 'success') {
             Toast.show({
               type: 'success',
               text1: 'UniHive',
               text2: 'Dorm Listed',
             });
             navigation.goBack();
-          } else {
+          } else if (message === 'failed') {
             Toast.show({
               type: 'error',
               text1: 'UniHive',
               text2: 'Dorm not listed. Please try again.',
             });
           }
-        })
-        .catch(error => {
-          console.log(error);
-          Toast.show({
-            type: 'error',
-            text1: 'UniHive',
-            text2: 'An error occured. Please try again.',
-          });
         })
         .finally(() => {
           setIsLoading(false);
@@ -243,28 +228,21 @@ const ListingForm = ({route, navigation}) => {
           },
         })
         .then(response => {
-          console.log(response.data);
-          if (response.data === 'success') {
+          const message = response.data;
+          if (message === 'success') {
             Toast.show({
               type: 'success',
               text1: 'UniHive',
-              text2: 'Dorm Listing Updated',
+              text2: 'Dorm Listed',
             });
             navigation.goBack();
-          } else {
+          } else if (message === 'failed') {
             Toast.show({
               type: 'error',
               text1: 'UniHive',
-              text2: 'Dorm listing not updated. Please try again.',
+              text2: 'Dorm not listed. Please try again.',
             });
           }
-        })
-        .catch(error => {
-          Toast.show({
-            type: 'error',
-            text1: 'UniHive',
-            text2: 'An error occured. Please Try Again.',
-          });
         })
         .finally(() => {
           setIsLoading(false);

@@ -46,26 +46,18 @@ const Bookmarks = ({route, navigation}) => {
         setDorms(data);
         setStatus('success');
 
-        // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
           const {images, ...rest} = item;
           return rest;
         });
-
         AsyncStorage.setItem('bookmarks', JSON.stringify(dataWithoutImages));
       })
       .catch(async error => {
-        setStatus('failed');
-        Toast.show({
-          type: 'error',
-          text1: 'UniHive',
-          text2: 'Cannot retrieve bookmarks. Please try again.',
-        });
-
-        // Retrieve the dorms from AsyncStorage if available
         const storedDorms = await AsyncStorage.getItem('bookmarks');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
+        } else {
+          setStatus('failed');
         }
       })
       .finally(() => {
