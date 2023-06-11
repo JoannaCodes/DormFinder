@@ -8,8 +8,7 @@ import {
   View,
   Alert,
 } from 'react-native';
-import {StackActions} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import UserProfile from '../components/UserProfile';
 
@@ -17,18 +16,15 @@ const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
 
-export default function Profile({route, navigation}) {
-  const {user} = route.params;
+export default function Profile({user, verified, onLogout}) {
+  const navigation = useNavigation();
   const handleLogOut = async () => {
     try {
       Alert.alert('Log out', 'Are you sure you want to log out?', [
         {
           text: 'Yes',
-          onPress: async () => {
-            await AsyncStorage.clear().then(() => {
-              // logout function
-              navigation.dispatch(StackActions.replace('Login'));
-            });
+          onPress: () => {
+            onLogout();
           },
         },
         {
@@ -66,12 +62,13 @@ export default function Profile({route, navigation}) {
 
         <View style={styles.section}>
           <Text style={styles.label}>Dorm Listing Settings</Text>
-          <TouchableOpacity
-            style={styles.profilebtn}
-            onPress={() => navigation.navigate('Dorm Listing')}>
-            <Text>Dorm Listing</Text>
-          </TouchableOpacity>
-
+          {verified ? (
+            <TouchableOpacity
+              style={styles.profilebtn}
+              onPress={() => navigation.navigate('Dorm Listing')}>
+              <Text>Dorm Listing</Text>
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Verification')}>
@@ -123,5 +120,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     elevation: 4,
     padding: 11,
+  },
+  failedButton: {
+    opacity: 0.5,
   },
 });

@@ -9,11 +9,13 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 //
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
@@ -31,12 +33,14 @@ const Separator = ({title}) => {
 
 export default function Login({onLogin}) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   const handleLogin = async mode => {
     if (mode === 'guest') {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append('tag', 'guest_login_app');
 
@@ -52,7 +56,6 @@ export default function Login({onLogin}) {
           if (data.status) {
             await AsyncStorage.setItem('user', JSON.stringify(data)).then(
               () => {
-                // navigation.dispatch(StackActions.replace('Main'));
                 onLogin(data);
               },
             );
@@ -62,11 +65,15 @@ export default function Login({onLogin}) {
         })
         .catch(error => {
           Alert.alert('An error occurred');
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else if (mode === 'google') {
       Alert.alert('Login with google');
     } else {
       if (validateLogin()) {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append('tag', 'login_app');
         formData.append('username', username);
@@ -82,15 +89,32 @@ export default function Login({onLogin}) {
             const data = response.data;
 
             if (data.status) {
-              onLogin(data.id);
+              onLogin(data);
+              Toast.show({
+                type: 'success',
+                text1: 'UniHive',
+                text2: `Hello, ${data.username}.`,
+              });
             } else {
-              Alert.alert('User Not Found');
+              Toast.show({
+                type: 'error',
+                text1: 'UniHive',
+                text2: 'User not found.',
+              });
             }
           })
           .catch(error => {
-            Alert.alert('An error occurred', error.toString());
+            Toast.show({
+              type: 'error',
+              text1: 'UniHive',
+              text2: 'Please check your network and try again.',
+            });
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       } else {
+        Alert.alert('Fill in username or password');
       }
     }
   };
@@ -159,9 +183,13 @@ export default function Login({onLogin}) {
               onPress={() => {
                 handleLogin();
               }}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
-                Login
-              </Text>
+              {isLoading ? (
+                <ActivityIndicator color={'white'} size={'small'} />
+              ) : (
+                <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
+                  Login
+                </Text>
+              )}
             </TouchableOpacity>
             {/*  */}
             {/*  */}

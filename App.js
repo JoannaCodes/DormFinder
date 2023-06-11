@@ -163,8 +163,7 @@ function RootNavigator({route}) {
 
 const AppStack = createNativeStackNavigator();
 
-function RootApp({route}) {
-  const {user} = route.params;
+function RootApp({user, verified, onLogout}) {
   return (
     <AppStack.Navigator>
       <AppStack.Screen
@@ -174,19 +173,8 @@ function RootApp({route}) {
         initialParams={{user}}
       />
       <AppStack.Screen
-        name="Profile Tab"
-        component={ProfileScreen}
-        options={{title: 'Profile'}}
-        initialParams={{user}}
-      />
-      <AppStack.Screen
         name="Change Password"
         component={ChangePasswordComponent}
-        initialParams={{user}}
-      />
-      <AppStack.Screen
-        name="Edit Profile"
-        component={EditProfileComponent}
         initialParams={{user}}
       />
       <AppStack.Screen
@@ -199,6 +187,14 @@ function RootApp({route}) {
         component={VerificationComponent}
         initialParams={{user}}
       />
+      <AppStack.Screen name="Profile Tab" options={{title: 'Profile'}}>
+        {() => (
+          <ProfileScreen user={user} verified={verified} onLogout={onLogout} />
+        )}
+      </AppStack.Screen>
+      <AppStack.Screen name="Edit Profile">
+        {() => <EditProfileComponent user={user} onLogout={onLogout} />}
+      </AppStack.Screen>
       <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
@@ -211,18 +207,18 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [verified, setVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     checkLoginStatus();
-    AsyncStorage.removeItem('user');
-    // AsyncStorage.clear();
   }, []);
 
   const handleLogin = async user => {
     try {
       await AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
-        setUser(user);
+        setUser(user.id);
+        setVerified(Boolean(user.isVerified));
       });
     } catch (error) {
       console.log('Login Failed:', error);
@@ -245,7 +241,9 @@ export default function App() {
     try {
       await AsyncStorage.getItem('user').then(data => {
         if (data) {
-          setUser(JSON.parse(data));
+          const loggedUser = JSON.parse(data);
+          setUser(loggedUser.id);
+          setVerified(Boolean(loggedUser.isVerified));
         }
       });
     } catch (error) {
@@ -268,19 +266,23 @@ export default function App() {
           {user ? (
             <Stack.Screen
               name="App"
-              component={RootApp}
-              initialParams={{user}}
               options={{
                 headerShown: false,
                 animation: 'flip',
                 animationTypeForReplace: user === null ? 'pop' : 'push',
-              }}
-            />
+              }}>
+              {() => (
+                <RootApp
+                  user={user}
+                  verified={verified}
+                  onLogout={handleLogout}
+                />
+              )}
+            </Stack.Screen>
           ) : (
             <>
               <Stack.Screen
                 name="Login"
-                // component={Login}
                 options={{
                   headerShown: false,
                   animation: 'slide_from_left',

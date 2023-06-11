@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import {
@@ -12,9 +13,7 @@ import {
 } from 'react-native';
 import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
-import {StackActions} from '@react-navigation/native';
 import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
@@ -30,10 +29,9 @@ const Separator = () => {
   );
 };
 
-export default function EditProfile({route, navigation}) {
-  const {user} = route.params;
+export default function EditProfile({user, onLogout}) {
   const [handle, setHandle] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   let URL = BASE_URL;
 
   useEffect(() => {
@@ -41,6 +39,7 @@ export default function EditProfile({route, navigation}) {
   }, []);
 
   const fetchAccount = async () => {
+    setIsLoading(true);
     axios
       .get(`${URL}?tag=get_account&userref=${user}`)
       .then(response => {
@@ -54,6 +53,9 @@ export default function EditProfile({route, navigation}) {
           text1: 'UniHive',
           text2: 'Cannot retrieve account details. Please try again.',
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -63,7 +65,7 @@ export default function EditProfile({route, navigation}) {
       {
         text: 'Update',
         onPress: async () => {
-          setLoading(true);
+          setIsLoading(true);
           const formData = new FormData();
           formData.append('tag', 'update_account');
           formData.append('userref', user);
@@ -94,7 +96,7 @@ export default function EditProfile({route, navigation}) {
               }
             })
             .finally(() => {
-              setLoading(false);
+              setIsLoading(false);
             });
         },
       },
@@ -121,7 +123,7 @@ export default function EditProfile({route, navigation}) {
                   'Content-Type': 'multipart/form-data',
                 },
               })
-              .then(async response => {
+              .then(response => {
                 const message = response.data;
 
                 if (message === 'success') {
@@ -131,10 +133,7 @@ export default function EditProfile({route, navigation}) {
                     text2: 'Account deleted',
                   });
 
-                  await AsyncStorage.clear().then(() => {
-                    // logout function
-                    navigation.dispatch(StackActions.replace('Login'));
-                  });
+                  onLogout();
                 } else if (message === 'failed') {
                   Toast.show({
                     type: 'error',
@@ -181,7 +180,11 @@ export default function EditProfile({route, navigation}) {
                 <Text style={styles.label}>Email or Phone Number</Text>
                 <TextInput
                   style={styles.input}
-                  value={values.user}
+                  value={
+                    isLoading
+                      ? 'Please wait, retrieving account...'
+                      : values.user
+                  }
                   placeholder="Email"
                   placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('user')}
@@ -203,7 +206,7 @@ export default function EditProfile({route, navigation}) {
                       : '#0E898B',
                 },
               ]}>
-              {loading ? (
+              {isLoading ? (
                 <ActivityIndicator size={'small'} color={'#FFFFFF'} />
               ) : (
                 <Text style={{color: '#FFFFFF'}}>Submit</Text>

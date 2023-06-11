@@ -137,7 +137,7 @@ const DormListing = ({route, navigation}) => {
             <TouchableOpacity
               style={[
                 styles.btnContainer,
-                status === 'failed' && styles.failedButton, // Apply different style if status is "failed"
+                status === 'failed' && styles.failedButton,
               ]}
               disabled={status === 'failed'}
               onPress={() =>
