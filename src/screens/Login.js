@@ -40,35 +40,7 @@ export default function Login({onLogin}) {
 
   const handleLogin = async mode => {
     if (mode === 'guest') {
-      setIsLoading(true);
-      const formData = new FormData();
-      formData.append('tag', 'guest_login_app');
-
-      await axios
-        .post(BASE_URL, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(async response => {
-          const data = response.data;
-
-          if (data.status) {
-            await AsyncStorage.setItem('user', JSON.stringify(data)).then(
-              () => {
-                onLogin(data);
-              },
-            );
-          } else {
-            Alert.alert('Guest login failed');
-          }
-        })
-        .catch(error => {
-          Alert.alert('An error occurred');
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      Alert.alert('Login as guest');
     } else if (mode === 'google') {
       Alert.alert('Login with google');
     } else {
