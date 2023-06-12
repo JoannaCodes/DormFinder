@@ -19,7 +19,11 @@ import {
   Dimensions,
   StatusBar,
   Pressable,
+  Linking,
+  PermissionsAndroid,
 } from 'react-native';
+
+import Geolocation from '@react-native-community/geolocation';
 
 import axios from 'axios';
 import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
@@ -96,38 +100,66 @@ const HomeScreen = ({ navigation }) => {
       });
   };
 
-  const fetchDormsByCategory = (tag) => {
+  const fetchDormsByCategory = async (tag) => {
     if (tag === 'nearest_dorm') {
-      const latitude = 123.456;
-      const longitude = 789.012;
-
-      if (latitude && longitude) {
-        const formData = new FormData();
-        formData.append('tag', 'nearest_dorm');
-        formData.append('latitude', latitude);
-        formData.append('longitude', longitude);
-
-        axios
-          .post(`${BASE_URL}?tag=${tag}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+  
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Permission granted, fetch dorms based on user's location
+          Geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              
+              const formData = new FormData();
+              formData.append('tag', 'nearest_dorm');
+              formData.append('latitude', latitude);
+              formData.append('longitude', longitude);
+  
+              try {
+                const response = await axios.post(`${BASE_URL}?tag=${tag}`, formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                });
+                const data = JSON.parse(response.data);
+                setDorms(data);
+                setSelectedCategoryIndex(
+                  categoryList.findIndex(category => category.tag === tag)
+                );
+              } catch (error) {
+                console.error(error);
+              }
             },
-          })
-          .then(response => {
-            const data = JSON.parse(response.data);
-            setDorms(data);
-            setSelectedCategoryIndex(
-              categoryList.findIndex(category => category.tag === tag)
-            );
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      } else {
-        // Handle error when latitude or longitude is not available
-        console.log('Error: Latitude and Longitude are required for nearest_dorm');
+            (error) => {
+              console.log('Error getting current position:', error);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          );
+        } else {
+          // Permission denied, display modal to turn on location settings
+          Alert.alert(
+            'Location Permission',
+            'Please enable location services to show nearest dorms.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Settings',
+                onPress: () => Linking.openSettings(),
+              },
+            ]
+          );
+        }
+      } catch (error) {
+        console.log('Error requesting location permission:', error);
       }
     } else {
+      // Fetch dorms for other categories
       axios
         .get(`${BASE_URL}?tag=${tag}`, {
           headers: {
