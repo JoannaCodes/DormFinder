@@ -10,47 +10,212 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity, 
+  ToastAndroid,
 } from 'react-native';
-
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 const {width} = Dimensions.get('screen');
 
+import ViewReviews from '../components/ViewReviews';
+
+import axios from 'axios';
 
 const DormDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
+
+  const [dorms, setDorms] = useState([]);
+  const [images, setImages] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const [isBookmarked, setBookmarked] = useState(false); 
   
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = () => {
-    axios
-    .get(`${BASE_URL}?tag=dorm_details&dormref=${dormref}`)
+    axios 
+    .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
       .then(response => {
-        const data = response.data;
+        const data = JSON.parse(response.data);
         setDorms(data);
+        const dormImages = data.images.split(',');
+        setImages(dormImages)
       })
       .catch(error => {
         console.error(error);
       });
   };
 
-  const InteriorCard = ({interior}) => {
-    return <Image source={interior} style={style.interiorImage} />;
+  const InteriorCard = ({item}) => {
+    return <Image
+    source={{ uri: `${DORM_UPLOADS}/${dormref}/${item}` }}
+    style={style.interiorImage}
+  />
   };
 
   const handleMessageNow = () => {
     // Handle the "Message Now" button press here
   };
 
-  const handleFavorite = () => {
-    // Handle the "Favorite" button press here
+  const handleFavorite = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('tag', 'add_bookmarks');
+      formData.append('dormref', dormref);
+      formData.append('userref', 'LhVQ3FMv6d6lW');
+  
+      let response;
+  
+      if (pressed) {
+        response = await axios.post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        setBookmarked(!pressed);
+  
+        const message =
+          response.data === 'Dorm added to bookmarks'
+            ? 'Dorm added to bookmarks'
+            : 'Dorm removed from bookmarks';
+  
+        Toast.show({
+          type: 'success',
+          text1: 'Dorm Finder',
+          text2: message,
+        });
+  
+        if (!pressed) {
+          fetchData();
+        }
+      } else {
+        const formData = new FormData();
+        formData.append('tag', 'delete_bookmark');
+        formData.append('dormref', dormref);
+  
+        response = await axios.post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        Toast.show({
+          type: 'success',
+          text1: 'Dorm Finder',
+          text2: response.data,
+        });
+  
+        fetchData();
+      }
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Dorm Finder',
+        text2: error.message,
+      });
+    }
   };
+  
+//   const handleFavorite = () => {
+//   try {
+//     const formData = new FormData();
+//     formData.append('tag', 'add_bookmarks');
+//     formData.append('dormref', dormref);
+//     formData.append('userref', 'LhVQ3FMv6d6lW');
+
+//     const response = await axios.post(BASE_URL, formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+
+//     const message = response.data === 'Dorm added to bookmarks' ? 'Dorm added to bookmarks' : 'Dorm removed from bookmarks';
+
+//     setBookmarked(!isBookmarked);
+
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Dorm Finder',
+//       text2: message,
+//     });
+
+//     if (!isBookmarked) {
+//       fetchData();
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Dorm Finder',
+//       text2: error.message,
+//     });
+//   }
+// };
+
+// const handleFavoriteIconPress = async () => {
+//   try {
+//     if (isBookmarked) {
+//       await _deleteBookmark(dormref);
+//       Toast.show({
+//         type: 'success',
+//         text1: 'Dorm Finder',
+//         text2: 'Dorm removed from bookmarks',
+//       });
+//     } else {
+//       await handleFavorite();
+//       Toast.show({
+//         type: 'success',
+//         text1: 'Dorm Finder',
+//         text2: 'Dorm added to bookmarks',
+//       });
+//     }
+//     setBookmarked(!isBookmarked);
+//   } catch (error) {
+//     console.error(error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Dorm Finder',
+//       text2: error.message,
+//     });
+//   }
+// };
+
+// const _deleteBookmark = async dormref => {
+//   const formData = new FormData();
+//   formData.append('tag', 'delete_bookmark');
+//   formData.append('userref', 'LhVQ3FMv6d6lW');
+//   formData.append('dormref', dormref);
+
+//   try {
+//     const response = await axios.post(BASE_URL, formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Dorm Finder',
+//       text2: response.data,
+//     });
+
+//     fetchData();
+//   } catch (error) {
+//     console.error(error);
+//     Toast.show({
+//       type: 'error',
+//       text1: 'Dorm Finder',
+//       text2: error.message,
+//     });
+//   }
+// };
 
   const handleRatingPress = () => {
-    // Handle the rating press here
   };
 
   return (
@@ -58,34 +223,47 @@ const DormDetails = ({navigation, route}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* House image */}
 
+
         <View style={style.backgroundImageContainer}>
-          <ImageBackground style={style.backgroundImage} source={house.image}>
-            <View style={style.header}>
-              <TouchableOpacity
-                style={style.headerBtn}
-                onPress={navigation.goBack}>
-                <Icon name="arrow-back-ios" 
-                  size={20} 
-                  style={{ marginLeft: 10 }}/>
-              </TouchableOpacity>
-              <TouchableOpacity style={style.headerBtn} onPress={handleFavorite}>
-                <Icon name="favorite" size={20} color={COLORS.red} />
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        </View>
+  <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
+    <View style={style.header}>
+      {/* <TouchableOpacity
+        style={style.headerBtn}
+        onPress={navigation.goBack}>
+        <Icon name="arrow-back-ios" 
+          size={20} 
+          style={{ marginLeft: 10 }}/>
+      </TouchableOpacity> */}
+      <TouchableOpacity style={style.headerBtn}  onPress={() => {
+                                      handleFavorite();
+                                      setPressed(!pressed)
+                                      }}>
+      <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
+      </TouchableOpacity>
+    </View>
+  </ImageBackground>
+</View>
+
+        <ViewReviews
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              dormref={dormref}
+            />
 
         <View style={style.detailsContainer}>
           {/* Name and rating view container */}
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-              {house.title}
+              {dorms.name}
             </Text>
-            <TouchableOpacity onPress={handleRatingPress}>
+            <TouchableOpacity onPress={() => handleRatingPress}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   style={style.ratingTag}
-                  onPress={handleRatingPress}>
+                  onPress={() => {
+                    setModalVisible(true);
+                    // console.log(item.dormref);
+                  }}>
                   <Text style={{color: COLORS.white}}>4.8</Text>
                 </TouchableOpacity>
                 <Text style={{fontSize: 13, marginLeft: 5}}>155 ratings</Text>
@@ -95,7 +273,7 @@ const DormDetails = ({navigation, route}) => {
 
           {/* Location text */}
           <Text style={{fontSize: 16, color: COLORS.grey}}>
-            {house.location}
+            {dorms.address}
           </Text>
 
           {/* Facilities container */}
@@ -114,7 +292,7 @@ const DormDetails = ({navigation, route}) => {
             </View>
           </View>
           <Text style={{marginTop: 20, color: COLORS.grey}}>
-            {house.details}
+            {dorms.details}
           </Text>
 
           {/* Interior list */}
@@ -122,9 +300,9 @@ const DormDetails = ({navigation, route}) => {
             contentContainerStyle={{marginTop: 20}}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(_, key) => key.toString()}
-            data={house.interiors}
-            renderItem={({item}) => <InteriorCard interior={item} />}
+            keyExtractor={(item, index) => String(index)}
+            data={images}
+            renderItem={InteriorCard}
           />
 
           {/* footer container */}
@@ -132,7 +310,7 @@ const DormDetails = ({navigation, route}) => {
             <View>
               <Text
                 style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
-                ₱1,500
+                ₱{dorms.price}
               </Text>
               <Text
                 style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
@@ -147,6 +325,7 @@ const DormDetails = ({navigation, route}) => {
           </View>
         </View>
       </ScrollView>
+      
     </SafeAreaView>
   );
 };
