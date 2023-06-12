@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
@@ -33,6 +34,7 @@ import PaymentGatewayComponent from './src/components/profileScreen/PaymentGatew
 import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 import ListingFormComponent from './src/components/ListingForm';
+import GuestModeModal from './src/components/modals/GuestModeModal';
 
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
@@ -40,6 +42,8 @@ import SplashScreen from './src/screens/SplashScreen';
 
 import {LogBox} from 'react-native';
 import {useEffect} from 'react';
+import {BASE_URL} from './constants/index';
+import axios from 'axios';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
 
@@ -101,7 +105,7 @@ const toastConfig = {
 const Tab = createBottomTabNavigator();
 
 function RootNavigator({route}) {
-  const {user} = route.params;
+  const {user, mode} = route.params;
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
@@ -110,7 +114,13 @@ function RootNavigator({route}) {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
           return routeName === 'Profile' ? null : (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Profile Tab')}>
+              onPress={() => {
+                if (mode === 'guest') {
+                  navigation.navigate('Guest Modal');
+                } else {
+                  navigation.navigate('Profile Tab');
+                }
+              }}>
               <Icon name="account-circle" size={40} color="gray" />
             </TouchableOpacity>
           );
@@ -144,18 +154,42 @@ function RootNavigator({route}) {
         component={BookmarksScreen}
         options={{title: 'Bookmarks'}}
         initialParams={{user}}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (mode === 'guest') {
+              e.preventDefault();
+              navigation.navigate('Guest Modal');
+            }
+          },
+        })}
       />
       <Tab.Screen
         name="NotificationsTab"
         component={NotificationsScreen}
         options={{title: 'Notifications'}}
         initialParams={{user}}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (mode === 'guest') {
+              e.preventDefault();
+              navigation.navigate('Guest Modal');
+            }
+          },
+        })}
       />
       <Tab.Screen
         name="InboxTab"
         component={InboxScreen}
         options={{title: 'Inbox'}}
         initialParams={{user}}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (mode === 'guest') {
+              e.preventDefault();
+              navigation.navigate('Guest Modal');
+            }
+          },
+        })}
       />
     </Tab.Navigator>
   );
@@ -163,14 +197,14 @@ function RootNavigator({route}) {
 
 const AppStack = createNativeStackNavigator();
 
-function RootApp({user, verified, onLogout}) {
+function RootApp({user, mode, verified, onLogout}) {
   return (
     <AppStack.Navigator>
       <AppStack.Screen
         name="Home"
         component={RootNavigator}
         options={{headerShown: false}}
-        initialParams={{user}}
+        initialParams={{user, mode}}
       />
       <AppStack.Screen
         name="Change Password"
@@ -187,6 +221,9 @@ function RootApp({user, verified, onLogout}) {
         component={VerificationComponent}
         initialParams={{user}}
       />
+      <AppStack.Screen name="Guest Modal" options={{headerShown: false}}>
+        {() => <GuestModeModal onLogout={onLogout} />}
+      </AppStack.Screen>
       <AppStack.Screen name="Profile Tab" options={{title: 'Profile'}}>
         {() => (
           <ProfileScreen user={user} verified={verified} onLogout={onLogout} />
@@ -207,18 +244,20 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [verified, setVerified] = useState(false);
+  const [verified, setVerified] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [mode, setMode] = useState('user');
 
   useEffect(() => {
     checkLoginStatus();
   }, []);
 
   const handleLogin = async user => {
+    console.log(user);
     try {
       await AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
         setUser(user.id);
-        setVerified(Boolean(user.isVerified));
+        fetchVerification(user.id);
       });
     } catch (error) {
       console.log('Login Failed:', error);
@@ -239,11 +278,11 @@ export default function App() {
 
   const checkLoginStatus = async () => {
     try {
-      await AsyncStorage.getItem('user').then(data => {
+      await AsyncStorage.getItem('user').then(async data => {
         if (data) {
           const loggedUser = JSON.parse(data);
           setUser(loggedUser.id);
-          setVerified(Boolean(loggedUser.isVerified));
+          fetchVerification(loggedUser.id);
         }
       });
     } catch (error) {
@@ -253,6 +292,15 @@ export default function App() {
         setIsLoading(false);
       }, 3000);
     }
+  };
+
+  const fetchVerification = async uid => {
+    axios
+      .get(`${BASE_URL}?tag=get_verification_status&userref=${uid}`)
+      .then(response => {
+        const status = JSON.parse(response.data);
+        setVerified(Boolean(status.is_verified));
+      });
   };
 
   if (isLoading) {
@@ -274,6 +322,7 @@ export default function App() {
               {() => (
                 <RootApp
                   user={user}
+                  mode={mode}
                   verified={verified}
                   onLogout={handleLogout}
                 />

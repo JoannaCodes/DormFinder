@@ -101,9 +101,10 @@ const ViewReviews = ({visible, onClose, dormref}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>
-              Cannot retrieve reviews at this time. Please try again later.
+            <Text style={styles.title}>
+              Cannot retrieve reviews at this time.
             </Text>
+            <Text style={styles.message}>Please try again later.</Text>
           </>
         ) : (
           <>
@@ -112,7 +113,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>No Reviews Yet</Text>
+            <Text style={styles.title}>No Reviews Yet</Text>
           </>
         )}
       </View>
@@ -245,10 +246,17 @@ const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
+    padding: 16,
   },
-  emptyTitle: {
+  title: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  message: {
     textAlign: 'center',
+    fontSize: 16,
+    marginHorizontal: 20,
   },
 });

@@ -16,7 +16,6 @@ import {BASE_URL, DORM_UPLOADS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Toast from 'react-native-toast-message';
 
 import ReviewForm from '../components/ReviewForm';
 
@@ -123,16 +122,17 @@ const Bookmarks = ({route, navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>
-              Cannot retrieve bookmarks at this time. Please try again later.
+            <Text style={styles.title}>
+              Cannot retrieve bookmarks at this time.
             </Text>
+            <Text style={styles.message}>Please try again.</Text>
             <TouchableOpacity
-              style={styles.btnContainer}
+              style={[styles.btnContainer, {marginTop: 20, width: '40%'}]}
               onPress={() => {
                 setLoading(true);
                 fetchData();
               }}>
-              <Text>Try Again</Text>
+              <Text>Retry</Text>
             </TouchableOpacity>
           </>
         ) : (
@@ -142,11 +142,13 @@ const Bookmarks = ({route, navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>No Bookmarks</Text>
+            <Text style={styles.title}>No Bookmarks</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text>Tap "</Text>
+              <Text style={styles.message}>Tap "</Text>
               <Icon name="favorite" size={18} color="red" />
-              <Text>" to add the dorm that interests you</Text>
+              <Text style={styles.message}>
+                " to add the dorm that interests you
+              </Text>
             </View>
           </>
         )}
@@ -198,14 +200,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   emptyContainer: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  title: {
     textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginHorizontal: 20,
   },
   btnContainer: {
     flexDirection: 'row',

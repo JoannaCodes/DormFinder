@@ -184,16 +184,20 @@ const DormListing = ({route, navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>
-              Cannot retrieve dorm listing at this time. Please try again later.
+            <Text style={styles.title}>
+              Cannot retrieve dorm listing at this time.
             </Text>
+            <Text style={styles.message}>Please try again later.</Text>
             <TouchableOpacity
-              style={styles.btnContainer}
+              style={[
+                styles.btnContainer,
+                {alignItems: 'center', marginTop: 20, width: '40%'},
+              ]}
               onPress={() => {
                 setLoading(true);
                 fetchData();
               }}>
-              <Text>Try Again</Text>
+              <Text>Retry</Text>
             </TouchableOpacity>
           </>
         ) : (
@@ -203,11 +207,11 @@ const DormListing = ({route, navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.emptyTitle}>No Dorm Listing</Text>
+            <Text style={styles.title}>No Dorm Listing</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text>Tap "</Text>
+              <Text style={styles.message}>Tap "</Text>
               <Icon name="add" size={18} color="#0E898B" />
-              <Text>" to Add YourDorm</Text>
+              <Text style={styles.message}>" to Add YourDorm</Text>
             </View>
           </>
         )}
@@ -272,14 +276,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   emptyContainer: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emptyTitle: {
+  title: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  message: {
     textAlign: 'center',
+    fontSize: 16,
+    marginHorizontal: 20,
   },
   btnContainer: {
     elevation: 2,
