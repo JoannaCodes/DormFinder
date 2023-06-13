@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
   message: {
     textAlign: 'center',
     fontSize: 16,
-    marginHorizontal: 20,
   },
   btnContainer: {
     elevation: 2,

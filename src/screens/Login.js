@@ -39,10 +39,46 @@ export default function Login({onLogin}) {
 
   const handleLogin = async mode => {
     if (mode === 'guest') {
-      Alert.alert('Login as guest');
+      const formData = new FormData();
+      formData.append('tag', 'login_app_guest');
+
+      await axios
+        .post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          const user = response.data;
+
+          if (user.status) {
+            onLogin(user);
+            Toast.show({
+              type: 'success',
+              text1: 'UniHive',
+              text2: `Welcome, ${user.username}.`,
+            });
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'UniHive',
+              text2: 'Unable to enter guest mode.',
+            });
+          }
+        })
+        .catch(error => {
+          Toast.show({
+            type: 'error',
+            text1: 'UniHive',
+            text2: 'Please check your network and try again.',
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     } else if (mode === 'google') {
       Alert.alert('Login with google');
-    } else {
+    } else if (mode === 'user') {
       if (validateLogin()) {
         setIsLoading(true);
         const formData = new FormData();
@@ -57,14 +93,14 @@ export default function Login({onLogin}) {
             },
           })
           .then(response => {
-            const data = response.data;
+            const user = response.data;
 
-            if (data.status) {
-              onLogin(data);
+            if (user.status) {
+              onLogin(user);
               Toast.show({
                 type: 'success',
                 text1: 'UniHive',
-                text2: `Hello, ${data.username}.`,
+                text2: `Hello, ${user.username}.`,
               });
             } else {
               Toast.show({
@@ -152,7 +188,7 @@ export default function Login({onLogin}) {
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => {
-                handleLogin();
+                handleLogin('user');
               }}>
               {isLoading ? (
                 <ActivityIndicator color={'white'} size={'small'} />

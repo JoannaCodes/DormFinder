@@ -244,21 +244,25 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [verified, setVerified] = useState(true);
+  const [verified, setVerified] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [mode, setMode] = useState('user');
+  const [mode, setMode] = useState(null);
 
   useEffect(() => {
     checkLoginStatus();
   }, []);
 
   const handleLogin = async user => {
-    console.log(user);
     try {
-      await AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
+      AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
+        console.log('login user:', user);
         setUser(user.id);
-        fetchVerification(user.id);
+        setMode(user.mode);
+        if (user.mode === 'user') {
+          fetchVerification(user.id);
+        }
       });
+      setMode(user.mode);
     } catch (error) {
       console.log('Login Failed:', error);
     } finally {
@@ -270,6 +274,8 @@ export default function App() {
     try {
       await AsyncStorage.clear().then(() => {
         setUser(null);
+        setVerified(null);
+        setMode('');
       });
     } catch (error) {
       console.log('Logout failed:', error);
@@ -278,15 +284,19 @@ export default function App() {
 
   const checkLoginStatus = async () => {
     try {
-      await AsyncStorage.getItem('user').then(async data => {
+      await AsyncStorage.getItem('user').then(data => {
         if (data) {
-          const loggedUser = JSON.parse(data);
-          setUser(loggedUser.id);
-          fetchVerification(loggedUser.id);
+          console.log('async logged user:', data);
+          const asyncUser = JSON.parse(data);
+          setUser(asyncUser.id);
+          setMode(asyncUser.mode);
+          if (asyncUser.mode === 'user') {
+            fetchVerification(asyncUser.id);
+          }
         }
       });
     } catch (error) {
-      console.log('Error checking login status:', error);
+      console.error('Error checking login status:', error);
     } finally {
       setInterval(() => {
         setIsLoading(false);
@@ -294,12 +304,19 @@ export default function App() {
     }
   };
 
-  const fetchVerification = async uid => {
+  const fetchVerification = uid => {
     axios
       .get(`${BASE_URL}?tag=get_verification_status&userref=${uid}`)
-      .then(response => {
-        const status = JSON.parse(response.data);
-        setVerified(Boolean(status.is_verified));
+      .then(async response => {
+        const data = JSON.parse(response.data);
+        const fetchedStatus = data.is_verified;
+        AsyncStorage.setItem(
+          'verification',
+          JSON.stringify(fetchedStatus),
+        ).then(() => {
+          console.log('fethched:', fetchedStatus);
+          setVerified(Boolean(fetchedStatus));
+        });
       });
   };
 
