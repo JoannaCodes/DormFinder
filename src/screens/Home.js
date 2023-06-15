@@ -38,8 +38,11 @@ import houses from '../consts/houses';
 
 import Drawer from '../components/drawer';
 
-const HomeScreen = ({ navigation }) => {
+
+const HomeScreen = ({ navigation , route}) => {
   PushNotificationConfig.configure();
+
+const {user} = route.params;
 
   useEffect(() => {
     fetchData();
@@ -102,6 +105,9 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchDormsByCategory = async (tag) => {
     if (tag === 'nearest_dorm') {
+      setSelectedCategoryIndex(
+        categoryList.findIndex(category => category.tag === tag)
+      );
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
@@ -126,9 +132,6 @@ const HomeScreen = ({ navigation }) => {
                 });
                 const data = JSON.parse(response.data);
                 setDorms(data);
-                setSelectedCategoryIndex(
-                  categoryList.findIndex(category => category.tag === tag)
-                );
               } catch (error) {
                 console.error(error);
               }
@@ -147,6 +150,7 @@ const HomeScreen = ({ navigation }) => {
               {
                 text: 'Cancel',
                 style: 'cancel',
+                onPress: () => fetchDormsByCategory('popular_dorm'), // Move to popular category if location permission is denied
               },
               {
                 text: 'Settings',
@@ -210,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
     return (
       <Pressable
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('Dorm Details', {dormref:item.id})}>
+        onPress={() => navigation.navigate('Dorm Details', {dormref:item.id , userref:user})}>
         <View style={styles.card}>
           <Image
             source={{ uri: `${DORM_UPLOADS}/${item.id}/${images[0]}` }}

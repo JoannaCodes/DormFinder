@@ -2,7 +2,7 @@ import {View, Text, StyleSheet, Image, StatusBar} from 'react-native';
 import React from 'react';
 
 //
-import Logo from '../../assets/img/bg-transferent.png';
+import Logo from '../../assets/img/logo.png';
 
 export default function SplashScreen() {
   return (
@@ -13,12 +13,9 @@ export default function SplashScreen() {
 
       <View style={styles.logoContainer}>
         <Image source={Logo} style={styles.logo} />
-
-        <Text style={styles.text}>Name of App</Text>
       </View>
 
       <View style={styles.bottomContainer}>
-        <Text style={styles.bottomText}>Name of developers</Text>
       </View>
     </View>
   );
@@ -35,8 +32,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    height: 200,
-    width: 200,
+    height: 350,
+    width: 350,
   },
   text: {
     color: 'black',
