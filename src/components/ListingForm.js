@@ -603,7 +603,7 @@ const ListingForm = ({route, navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={'white'} size={16} />
             <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
-              Use 'N/A' or leave it blank if not applicable
+              Leave it blank if not applicable
             </Text>
           </View>
         </View>
@@ -617,62 +617,67 @@ const ListingForm = ({route, navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={'white'} size={16} />
             <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
-              Please follow this format: "1 month" or "12 months"
+            Enter the duration in 'months' for the minimum stay.
             </Text>
           </View>
         </View>
         {/* Advance Deposit */}
         <View style={styles.section}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={initialValues.advance_deposit}
-              placeholder="Advance Deposit"
-              placeholderTextColor="#CCCCCC"
-              onChangeText={value =>
-                handleTextInputChange('advance_deposit', value)
-              }
-            />
-          </View>
-          <View style={{width: 16}} />
-          {/* Security Deposit */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={initialValues.security_deposit}
-              placeholder="Security Deposit"
-              placeholderTextColor="#CCCCCC"
-              onChangeText={value =>
-                handleTextInputChange('security_deposit', value)
-              }
-            />
-          </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={initialValues.advance_deposit}
+            placeholder="Advance Deposit"
+            placeholderTextColor="#CCCCCC"
+            onChangeText={(value) =>
+              handleTextInputChange('advance_deposit', value)
+            }
+            keyboardType="numeric"
+          />
         </View>
-        <View style={styles.section}>
-          {/* Utility Exclusivity */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={initialValues.utilities}
-              placeholder="Utility Exclusivity"
-              placeholderTextColor="#CCCCCC"
-              onChangeText={value => handleTextInputChange('utilities', value)}
-            />
-          </View>
-          <View style={{width: 16}} />
-          {/* Minimum Stay */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={initialValues.minimum_stay}
-              placeholder="Minimum Stay"
-              placeholderTextColor="#CCCCCC"
-              onChangeText={value =>
-                handleTextInputChange('minimum_stay', value)
-              }
-            />
-          </View>
+        <View style={{ width: 16 }} />
+        {/* Security Deposit */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={initialValues.security_deposit}
+            placeholder="Security Deposit"
+            placeholderTextColor="#CCCCCC"
+            onChangeText={(value) =>
+              handleTextInputChange('security_deposit', value)
+            }
+            keyboardType="numeric"
+          />
         </View>
+      </View>
+      <View style={styles.section}>
+        {/* Utility Exclusivity */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={initialValues.utilities}
+            placeholder="Utility Exclusivity"
+            placeholderTextColor="#CCCCCC"
+            onChangeText={(value) =>
+              handleTextInputChange('utilities', value)
+            }
+          />
+        </View>
+        <View style={{ width: 16 }} />
+        {/* Minimum Stay */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={initialValues.minimum_stay}
+            placeholder="Minimum Stay"
+            placeholderTextColor="#CCCCCC"
+            onChangeText={(value) =>
+              handleTextInputChange('minimum_stay', value)
+            }
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
         <View style={{marginTop: 16}}>
           <TouchableOpacity
             style={styles.button}
