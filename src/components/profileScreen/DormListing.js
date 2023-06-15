@@ -21,17 +21,20 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 
 import ViewReviews from '../ViewReviews';
+import VerifiyPromtpModal from '../modals/VerifiyPromtpModal';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
 
 const DormListing = ({route, navigation}) => {
-  const {user} = route.params;
+  const {user, verified} = route.params;
   let URL = BASE_URL;
 
   const [isLoading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [reviewModalVisible, setReviewModalVisible] = useState(false);
+  const [promptModalVisible, setPromptModalVisible] = useState(false);
+
   const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
@@ -156,7 +159,7 @@ const DormListing = ({route, navigation}) => {
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
-                setModalVisible(true);
+                setReviewModalVisible(true);
                 setSelectedDorm(item.id);
               }}>
               <Icon name="insights" size={18} color="#0E898B" />
@@ -236,29 +239,31 @@ const DormListing = ({route, navigation}) => {
             numColumns={2}
             renderItem={renderItem}
             refreshControl={
-              <RefreshControl
-                //refresh control used for the Pull to Refresh
-                refreshing={isLoading}
-                onRefresh={fetchData}
-              />
+              <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
             }
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() =>
-              navigation.navigate('Listing Form', {
-                userref: user,
-                editmode: false,
-              })
-            }>
+            onPress={() => {
+              verified
+                ? navigation.navigate('Listing Form', {
+                    userref: user,
+                    editmode: false,
+                  })
+                : setPromptModalVisible(true);
+            }}>
             <Icon name="add" size={30} color="#FFFFFF" />
           </TouchableOpacity>
         </>
       )}
       <ViewReviews
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        visible={reviewModalVisible}
+        onClose={() => setReviewModalVisible(false)}
         dormref={selectedDorm}
+      />
+      <VerifiyPromtpModal
+        visible={promptModalVisible}
+        onClose={() => setPromptModalVisible(false)}
       />
     </SafeAreaView>
   );

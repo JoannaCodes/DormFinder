@@ -70,14 +70,12 @@ export default function Profile({user, verified, onLogout}) {
 
         <View style={styles.section}>
           <Text style={styles.label}>Dorm Listing Settings</Text>
-          {verified ? (
-            <TouchableOpacity
-              style={styles.profilebtn}
-              onPress={() => navigation.navigate('Dorm Listing')}>
-              <Icon name="add-business" size={20} color="gray" />
-              <Text style={{marginStart: 5}}>Dorm Listing</Text>
-            </TouchableOpacity>
-          ) : null}
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Dorm Listing')}>
+            <Icon name="add-business" size={20} color="gray" />
+            <Text style={{marginStart: 5}}>Dorm Listing</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Verification')}>
@@ -94,8 +92,13 @@ export default function Profile({user, verified, onLogout}) {
         </View>
 
         {/* Contact Section */}
-        <View style={styles.section}>
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Text style={[styles.label, {textAlign: 'center'}]}>
               Contact us at
             </Text>

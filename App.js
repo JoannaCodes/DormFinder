@@ -215,7 +215,7 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen
         name="Dorm Listing"
         component={DormListingComponent}
-        initialParams={{user}}
+        initialParams={{user, verified}}
       />
       <AppStack.Screen
         name="Verification"
