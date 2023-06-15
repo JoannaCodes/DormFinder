@@ -1,50 +1,88 @@
-import {StyleSheet, View, Text, TextInput, Alert, Button} from 'react-native';
-import React from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {BASE_URL} from '../../../constants';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {BASE_URL} from '../../../constants';
 import axios from 'axios';
+import React, {useState} from 'react';
+import Toast from 'react-native-toast-message';
 
 const ChangePassword = ({route}) => {
-  function _changePassword(values) {
-    Alert.alert('Change Password', 'Continue Updating Account?', [
+  const {user} = route.params;
+  const [loading, setLoading] = useState(false);
+
+  function _changePassword(values, {resetForm}) {
+    Alert.alert('UniHive', 'Continue changing password?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Change',
         onPress: async () => {
-          try {
-            const formData = new FormData();
-            formData.append('tag', 'change_password');
-            formData.append('userref', 1);
-            formData.append('currentpassword', values.currentpassword);
-            formData.append('newpassword', values.newpassword);
+          setLoading(true);
+          const formData = new FormData();
+          formData.append('tag', 'change_password');
+          formData.append('userref', user);
+          formData.append('currentpassword', values.currentpassword);
+          formData.append('newpassword', values.newpassword);
 
-            await axios
-              .post(BASE_URL, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-              .then(response => {
-                Alert.alert('Message', response.data);
-                console.log(response.data);
+          await axios
+            .post(BASE_URL, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            .then(response => {
+              if (response.data === 'success') {
+                Toast.show({
+                  type: 'success',
+                  text1: 'UniHive',
+                  text2: 'Password updated',
+                });
+                resetForm();
+              } else if (response.data === 'incorrect') {
+                Toast.show({
+                  type: 'warning',
+                  text1: 'UniHive',
+                  text2: 'Current password is incorrect password',
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'UniHive',
+                  text2: 'Unable to update password. Please try again.',
+                });
+              }
+            })
+            .catch(error => {
+              Toast.show({
+                type: 'error',
+                text1: 'UniHive',
+                text2: 'An error occured. Please try again.',
               });
-          } catch (err) {
-            console.log(err);
-          }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
         },
       },
     ]);
   }
 
   const validationSchema = Yup.object().shape({
-    currentpassword: Yup.string().required('Current password is required'),
+    currentpassword: Yup.string().required('This is required'),
     newpassword: Yup.string()
       .min(8, 'Password must be at least 8 characters')
-      .required('New password is required'),
+      .required('This is required'),
     confirmpassword: Yup.string()
       .oneOf([Yup.ref('newpassword'), null], 'Passwords must match')
-      .required('Confirm new password is required'),
+      .required('This is required'),
   });
 
   return (
@@ -70,61 +108,58 @@ const ChangePassword = ({route}) => {
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Current Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.currentpassword &&
-                      errors.currentpassword &&
-                      styles.inputError,
-                  ]}
+                  style={styles.input}
+                  placeholder="Enter current password"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('currentpassword')}
                   onBlur={handleBlur('currentpassword')}
                   value={values.currentpassword}
                   secureTextEntry={true}
                 />
                 {touched.currentpassword && errors.currentpassword && (
-                  <Text style={styles.errorText}>{errors.currentpassword}</Text>
+                  <Text style={styles.error}>{errors.currentpassword}</Text>
                 )}
               </View>
 
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>New Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.newpassword && errors.newpassword
-                      ? styles.inputError
-                      : null,
-                  ]}
+                  style={styles.input}
+                  placeholder="Must be atleast 8 characters"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('newpassword')}
                   onBlur={handleBlur('newpassword')}
                   value={values.newpassword}
                   secureTextEntry={true}
                 />
                 {touched.newpassword && errors.newpassword && (
-                  <Text style={styles.errorText}>{errors.newpassword}</Text>
+                  <Text style={styles.error}>{errors.newpassword}</Text>
                 )}
               </View>
 
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Confirm Password</Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    touched.confirmpassword &&
-                      errors.confirmpassword &&
-                      styles.inputError,
-                  ]}
+                  style={styles.input}
+                  placeholder="Must be atleast 8 characters"
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={handleChange('confirmpassword')}
                   onBlur={handleBlur('confirmpassword')}
                   value={values.confirmpassword}
                   secureTextEntry={true}
                 />
                 {touched.confirmpassword && errors.confirmpassword && (
-                  <Text style={styles.errorText}>{errors.confirmpassword}</Text>
+                  <Text style={styles.error}>{errors.confirmpassword}</Text>
                 )}
               </View>
             </View>
-            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              {loading ? (
+                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+              ) : (
+                <Text style={{color: '#FFFFFF'}}>Save</Text>
+              )}
+            </TouchableOpacity>
           </>
         )}
       </Formik>
@@ -140,22 +175,23 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
   },
   section: {
-    marginVertical: 24,
+    marginVertical: 12,
     justifyContent: 'space-between',
     width: '100%',
-  },
-  inputContainer: {
-    marginBottom: 16,
   },
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
   },
+  inputContainer: {
+    marginVertical: 12,
+  },
   input: {
-    padding: 10,
     width: '100%',
+    padding: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 2,
@@ -163,8 +199,14 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: 'red',
   },
-  errorText: {
+  error: {
     color: 'red',
-    marginBottom: 10,
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#0E898B',
+    borderRadius: 5,
+    elevation: 4,
+    padding: 11,
   },
 });

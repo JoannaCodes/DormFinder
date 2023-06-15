@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 	import React,{useState,useEffect} from 'react'
 	import {Modal,KeyboardAvoidingView,View,Text,AsyncStorage,SafeAreaView,StyleSheet,Button,Image,Alert, ToastAndroid, TouchableOpacity,TextInput,FlatList,ScrollView} from 'react-native'
-	import {initialStyles} from '../styles/initial'
+	// import {initialStyles} from '../styles/initial'
 	import axios from 'axios'
 	import {BASE_URL} from '../../constants'
 

@@ -1,81 +1,122 @@
 /* eslint-disable react-native/no-inline-styles */
-import React,{useState,useEffect} from 'react'
-import {Modal,KeyboardAvoidingView,View,Text,AsyncStorage,SafeAreaView,StyleSheet,Button,Image,Alert, ToastAndroid, TouchableOpacity,TextInput,FlatList,ScrollView} from 'react-native'
-import {initialStyles} from '../styles/initial'
-import axios from 'axios'
-import {BASE_URL} from '../../constants'
-import DocumentPicker from 'react-native-document-picker';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
+import UserProfile from '../components/UserProfile';
+import React from 'react';
 
-export default function Profile({navigation}) {
-  async function _sendDocument() {
-       try {
-    const result = await DocumentPicker.pick({
-      type: [
-        DocumentPicker.types.pdf,
-        DocumentPicker.types.docx,
-      ],
-    });
-
-    if (!result) {
-      console.log('No document selected');
-      return;
-    }
-
-        const formData = new FormData();
-    formData.append('tag', 'upload_image');
-    formData.append('document', {
-      uri: result[0]['uri'],
-      type: result[0]['type'],
-      name: result[0]['name'],
-    });
-
-    const response = await axios.post(BASE_URL, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('Upload success:', response.data);
-
-    Alert.alert('Upload success', 'The document file was successfully uploaded to the server.');
-
-    // Do something with the selected file
-  } catch (err) {
-    if (DocumentPicker.isCancel(err)) {
-      console.log('User cancelled document picker');
-    } else {
-      console.log('Document picker error:', err);
-    }
-  }
-  }
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      
-      <Button
-        title="Go to Edit Profile"
-        onPress={() => navigation.navigate('Edit Profile')}
-      />
-      <Button
-        title="Go to Change Password"
-        onPress={() => navigation.navigate('Change Password')}
-      />
-      <Button
-        title="Go to Dorm Listing"
-        onPress={() => navigation.navigate('Dorm Listing')}
-      />
-      <Button
-        title="Go to Verification"
-        onPress={() => navigation.navigate('Verification')}
-      />
-      <Button
-        title="Go to Payments"
-        onPress={() => navigation.navigate('Payments')}
-      />
-      <Button
-        title="Send Document"
-        onPress={_sendDocument}
-      />
-    </View>
-  );
-
+const Separator = () => {
+  return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
 };
+
+export default function Profile({route, navigation}) {
+  const {user} = route.params;
+  const handleLogOut = async () => {
+    try {
+      Alert.alert('Log out', 'Are you sure you want to log out?', [
+        {
+          text: 'Yes',
+          onPress: () => {
+            // handleLogout();
+          },
+        },
+        {
+          text: 'No',
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView>
+        <View style={styles.section}>
+          <UserProfile uid={user} />
+        </View>
+
+        <Separator />
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Account Settings</Text>
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Edit Profile')}>
+            <Text>Edit Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Change Password')}>
+            <Text>Change Password</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Dorm Listing Settings</Text>
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Dorm Listing')}>
+            <Text>Dorm Listing</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Verification')}>
+            <Text>Verification</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Payments')}>
+            <Text>Payments</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Logout section */}
+        <View style={styles.section}>
+          <TouchableOpacity style={styles.button} onPress={handleLogOut}>
+            <Text style={{color: '#FFFFFF'}}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#FFFFFF',
+    flex: 1,
+    justifyContent: 'flex-start',
+    padding: 8,
+  },
+  section: {
+    marginVertical: 16,
+    paddingHorizontal: 8,
+  },
+  profilebtn: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    elevation: 4,
+    marginVertical: 8,
+    padding: 22,
+  },
+  label: {
+    fontWeight: 'bold',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#0E898B',
+    borderRadius: 5,
+    elevation: 4,
+    padding: 11,
+  },
+});

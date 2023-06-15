@@ -1,66 +1,108 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
 import {
-  StyleSheet,
-  View,
-  TextInput,
-  Text,
-  TouchableOpacity,
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
-  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
 import {BASE_URL} from '../../../constants';
+import {Formik} from 'formik';
+import {StackActions} from '@react-navigation/native';
+import * as Yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+import Toast from 'react-native-toast-message';
 
-export default function EditProfile() {
-  const [user, setUser] = useState('');
+const Separator = () => {
+  return (
+    <View
+      height={1}
+      width={'100%'}
+      backgroundColor={'#CCCCCC'}
+      style={{marginVertical: 5}}
+    />
+  );
+};
+
+export default function EditProfile({route, navigation}) {
+  const {user} = route.params;
+  const [handle, setHandle] = useState('');
+  const [loading, setLoading] = useState(false);
+  let URL = BASE_URL;
 
   useEffect(() => {
-    try {
-      let URL = BASE_URL;
-      let uid = 1;
-
-      axios
-        .get(`${URL}?tag=get_account&userref=${uid}`)
-        .then(response => {
-          var output = JSON.parse(response.data);
-          setUser(output);
-        })
-        .catch(() => {
-          Alert.alert('Message', 'Network Error, Please Try Again');
-        });
-    } catch (err) {
-      Alert.alert('Error Message', err);
-    }
+    fetchAccount();
   }, []);
 
+  const fetchAccount = async () => {
+    axios
+      .get(`${URL}?tag=get_account&userref=${user}`)
+      .then(response => {
+        const data = JSON.parse(response.data);
+        const {identifier, ...profile} = data;
+        setHandle(identifier);
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'UniHive',
+          text2: 'Cannot retrieve account details. Please try again.',
+        });
+      });
+  };
+
   function _updateAccount(values) {
-    Alert.alert('Update Account', 'Continue Updating Account?', [
+    Alert.alert('UniHive', 'Continue updating account?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Update',
         onPress: async () => {
-          try {
-            const formData = new FormData();
-            formData.append('tag', 'update_account');
-            formData.append('userref', 1);
-            formData.append('identifier', values.loggedUser);
+          setLoading(true);
+          const formData = new FormData();
+          formData.append('tag', 'update_account');
+          formData.append('userref', user);
+          formData.append('identifier', values.user);
 
-            await axios
-              .post(BASE_URL, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-              .then(response => {
-                Alert.alert('Message', response.data);
+          await axios
+            .post(BASE_URL, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            .then(response => {
+              const message = response.data;
+
+              if (message === 'success') {
+                Toast.show({
+                  type: 'success',
+                  text1: 'UniHive',
+                  text2: 'Account updated',
+                });
+                fetchAccount();
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'UniHive',
+                  text2: 'Unable to update account. Please Try Again.',
+                });
+              }
+            })
+            .catch(error => {
+              Toast.show({
+                type: 'error',
+                text1: 'UniHive',
+                text2: 'An error occured. Please try again.',
               });
-          } catch (err) {
-            Alert.alert('Error Message', err);
-          }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
         },
       },
     ]);
@@ -68,7 +110,7 @@ export default function EditProfile() {
 
   function _deleteAccount() {
     Alert.alert(
-      'Delete Account',
+      'UniHive',
       'Are you sure you want to delete your account? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
@@ -76,33 +118,51 @@ export default function EditProfile() {
           text: 'Delete',
           style: 'delete',
           onPress: async () => {
-            try {
-              const formData = new FormData();
-              formData.append('tag', 'delete_account');
-              formData.append('userref', 1);
+            const formData = new FormData();
+            formData.append('tag', 'delete_account');
+            formData.append('userref', user);
 
-              await axios
-                .post(BASE_URL, formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
-                .then(response => {
-                  Alert.alert('Message', response.data);
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(async response => {
+                const message = response.data;
+
+                if (message === 'success') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'UniHive',
+                    text2: 'Account deleted',
+                  });
+
+                  await AsyncStorage.clear();
+                  navigation.dispatch(StackActions.replace('Authentication'));
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'UniHive',
+                    text2: 'Unable to delete account. Please Try Again.',
+                  });
+                }
+              })
+              .catch(error => {
+                Toast.show({
+                  type: 'error',
+                  text1: 'UniHive',
+                  text2: 'An error occured. Please try again',
                 });
-            } catch (err) {
-              Alert.alert('Error Message', err);
-            }
+              });
           },
         },
       ],
     );
   }
 
-  const Separator = () => <View style={styles.separator} />;
-
   const validationSchema = Yup.object().shape({
-    loggedUser: Yup.string()
+    user: Yup.string()
       .required('This is required')
       .test('is-email-or-phone', 'Invalid', function (value) {
         // regular expressions to validate email and phone number
@@ -123,24 +183,44 @@ export default function EditProfile() {
     <KeyboardAvoidingView style={styles.container}>
       <Formik
         enableReinitialize
-        initialValues={{loggedUser: user}}
+        initialValues={{user: handle}}
         validationSchema={validationSchema}
         onSubmit={_updateAccount}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
           <>
             <View style={styles.section}>
-              <Text style={styles.label}>Email or Phone Number</Text>
-              <TextInput
-                style={[styles.input, errors.loggedUser && styles.inputError]}
-                onChangeText={handleChange('loggedUser')}
-                onBlur={handleBlur('loggedUser')}
-                value={values.loggedUser}
-              />
-              {errors.loggedUser && (
-                <Text style={styles.errorText}>{errors.loggedUser}</Text>
-              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email or Phone Number</Text>
+                <TextInput
+                  style={styles.input}
+                  value={values.user}
+                  placeholder="Email"
+                  placeholderTextColor="#CCCCCC"
+                  onChangeText={handleChange('user')}
+                  onBlur={handleBlur('user')}
+                  keyboardType="email-address"
+                />
+                {errors.user && <Text style={styles.error}>{errors.user}</Text>}
+              </View>
             </View>
-            <Button onPress={handleSubmit} title="Save" color="#0E898B" />
+            <TouchableOpacity
+              onPress={handleSubmit}
+              disabled={values.user.trim() === '' || values.user === handle}
+              style={[
+                styles.button,
+                {
+                  backgroundColor:
+                    values.user.trim() === '' || values.user === handle
+                      ? '#CCCCCC'
+                      : '#0E898B',
+                },
+              ]}>
+              {loading ? (
+                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+              ) : (
+                <Text style={{color: '#FFFFFF'}}>Submit</Text>
+              )}
+            </TouchableOpacity>
             <View style={styles.section}>
               <Separator />
               <View
@@ -177,9 +257,10 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
   },
   section: {
-    marginVertical: 24,
+    marginVertical: 12,
     justifyContent: 'space-between',
     width: '100%',
   },
@@ -187,9 +268,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
+  inputContainer: {
+    marginVertical: 12,
+  },
   input: {
-    padding: 10,
     width: '100%',
+    padding: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 2,
@@ -197,8 +281,15 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: 'red',
   },
-  errorText: {
+  error: {
     color: 'red',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#0E898B',
+    borderRadius: 5,
+    elevation: 4,
+    padding: 11,
   },
   deletebtn: {
     borderWidth: 1,
@@ -212,10 +303,5 @@ const styles = StyleSheet.create({
   deletebtnlbl: {
     color: '#FF0000',
     fontWeight: 'bold',
-  },
-  separator: {
-    borderBottomColor: '#0E898B',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginVertical: 5,
   },
 });

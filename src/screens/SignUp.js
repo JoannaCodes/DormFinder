@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
   View,
@@ -7,37 +8,73 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Axios from 'axios';
-//
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg-transferent.png';
+import Google from '../../assets/img/google-logo.png';
+import {BASE_URL} from '../../constants/index';
+
+const Separator = ({title}) => {
+  return (
+    <View style={styles.separator}>
+      <View style={styles.line} />
+      <Text style={{marginHorizontal: 5, color: '#FFFFFF'}}>{title}</Text>
+      <View style={styles.line} />
+    </View>
+  );
+};
 
 export default function Signup() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //
+  const [username, setUsername] = useState('');
   const navigation = useNavigation();
 
-  const signupUser = async () => {
-    try {
-      const {data} = await Axios.post('http://192.168.100.12/api/signup.php', {
-        email: email,
-        password: password,
-      });
+  const handleSignUp = async mode => {
+    if (mode === 'google') {
+      Alert.alert('Signup with google');
+      // google signup logic here
+    } else {
+      if (validateSignup()) {
+        const formData = new FormData();
+        formData.append('tag', 'signup_app');
+        formData.append('email', email);
+        formData.append('username', username);
+        formData.append('password', password);
 
-      if (data.status == 'success') {
-        alert('User Created Successfully');
-      } else {
-        alert('User Not Created');
+        await Axios.post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+          .then(() => {
+            Alert.alert('User Created');
+            navigation.navigate('Login');
+          })
+          .catch(error => {
+            Alert.alert('User Not Created');
+          });
       }
-
-      console.log(data);
-    } catch (err) {
-      console.log(err);
     }
   };
+
+  const validateSignup = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email format regular expression
+    let isValid = true;
+
+    if (email.trim() === '' || !emailRegex.test(email)) {
+      isValid = false;
+    } else if (username.trim() === '' || password.trim() === '') {
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
@@ -48,111 +85,93 @@ export default function Signup() {
           resizeMode="contain"
         />
       </View>
-      <View style={styles.bottomBackgroundImgContainer}></View>
+      <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
-          <FontAwsome name="angle-left" size={30} color="#fff" />
-
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Icon name="arrow-back-ios" size={30} color="#fff" />
+          </TouchableOpacity>
           <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
-            Hi!
+            Register
           </Text>
         </View>
         <View style={styles.formBottomContainer}>
           <View style={styles.formBottomSubContainer}>
-            {/*  */}
             <View style={styles.customInputContainer}>
-              <Text>Email</Text>
               <TextInput
                 style={{padding: 0}}
+                placeholder="Email"
                 onChangeText={text => setEmail(text)}
               />
             </View>
-            {/*  */}
-            {/*  */}
+
             <View style={styles.customInputContainer}>
-              <Text>Password</Text>
+              <TextInput
+                style={{padding: 0}}
+                placeholder="Username"
+                onChangeText={text => setUsername(text)}
+              />
+            </View>
+
+            <View style={styles.customInputContainer}>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
                   style={{padding: 0}}
+                  placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
                 />
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <FontAwsome
-                    name={isPasswordVisible ? 'eye-slash' : 'eye'}
+                  <Icon
+                    name={isPasswordVisible ? 'visibility' : 'visibility-off'}
                     size={20}
                   />
                 </TouchableOpacity>
               </View>
             </View>
-            {/*  */}
-            {/*  */}
+
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={() => {
-                signupUser();
-              }}>
+              onPress={() => handleSignUp()}>
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
                 Signup
               </Text>
             </TouchableOpacity>
-            {/*  */}
-            {/*  */}
-            <Text style={{textAlign: 'center', color: '#fff'}}>Or</Text>
-            {/*  */}
-            {/*  */}
+
+            <Separator title={'Or'} />
+
             <TouchableOpacity
               style={[
                 styles.loginButton,
                 {
                   backgroundColor: '#fff',
                   flexDirection: 'row',
-                  padding: 20,
+                  padding: 12,
                   justifyContent: 'space-around',
                 },
               ]}>
-              <Image
-                source={{
-                  uri: 'https://img.flaticon.com/icons/png/512/2702/2702602.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF',
-                }}
-                style={{height: 30, width: 30}}
-              />
+              <Image source={Google} style={{height: 20, width: 20}} />
               <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
-              <View></View>
+              <View />
             </TouchableOpacity>
-            {/*  */}
-            {/*  */}
-            <View>
+
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Already Have An Account</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('Login');
-                  }}>
+                <Text style={{color: '#fff'}}>Already Have An Account?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text
                     style={{
                       marginLeft: 5,
-                      color: '#02C38E',
+                      color: 'teal',
                       fontWeight: 'bold',
                     }}>
                     Login
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    marginLeft: 5,
-                    color: '#02C38E',
-                    fontWeight: 'bold',
-                  }}>
-                  Forget Your Password ?
-                </Text>
-              </TouchableOpacity>
             </View>
-            {/*  */}
           </View>
         </View>
       </View>
@@ -164,6 +183,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#050907',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#CCCCCC',
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -202,14 +231,14 @@ const styles = StyleSheet.create({
   customInputContainer: {
     marginVertical: 10,
     borderWidth: 2,
-    borderColor: '#02C38E',
+    borderColor: 'teal',
     backgroundColor: '#fff',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: '#02C38E',
+    backgroundColor: 'teal',
     padding: 10,
     alignItems: 'center',
     marginVertical: 10,

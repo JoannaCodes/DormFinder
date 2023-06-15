@@ -1,74 +1,186 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect} from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Button,
+  ActivityIndicator,
   Alert,
   Dimensions,
+  FlatList,
+  Image,
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {BASE_URL} from '../../../constants';
+import {BASE_URL, DORM_UPLOADS} from '../../../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 
-const DormListing = ({navigation}) => {
+import ViewReviews from '../ViewReviews';
+
+const Separator = () => {
+  return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
+};
+
+const DormListing = ({route, navigation}) => {
+  const {user} = route.params;
+  let URL = BASE_URL;
+
+  const [isLoading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDorm, setSelectedDorm] = useState('');
+  const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
-  let uid = 'LhVQ3FMv6d6lW';
 
   useEffect(() => {
-    try {
-      let URL = BASE_URL;
+    fetchData();
+  }, []);
 
-      axios
-        .get(`${URL}?tag=get_dorms&userref=${uid}`)
-        .then(response => {
-          var output = JSON.parse(response.data);
-          setDorms(output);
-        })
-        .catch(err => {
-          console.error(err);
+  const fetchData = async () => {
+    setLoading(true);
+    await axios
+      .get(`${URL}?tag=get_dorms&userref=${user}`)
+      .then(response => {
+        const data = JSON.parse(response.data);
+        setDorms(data);
+        setStatus('success');
+
+        // Exclude image URLs from the data
+        const dataWithoutImages = data.map(item => {
+          const {images, ...rest} = item;
+          return rest;
         });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [uid]);
+
+        AsyncStorage.setItem('dormListing', JSON.stringify(dataWithoutImages));
+      })
+      .catch(async error => {
+        const storedDorms = await AsyncStorage.getItem('dormListing');
+        if (storedDorms) {
+          setDorms(JSON.parse(storedDorms));
+          setStatus('failed');
+
+          Toast.show({
+            type: 'error',
+            text1: 'Dorm Finder',
+            text2: 'Cannot retrieve dorm listing. Please try again.',
+          });
+        } else {
+          setStatus('failed');
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const _deleteDorm = dormref => {
+    Alert.alert(
+      'Dorm Finder',
+      'Are you sure you want to delete this dorm listing? This action cannot be undone.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'delete',
+          onPress: async () => {
+            const formData = new FormData();
+            formData.append('tag', 'delete_dorm');
+            formData.append('userref', user);
+            formData.append('dormref', dormref);
+
+            await axios
+              .post(BASE_URL, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(response => {
+                const message = response.data;
+
+                if (message === 'success') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: 'Dorm listing deleted',
+                  });
+
+                  setLoading(true);
+                  fetchData();
+                } else if (message === 'failed') {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Dorm Finder',
+                    text2: 'Unable to delete listing. Please try again.',
+                  });
+                }
+              })
+              .catch(error => {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Dorm Finder',
+                  text2: 'An error occured. Please try again.',
+                });
+              });
+          },
+        },
+      ],
+    );
+  };
 
   const renderItem = ({item}) => {
-    const images = item.images.split(',');
+    const images = item.images ? item.images.split(',') : [];
     return (
       <View style={styles.card}>
-        <Image source={{uri: images[0]}} style={styles.image} />
-        <View style={styles.info}>
-          <Text style={styles.name}>{item.name}</Text>
+        <Image
+          source={{
+            uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`,
+          }}
+          style={styles.image}
+        />
+        <View style={styles.cardBody}>
+          <Text style={styles.cardTitle} numberOfLines={1} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <Separator />
           <View style={styles.action}>
-            <Button
-              title="✏️"
-              color="#0E898B"
-              onPress={() => {
-                navigation.navigate('Create Dorm Listing', {
+            <TouchableOpacity
+              style={[
+                styles.btnContainer,
+                status === 'failed' && styles.failedButton, // Apply different style if status is "failed"
+              ]}
+              disabled={status === 'failed'}
+              onPress={() =>
+                navigation.navigate('Listing Form', {
                   dormref: item.id,
-                  userref: item.userref,
+                  userref: user,
                   editmode: true,
-                });
-              }}
-            />
-            <Button
-              title="📊"
-              color="#0E898B"
+                })
+              }>
+              <Icon
+                name="mode-edit"
+                size={18}
+                color={status === 'failed' ? '#888888' : '#0E898B'}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnContainer}
               onPress={() => {
-                Alert.alert('Message', item.id);
-              }}
-            />
-            <Button
-              title="🗑️"
-              color="#0E898B"
+                setModalVisible(true);
+                setSelectedDorm(item.id);
+              }}>
+              <Icon name="insights" size={18} color="#0E898B" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnContainer}
               onPress={() => {
-                Alert.alert('Message', item.id);
-              }}
-            />
+                _deleteDorm(item.id);
+              }}>
+              <Icon name="delete" size={18} color="#0E898B" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -77,34 +189,87 @@ const DormListing = ({navigation}) => {
 
   const renderEmpty = () => {
     return (
-      <View style={styles.container}>
-        <Text style={{fontSize: 32, fontWeight: 'bold'}}>No Dorm Listing</Text>
-        <Text>Tap "+ Create Listing" to Add Your Dorm</Text>
+      <View style={styles.emptyContainer}>
+        {status === 'failed' ? (
+          <>
+            <Image
+              source={require('../../../assets/error_upsketch.png')}
+              style={{height: 360, width: 360}}
+              resizeMode="cover"
+            />
+            <Text style={styles.emptyTitle}>
+              Cannot retrieve dorm listing at this time. Please try again later.
+            </Text>
+            <TouchableOpacity
+              style={styles.btnContainer}
+              onPress={() => {
+                setLoading(true);
+                fetchData();
+              }}>
+              <Text>Try Again</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <Image
+              source={require('../../../assets/house_upsketch.png')}
+              style={{height: 360, width: 360}}
+              resizeMode="cover"
+            />
+            <Text style={styles.emptyTitle}>No Dorm Listing</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text>Tap "</Text>
+              <Icon name="add" size={18} color="#0E898B" />
+              <Text>" to Add YourDorm</Text>
+            </View>
+          </>
+        )}
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={dorms}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        horizontal={false}
-        numColumns={2}
-        ListEmptyComponent={renderEmpty}
+    <SafeAreaView style={styles.container}>
+      {isLoading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#0E898B" />
+        </View>
+      ) : (
+        <>
+          <FlatList
+            contentContainerStyle={styles.cardContainer}
+            data={dorms}
+            horizontal={false}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={renderEmpty}
+            numColumns={2}
+            renderItem={renderItem}
+            refreshControl={
+              <RefreshControl
+                //refresh control used for the Pull to Refresh
+                refreshing={isLoading}
+                onRefresh={fetchData}
+              />
+            }
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate('Listing Form', {
+                userref: user,
+                editmode: false,
+              })
+            }>
+            <Icon name="add" size={30} color="#FFFFFF" />
+          </TouchableOpacity>
+        </>
+      )}
+      <ViewReviews
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        dormref={selectedDorm}
       />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate('Create Dorm Listing', {
-            userref: uid,
-            editmode: false,
-          })
-        }>
-        <Text style={styles.buttonText}>+ Create Listing</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -117,22 +282,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
+    backgroundColor: '#FFFFFF',
+  },
+  emptyContainer: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  btnContainer: {
+    elevation: 2,
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#0E898B',
+    padding: 10,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    bottom: 16,
+    right: 16,
     backgroundColor: '#0E898B',
-    borderRadius: 30,
-    padding: 15,
+    borderRadius: 20,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+  cardContainer: {
+    flexGrow: 1,
   },
   card: {
     margin: 8,
@@ -146,19 +333,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'cover',
+    backgroundColor: '#CCCCCC',
   },
-  info: {
-    padding: 10, // Add some padding
+  cardBody: {
+    padding: 10,
   },
-  name: {
-    fontSize: 18, // Set font size
-    fontWeight: 'bold', // Set font weight
-    marginBottom: 5, // Add some margin bottom
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   action: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 8,
+  },
+  failedButton: {
+    opacity: 0.5,
   },
 });
