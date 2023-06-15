@@ -558,7 +558,7 @@ const ListingForm = ({route, navigation}) => {
           multiple={true}
         />
         {/* Establishment Rules */}
-        <Separator title="Establishment Rules (Optional)" />
+        <Separator title="Establishment Rules" />
         <View style={styles.section}>
           <BouncyCheckbox
             disableBuiltInState

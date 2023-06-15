@@ -70,7 +70,12 @@ const Bookmarks = ({route, navigation}) => {
       <TouchableOpacity
         activeOpacity={0.5}
         underlayColor="#CCCCCC"
-        onPress={() => navigation.navigate('Dorm Details')}>
+        onPress={() =>
+          navigation.navigate('Dorm Details', {
+            dormref: item.dormref,
+            userref: user,
+          })
+        }>
         <View style={styles.card}>
           <Image
             source={{

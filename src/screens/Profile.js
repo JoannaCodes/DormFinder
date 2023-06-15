@@ -1,14 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import {
+  Alert,
   KeyboardAvoidingView,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import UserProfile from '../components/UserProfile';
 
@@ -36,6 +38,10 @@ export default function Profile({user, verified, onLogout}) {
     }
   };
 
+  const handleEmailPress = () => {
+    Linking.openURL('mailto:info.studyhive@gmail.com');
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView>
@@ -50,13 +56,15 @@ export default function Profile({user, verified, onLogout}) {
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Edit Profile')}>
-            <Text>Edit Profile</Text>
+            <Icon name="person" size={20} color="gray" />
+            <Text style={{marginStart: 5}}>Edit Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Change Password')}>
-            <Text>Change Password</Text>
+            <Icon name="vpn-key" size={20} color="gray" />
+            <Text style={{marginStart: 5}}>Change Password</Text>
           </TouchableOpacity>
         </View>
 
@@ -66,20 +74,46 @@ export default function Profile({user, verified, onLogout}) {
             <TouchableOpacity
               style={styles.profilebtn}
               onPress={() => navigation.navigate('Dorm Listing')}>
-              <Text>Dorm Listing</Text>
+              <Icon name="add-business" size={20} color="gray" />
+              <Text style={{marginStart: 5}}>Dorm Listing</Text>
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Verification')}>
-            <Text>Verification</Text>
+            <Icon name="verified-user" size={20} color="gray" />
+            <Text style={{marginStart: 5}}>Verification</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Payments')}>
-            <Text>Payments</Text>
+            <Icon name="payments" size={20} color="gray" />
+            <Text style={{marginStart: 5}}>Payments</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* Contact Section */}
+        <View style={styles.section}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={[styles.label, {textAlign: 'center'}]}>
+              Contact us at
+            </Text>
+            <TouchableOpacity onPress={handleEmailPress}>
+              <Text
+                style={[
+                  styles.label,
+                  {
+                    marginStart: 5,
+                    textAlign: 'center',
+                    color: '#33b5e5',
+                    textDecorationLine: 'underline',
+                  },
+                ]}>
+                info.studyhive@gmail.com
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Logout section */}
@@ -105,6 +139,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   profilebtn: {
+    flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     elevation: 4,
