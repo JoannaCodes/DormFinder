@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   KeyboardAvoidingView,
@@ -26,23 +27,35 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 
 import axios from 'axios';
-import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
+import {BASE_URL, DORM_UPLOADS} from '../../constants/index';
 
 import PushNotificationConfig from '../components/PushNotificationConfig';
-import PushNotification, { Importance } from 'react-native-push-notification';
+import PushNotification, {Importance} from 'react-native-push-notification';
 
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 import houses from '../consts/houses';
 
 import Drawer from '../components/drawer';
 
+const HomeScreen = ({navigation, route}) => {
+  PushNotification.createChannel(
+    {
+      channelId: 'channel-id', // (required)
+      channelName: 'My channel', // (required)
+      channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
+      playSound: false, // (optional) default: true
+      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+      importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+    },
+    created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+  );
 
-const HomeScreen = ({ navigation , route}) => {
   PushNotificationConfig.configure();
 
-const {user} = route.params;
+  const {user} = route.params;
 
   useEffect(() => {
     fetchData();
@@ -50,6 +63,7 @@ const {user} = route.params;
 
   useEffect(() => {
     if (selectedCategoryIndex === 0) {
+      _fetchNotif();
       fetchDormsByCategory('popular_dorm');
     } else if (selectedCategoryIndex === 1) {
       fetchDormsByCategory('latest_dorm');
@@ -58,34 +72,44 @@ const {user} = route.params;
     }
   }, [selectedCategoryIndex]);
 
-  const _fetchNotif = () => {
-    let URL = BASE_URL;
-    axios.get(URL + '?tag=fetch_saved_notif').then(res => {
-      console.log(res.data);
-      var output = JSON.parse(res.data);
-      let testx = '';
-      try {
-        if (output.length !== 0) {
-          for (var key in output) {
-            let test = output[key].scheduled;
-            if (test !== '' || test !== null) {
-              var javascript_date = new Date(Date.parse(test));
-              var unix = javascript_date.getTime() / 1000;
-              PushNotification.localNotificationSchedule({
-                id: output[key].unix_time,
-                title: 'DormFinder',
-                message: output[key].ndesc,
-                channelId: 'channel-id',
-                date: new Date(unix * 1000),
-                allowWhileIdle: true,
-              });
+  const _fetchNotif = async () => {
+    try {
+      const user_idx = await AsyncStorage.getItem('user_idx');
+      let URL = BASE_URL;
+      axios
+        .get(URL + '?tag=fetch_saved_notif&user_ref=' + user_idx)
+        .then(res => {
+          console.log(res.data);
+          var output = JSON.parse(res.data);
+          let testx = '';
+          try {
+            if (output.length !== 0) {
+              for (var key in output) {
+                let test = output[key].scheduled;
+                if (test !== '' || test !== null) {
+                  var javascript_date = new Date(Date.parse(test));
+                  var unix = javascript_date.getTime() / 1000;
+                  PushNotification.localNotificationSchedule({
+                    id: output[key].unix_time,
+                    title: 'DormFinder',
+                    message: output[key].ndesc,
+                    channelId: 'channel-id',
+                    date: new Date(unix * 1000),
+                    allowWhileIdle: true,
+                  });
+                }
+              }
             }
+          } catch (error) {
+            console.log('error:' + error);
           }
-        }
-      } catch (error) {
-        console.log('error:' + error);
-      }
-    });
+        })
+        .catch(error => {
+          console.log('error:' + error);
+        });
+    } catch (error) {
+      console.log('error:' + error);
+    }
   };
 
   const [dorms, setDorms] = useState([]);
@@ -103,43 +127,47 @@ const {user} = route.params;
       });
   };
 
-  const fetchDormsByCategory = async (tag) => {
+  const fetchDormsByCategory = async tag => {
     if (tag === 'nearest_dorm') {
       setSelectedCategoryIndex(
-        categoryList.findIndex(category => category.tag === tag)
+        categoryList.findIndex(category => category.tag === tag),
       );
       try {
         const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
-  
+
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           // Permission granted, fetch dorms based on user's location
           Geolocation.getCurrentPosition(
-            async (position) => {
-              const { latitude, longitude } = position.coords;
-              
+            async position => {
+              const {latitude, longitude} = position.coords;
+
               const formData = new FormData();
               formData.append('tag', 'nearest_dorm');
               formData.append('latitude', latitude);
               formData.append('longitude', longitude);
-  
+
               try {
-                const response = await axios.post(`${BASE_URL}?tag=${tag}`, formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
+                const response = await axios.post(
+                  `${BASE_URL}?tag=${tag}`,
+                  formData,
+                  {
+                    headers: {
+                      'Content-Type': 'multipart/form-data',
+                    },
                   },
-                });
+                );
                 const data = JSON.parse(response.data);
                 setDorms(data);
               } catch (error) {
                 console.error(error);
               }
             },
-            (error) => {
+            error => {
               console.log('Error getting current position:', error);
             },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
           );
         } else {
           // Permission denied, display modal to turn on location settings
@@ -156,7 +184,7 @@ const {user} = route.params;
                 text: 'Settings',
                 onPress: () => Linking.openSettings(),
               },
-            ]
+            ],
           );
         }
       } catch (error) {
@@ -174,7 +202,7 @@ const {user} = route.params;
           const data = JSON.parse(response.data);
           setDorms(data);
           setSelectedCategoryIndex(
-            categoryList.findIndex(category => category.tag === tag)
+            categoryList.findIndex(category => category.tag === tag),
           );
         })
         .catch(error => {
@@ -184,9 +212,9 @@ const {user} = route.params;
   };
 
   const categoryList = [
-    { name: 'Popular', tag: 'popular_dorm' },
-    { name: 'Latest', tag: 'latest_dorm' },
-    { name: 'Nearest', tag: 'nearest_dorm' },
+    {name: 'Popular', tag: 'popular_dorm'},
+    {name: 'Latest', tag: 'latest_dorm'},
+    {name: 'Nearest', tag: 'nearest_dorm'},
   ];
 
   const ListCategories = () => {
@@ -199,7 +227,8 @@ const {user} = route.params;
             <Text
               style={[
                 styles.categoryListText,
-                index === selectedCategoryIndex && styles.activeCategoryListText,
+                index === selectedCategoryIndex &&
+                  styles.activeCategoryListText,
               ]}>
               {category.name}
             </Text>
@@ -209,36 +238,38 @@ const {user} = route.params;
     );
   };
 
-  const Card = ({ item }) => {
+  const Card = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
     return (
       <Pressable
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('Dorm Details', {dormref:item.id , userref:user})}>
+        onPress={() =>
+          navigation.navigate('Dorm Details', {dormref: item.id, userref: user})
+        }>
         <View style={styles.card}>
           <Image
-            source={{ uri: `${DORM_UPLOADS}/${item.id}/${images[0]}` }}
+            source={{uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`}}
             style={styles.cardImage}
           />
-          <View style={{ marginTop: 10 }}>
+          <View style={{marginTop: 10}}>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 5,
               }}>
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
                 {item.name}
               </Text>
               <Text
-                style={{ fontWeight: 'bold', color: COLORS.teal, fontSize: 16 }}>
+                style={{fontWeight: 'bold', color: COLORS.teal, fontSize: 16}}>
                 ₱{item.price}
               </Text>
             </View>
-            <Text style={{ color: COLORS.grey, fontSize: 14, marginTop: 5 }}>
+            <Text style={{color: COLORS.grey, fontSize: 14, marginTop: 5}}>
               {item.address}
             </Text>
-            <View style={{ marginTop: 10, flexDirection: 'row' }}>
+            <View style={{marginTop: 10, flexDirection: 'row'}}>
               <View style={styles.facility}>
                 <Icon name="hotel" size={18} />
                 <Text style={styles.facilityText}>2</Text>
@@ -259,7 +290,7 @@ const {user} = route.params;
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
       <StatusBar
         translucent={false}
         backgroundColor={COLORS.white}
@@ -267,8 +298,8 @@ const {user} = route.params;
       />
       <View style={styles.header}>
         <View>
-          <Text style={{ color: COLORS.grey }}>Location</Text>
-          <Text style={{ color: COLORS.teal, fontSize: 20, fontWeight: 'bold' }}>
+          <Text style={{color: COLORS.grey}}>Location</Text>
+          <Text style={{color: COLORS.teal, fontSize: 20, fontWeight: 'bold'}}>
             Manila, Philippines
           </Text>
         </View>
@@ -293,10 +324,10 @@ const {user} = route.params;
       <FlatList
         snapToInterval={width - 20}
         showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingLeft: 20, paddingVertical: 20 }}
+        contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
         horizontal={false}
         data={dorms}
-        ListHeaderComponent={() => <View></View>}
+        ListHeaderComponent={() => <View />}
         renderItem={Card}
         keyExtractor={item => item.id}
       />
@@ -388,8 +419,8 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 10,
   },
-  facility: { flexDirection: 'row', marginRight: 15 },
-  facilityText: { marginLeft: 5, color: COLORS.grey },
+  facility: {flexDirection: 'row', marginRight: 15},
+  facilityText: {marginLeft: 5, color: COLORS.grey},
 });
 
 export default HomeScreen;
