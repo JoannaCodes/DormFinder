@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../../constants/colors';
 
 const ChangePassword = ({route}) => {
   const {user} = route.params;
@@ -104,7 +105,7 @@ const ChangePassword = ({route}) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter current password"
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor={COLORS.grey}
                   onChangeText={handleChange('currentpassword')}
                   onBlur={handleBlur('currentpassword')}
                   value={values.currentpassword}
@@ -120,7 +121,7 @@ const ChangePassword = ({route}) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Must be atleast 8 characters"
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor={COLORS.grey}
                   onChangeText={handleChange('newpassword')}
                   onBlur={handleBlur('newpassword')}
                   value={values.newpassword}
@@ -136,7 +137,7 @@ const ChangePassword = ({route}) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Must be atleast 8 characters"
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor={COLORS.grey}
                   onChangeText={handleChange('confirmpassword')}
                   onBlur={handleBlur('confirmpassword')}
                   value={values.confirmpassword}
@@ -149,9 +150,9 @@ const ChangePassword = ({route}) => {
             </View>
             <TouchableOpacity onPress={handleSubmit} style={styles.button}>
               {loading ? (
-                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+                <ActivityIndicator size={'small'} color={COLORS.white} />
               ) : (
-                <Text style={{color: '#FFFFFF'}}>Save</Text>
+                <Text style={{color: COLORS.white}}>Save</Text>
               )}
             </TouchableOpacity>
           </>
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   section: {
     marginVertical: 12,
@@ -187,18 +188,18 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     elevation: 2,
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: COLORS.red,
   },
   error: {
-    color: 'red',
+    color: COLORS.red,
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
     padding: 11,

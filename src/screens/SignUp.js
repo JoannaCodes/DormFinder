@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
+import COLORS from '../../constants/colors';
 
 const Separator = ({title}) => {
   return (
@@ -89,9 +90,9 @@ export default function Signup() {
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Icon name="arrow-back-ios" size={30} color="#fff" />
+            <Icon name="arrow-back-ios" size={30} color={COLORS.white} />
           </TouchableOpacity>
-          <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
+          <Text style={{color: COLORS.white, fontSize: 30, fontWeight: 'bold'}}>
             Register
           </Text>
         </View>
@@ -135,7 +136,8 @@ export default function Signup() {
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => handleSignUp()}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
+              <Text
+                style={{color: COLORS.white, fontWeight: 'bold', fontSize: 17}}>
                 Signup
               </Text>
             </TouchableOpacity>
@@ -146,7 +148,7 @@ export default function Signup() {
               style={[
                 styles.loginButton,
                 {
-                  backgroundColor: '#fff',
+                  backgroundColor: COLORS.white,
                   flexDirection: 'row',
                   padding: 12,
                   justifyContent: 'space-around',
@@ -159,12 +161,14 @@ export default function Signup() {
 
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Already Have An Account?</Text>
+                <Text style={{color: COLORS.white}}>
+                  Already Have An Account?
+                </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text
                     style={{
                       marginLeft: 5,
-                      color: 'teal',
+                      color: COLORS.teal,
                       fontWeight: 'bold',
                     }}>
                     Login
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -231,14 +235,14 @@ const styles = StyleSheet.create({
   customInputContainer: {
     marginVertical: 10,
     borderWidth: 2,
-    borderColor: 'teal',
-    backgroundColor: '#fff',
+    borderColor: COLORS.teal,
+    backgroundColor: COLORS.white,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: 'teal',
+    backgroundColor: COLORS.teal,
     padding: 10,
     alignItems: 'center',
     marginVertical: 10,

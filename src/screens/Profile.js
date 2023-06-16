@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import UserProfile from '../components/UserProfile';
+import COLORS from '../../constants/colors';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
@@ -56,14 +57,14 @@ export default function Profile({user, verified, onLogout}) {
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Edit Profile')}>
-            <Icon name="person" size={20} color="gray" />
+            <Icon name="person" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Edit Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Change Password')}>
-            <Icon name="vpn-key" size={20} color="gray" />
+            <Icon name="vpn-key" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Change Password</Text>
           </TouchableOpacity>
         </View>
@@ -73,20 +74,20 @@ export default function Profile({user, verified, onLogout}) {
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Dorm Listing')}>
-            <Icon name="add-business" size={20} color="gray" />
+            <Icon name="add-business" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Dorm Listing</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Verification')}>
-            <Icon name="verified-user" size={20} color="gray" />
+            <Icon name="verified-user" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Verification</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Payments')}>
-            <Icon name="payments" size={20} color="gray" />
+            <Icon name="payments" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Payments</Text>
           </TouchableOpacity>
         </View>
@@ -109,7 +110,7 @@ export default function Profile({user, verified, onLogout}) {
                   {
                     marginStart: 5,
                     textAlign: 'center',
-                    color: '#33b5e5',
+                    color: COLORS.blue,
                     textDecorationLine: 'underline',
                   },
                 ]}>
@@ -122,7 +123,7 @@ export default function Profile({user, verified, onLogout}) {
         {/* Logout section */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.button} onPress={handleLogOut}>
-            <Text style={{color: '#FFFFFF'}}>Logout</Text>
+            <Text style={{color: COLORS.white}}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -132,7 +133,7 @@ export default function Profile({user, verified, onLogout}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     flex: 1,
     justifyContent: 'flex-start',
     padding: 8,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   },
   profilebtn: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 5,
     elevation: 4,
     marginVertical: 8,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
     padding: 11,

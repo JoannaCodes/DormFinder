@@ -31,7 +31,7 @@ import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 import PushNotificationConfig from '../components/PushNotificationConfig';
 import PushNotification, { Importance } from 'react-native-push-notification';
 
-import COLORS from '../consts/colors';
+import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { width } = Dimensions.get('screen');
 import houses from '../consts/houses';

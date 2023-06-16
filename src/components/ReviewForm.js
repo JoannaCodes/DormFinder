@@ -16,6 +16,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../constants/colors';
 
 const ReviewForm = ({visible, onClose, userref, dormref}) => {
   const [comment, setComment] = useState('');
@@ -102,7 +103,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
                 Dorm Review
               </Text>
               <TouchableOpacity onPress={handleDismiss}>
-                <Icon name="close" size={30} color="#FF0000" />
+                <Icon name="close" size={30} color={COLORS.red} />
               </TouchableOpacity>
             </View>
             <View style={styles.stars}>
@@ -114,9 +115,9 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
                   key={option}>
                   <Animated.View style={animatedScaleStyle}>
                     {starRating >= option ? (
-                      <Icon name="star-rate" size={30} color="gold" />
+                      <Icon name="star-rate" size={30} color={COLORS.gold} />
                     ) : (
-                      <Icon name="star-outline" size={30} color="#0E898B" />
+                      <Icon name="star-outline" size={30} color={COLORS.teal} />
                     )}
                   </Animated.View>
                 </TouchableWithoutFeedback>
@@ -127,7 +128,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
               value={comment}
               onChangeText={value => setComment(value)}
               placeholder="Say something..."
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={COLORS.grey}
               height={150}
               textAlignVertical="top"
               multiline
@@ -139,12 +140,15 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
               disabled={comment.length === 0}
               style={[
                 styles.button,
-                {backgroundColor: comment.length === 0 ? '#CCCCCC' : '#0E898B'},
+                {
+                  backgroundColor:
+                    comment.length === 0 ? COLORS.grey : '#0E898B',
+                },
               ]}>
               {loading ? (
-                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+                <ActivityIndicator size={'small'} color={COLORS.white} />
               ) : (
-                <Text style={{color: '#FFFFFF'}}>Submit</Text>
+                <Text style={{color: COLORS.white}}>Submit</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modal: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     width: '90%',
     padding: 16,
     borderRadius: 10,
@@ -196,12 +200,12 @@ const styles = StyleSheet.create({
     height: 40,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     elevation: 4,
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
     padding: 11,

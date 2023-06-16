@@ -16,6 +16,7 @@ import {BASE_URL} from '../../constants';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import COLORS from '../../constants/colors';
 import React, {useState} from 'react';
 
 const ViewReviews = ({visible, onClose, dormref}) => {
@@ -76,9 +77,9 @@ const ViewReviews = ({visible, onClose, dormref}) => {
                 .map((_, index) => (
                   <Text key={index}>
                     {item.rating >= index + 1 ? (
-                      <Icon name="star-rate" size={18} color="gold" />
+                      <Icon name="star-rate" size={18} color={COLORS.gold} />
                     ) : (
-                      <Icon name="star-outline" size={18} color="#0E898B" />
+                      <Icon name="star-outline" size={18} color={COLORS.teal} />
                     )}
                   </Text>
                 ))}
@@ -143,9 +144,9 @@ const ViewReviews = ({visible, onClose, dormref}) => {
                 .map((_, index) => (
                   <Text key={index}>
                     {rating >= index + 1 ? (
-                      <Icon name="star-rate" size={30} color="gold" />
+                      <Icon name="star-rate" size={30} color={COLORS.gold} />
                     ) : (
-                      <Icon name="star-outline" size={30} color="#0E898B" />
+                      <Icon name="star-outline" size={30} color={COLORS.teal} />
                     )}
                   </Text>
                 ))}
@@ -154,7 +155,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
           </View>
           <SafeAreaView style={styles.reviews}>
             {isLoading ? (
-              <ActivityIndicator size={'large'} color={'#0E898B'} />
+              <ActivityIndicator size={'large'} color={COLORS.teal} />
             ) : (
               <FlatList
                 contentContainerStyle={{flexGrow: 1, paddingTop: 16}}
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modal: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     width: '90%',
     height: '85%',
     borderRadius: 10,
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   },
   card: {
     justifyContent: 'space-evenly',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 16,
     marginBottom: 16,
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   image: {
-    borderColor: '#CCCCCC',
+    borderColor: COLORS.grey,
     borderRadius: 50,
     borderWidth: 1,
     height: 45,

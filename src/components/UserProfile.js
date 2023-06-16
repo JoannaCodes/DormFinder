@@ -17,6 +17,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../constants/colors';
 
 const UserProfile = ({uid}) => {
   let URL = BASE_URL;
@@ -149,7 +150,7 @@ const UserProfile = ({uid}) => {
               height: 20,
               marginBottom: 8,
               borderRadius: 5,
-              backgroundColor: '#CCCCCC',
+              backgroundColor: COLORS.grey,
             }}
           />
           <View
@@ -157,7 +158,7 @@ const UserProfile = ({uid}) => {
               width: '50%',
               height: 20,
               borderRadius: 5,
-              backgroundColor: '#CCCCCC',
+              backgroundColor: COLORS.grey,
             }}
           />
         </View>
@@ -179,7 +180,7 @@ const UserProfile = ({uid}) => {
                   height: 20,
                   marginBottom: 8,
                   borderRadius: 5,
-                  backgroundColor: '#CCCCCC',
+                  backgroundColor: COLORS.grey,
                 }}
               />
               <View
@@ -187,7 +188,7 @@ const UserProfile = ({uid}) => {
                   width: '50%',
                   height: 20,
                   borderRadius: 5,
-                  backgroundColor: '#CCCCCC',
+                  backgroundColor: COLORS.grey,
                 }}
               />
             </View>
@@ -201,26 +202,26 @@ const UserProfile = ({uid}) => {
                 <>
                   <Image source={{uri: image}} style={styles.image} />
                   <TouchableHighlight
-                    underlayColor={'#CCCCCC'}
+                    underlayColor={COLORS.grey}
                     style={styles.editbtn}
                     onPress={() => {
                       pickImage();
                     }}>
-                    <Icon name="camera-alt" size={18} color="#FFFFFF" />
+                    <Icon name="camera-alt" size={18} color={COLORS.white}/>
                   </TouchableHighlight>
                 </>
               ) : (
                 <>
                   <Image source={{uri: user.imageUrl}} style={styles.image} />
                   <TouchableHighlight
-                    underlayColor={'#CCCCCC'}
+                    underlayColor={COLORS.grey}
                     style={styles.editbtn}
                     onPress={() => {
                       setEditMode(true);
                       setUsername(user.username);
                       setImage(user.imageUrl);
                     }}>
-                    <Icon name="mode-edit" size={18} color="#FFFFFF" />
+                    <Icon name="mode-edit" size={18} color={COLORS.white} />
                   </TouchableHighlight>
                 </>
               )}
@@ -234,7 +235,7 @@ const UserProfile = ({uid}) => {
                   style={styles.input}
                   value={username}
                   placeholder="Username"
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor={COLORS.grey}
                   onChangeText={value => setUsername(value)}
                 />
                 <View style={styles.buttonContainer}>
@@ -243,7 +244,7 @@ const UserProfile = ({uid}) => {
                     onPress={() => {
                       setEditMode(false);
                     }}>
-                    <Text style={{color: '#FFFFFF'}}>Cancel</Text>
+                    <Text style={{color: COLORS.white}}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.button, {marginStart: 4}]}
@@ -251,9 +252,9 @@ const UserProfile = ({uid}) => {
                       _updateAccount();
                     }}>
                     {isLoading ? (
-                      <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+                      <ActivityIndicator size={'small'} color={COLORS.white} />
                     ) : (
-                      <Text style={{color: '#FFFFFF'}}>Save</Text>
+                      <Text style={{color: COLORS.white}}>Save</Text>
                     )}
                   </TouchableOpacity>
                 </View>
@@ -264,7 +265,7 @@ const UserProfile = ({uid}) => {
                 {user.is_verified === 1 ? (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text style={styles.verificationStatus}>Verified</Text>
-                    <Icon name="verified" size={18} color="#CCCCCC" />
+                    <Icon name="verified" size={18} color={COLORS.grey} />
                   </View>
                 ) : null}
               </>
@@ -291,8 +292,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 2,
-    backgroundColor: '#CCCCCC',
-    borderColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
+    borderColor: COLORS.grey,
     borderRadius: 50,
     borderWidth: 2,
     height: 100,
@@ -308,9 +309,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   editbtn: {
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 20,
-    borderColor: '#CCCCCC',
+    borderColor: COLORS.grey,
     borderWidth: 2,
     bottom: 0,
     elevation: 4,
@@ -323,7 +324,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   verificationStatus: {
-    color: '#0E898B',
+    color: COLORS.teal,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -331,13 +332,13 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 5,
     borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     marginBottom: 8,
     elevation: 2,
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
     padding: 8,
@@ -347,8 +348,8 @@ const styles = StyleSheet.create({
     width: '60%',
     height: 15,
     borderRadius: 2,
-    backgroundColor: '#CCCCCC',
-    borderColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
+    borderColor: COLORS.grey,
     marginBottom: 8,
   },
 });

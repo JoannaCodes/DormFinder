@@ -17,13 +17,14 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../../constants/colors';
 
 const Separator = () => {
   return (
     <View
       height={1}
       width={'100%'}
-      backgroundColor={'#CCCCCC'}
+      backgroundColor={COLORS.grey}
       style={{marginVertical: 5}}
     />
   );
@@ -186,7 +187,7 @@ export default function EditProfile({user, onLogout}) {
                       : values.user
                   }
                   placeholder="Email"
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor={COLORS.grey}
                   onChangeText={handleChange('user')}
                   onBlur={handleBlur('user')}
                   keyboardType="email-address"
@@ -202,14 +203,14 @@ export default function EditProfile({user, onLogout}) {
                 {
                   backgroundColor:
                     values.user.trim() === '' || values.user === handle
-                      ? '#CCCCCC'
-                      : '#0E898B',
+                      ? COLORS.grey
+                      : COLORS.teal,
                 },
               ]}>
               {isLoading ? (
-                <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+                <ActivityIndicator size={'small'} color={COLORS.white} />
               ) : (
-                <Text style={{color: '#FFFFFF'}}>Submit</Text>
+                <Text style={{color: COLORS.white}}>Submit</Text>
               )}
             </TouchableOpacity>
             <View style={styles.section}>
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   section: {
     marginVertical: 12,
@@ -266,14 +267,14 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     elevation: 2,
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: COLORS.red,
   },
   error: {
-    color: 'red',
+    color: COLORS.red,
   },
   button: {
     alignItems: 'center',
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
   },
   deletebtn: {
     borderWidth: 1,
-    borderColor: '#FF0000',
+    borderColor: COLORS.red,
     padding: 10,
     marginStart: 10,
     borderRadius: 5,
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   deletebtnlbl: {
-    color: '#FF0000',
+    color: COLORS.red,
     fontWeight: 'bold',
   },
 });

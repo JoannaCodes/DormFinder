@@ -16,11 +16,12 @@ import {BASE_URL, DORM_UPLOADS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import COLORS from '../../constants/colors';
 
 import ReviewForm from '../components/ReviewForm';
 
 const Separator = () => {
-  return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
+  return <View height={1} width={'100%'} backgroundColor={COLORS.grey} />;
 };
 
 const Bookmarks = ({route, navigation}) => {
@@ -69,7 +70,7 @@ const Bookmarks = ({route, navigation}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.5}
-        underlayColor="#CCCCCC"
+        underlayColor={COLORS.grey}
         onPress={() =>
           navigation.navigate('Dorm Details', {
             dormref: item.dormref,
@@ -100,15 +101,14 @@ const Bookmarks = ({route, navigation}) => {
                 onPress={() => {
                   setModalVisible(true);
                   setSelectedDorm(item.dormref);
-                  // console.log(item.dormref);
                 }}>
-                <Icon name="star-rate" size={18} color="#0E898B" />
+                <Icon name="star-rate" size={18} color={COLORS.teal} />
                 <Text style={{marginLeft: 10}}>Write a review</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btnContainer, {marginStart: 4}]}
                 onPress={() => navigation.navigate('Chat Room')}>
-                <Icon name="message" size={18} color="#0E898B" />
+                <Icon name="message" size={18} color={COLORS.teal} />
               </TouchableOpacity>
             </View>
           </View>
@@ -150,7 +150,7 @@ const Bookmarks = ({route, navigation}) => {
             <Text style={styles.title}>No Bookmarks</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={styles.message}>Tap "</Text>
-              <Icon name="favorite" size={18} color="red" />
+              <Icon name="favorite" size={18} color={COLORS.red} />
               <Text style={styles.message}>
                 " to add the dorm that interests you
               </Text>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   emptyContainer: {
     justifyContent: 'center',
@@ -225,9 +225,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     elevation: 2,
     borderRadius: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: '#0E898B',
+    borderColor: COLORS.teal,
     padding: 10,
   },
   loading: {
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     elevation: 4,
     overflow: 'hidden',
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     flex: 2,
     height: 150,
     resizeMode: 'cover',
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
   },
   cardBody: {
     flex: 3,

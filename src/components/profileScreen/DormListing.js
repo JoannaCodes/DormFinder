@@ -22,6 +22,7 @@ import Toast from 'react-native-toast-message';
 
 import ViewReviews from '../ViewReviews';
 import VerifiyPromtpModal from '../modals/VerifiyPromtpModal';
+import COLORS from '../../../constants/colors';
 
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={'#CCCCCC'} />;
@@ -150,11 +151,7 @@ const DormListing = ({route, navigation}) => {
                   editmode: true,
                 })
               }>
-              <Icon
-                name="mode-edit"
-                size={18}
-                color={status === 'failed' ? '#888888' : '#0E898B'}
-              />
+              <Icon name="mode-edit" size={18} color={COLORS.teal} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
@@ -162,14 +159,14 @@ const DormListing = ({route, navigation}) => {
                 setReviewModalVisible(true);
                 setSelectedDorm(item.id);
               }}>
-              <Icon name="insights" size={18} color="#0E898B" />
+              <Icon name="insights" size={18} color={COLORS.teal}/>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
                 _deleteDorm(item.id);
               }}>
-              <Icon name="delete" size={18} color="#0E898B" />
+              <Icon name="delete" size={18} color={COLORS.teal}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -213,7 +210,7 @@ const DormListing = ({route, navigation}) => {
             <Text style={styles.title}>No Dorm Listing</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={styles.message}>Tap "</Text>
-              <Icon name="add" size={18} color="#0E898B" />
+              <Icon name="add" size={18} color={COLORS.teal} />
               <Text style={styles.message}>" to Add YourDorm</Text>
             </View>
           </>
@@ -226,7 +223,7 @@ const DormListing = ({route, navigation}) => {
     <SafeAreaView style={styles.container}>
       {isLoading ? (
         <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#0E898B" />
+          <ActivityIndicator size="large" color={COLORS.teal} />
         </View>
       ) : (
         <>
@@ -252,7 +249,7 @@ const DormListing = ({route, navigation}) => {
                   })
                 : setPromptModalVisible(true);
             }}>
-            <Icon name="add" size={30} color="#FFFFFF" />
+            <Icon name="add" size={30} color={COLORS.white} />
           </TouchableOpacity>
         </>
       )}
@@ -278,7 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
   },
   emptyContainer: {
     justifyContent: 'center',
@@ -297,9 +294,9 @@ const styles = StyleSheet.create({
   btnContainer: {
     elevation: 2,
     borderRadius: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: '#0E898B',
+    borderColor: COLORS.teal,
     padding: 10,
   },
   loading: {
@@ -311,7 +308,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     borderRadius: 20,
     padding: 14,
     flexDirection: 'row',
@@ -324,7 +321,7 @@ const styles = StyleSheet.create({
   card: {
     margin: 8,
     width: width / 2 - 24,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     elevation: 4,
     overflow: 'hidden',
@@ -333,7 +330,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'cover',
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
   },
   cardBody: {
     padding: 10,

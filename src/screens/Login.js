@@ -15,7 +15,8 @@ import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
-//
+import COLORS from '../../constants/colors';
+
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
@@ -24,7 +25,7 @@ const Separator = ({title}) => {
   return (
     <View style={styles.separator}>
       <View style={styles.line} />
-      <Text style={{marginHorizontal: 5, color: '#FFFFFF'}}>{title}</Text>
+      <Text style={{marginHorizontal: 5, color: COLORS.white}}>{title}</Text>
       <View style={styles.line} />
     </View>
   );
@@ -148,8 +149,7 @@ export default function Login({onLogin}) {
       <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
-          {/* <Icon name="arrow-back-ios" size={30} color="#fff" /> */}
-          <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>
+          <Text style={{color: COLORS.white, fontSize: 30, fontWeight: 'bold'}}>
             Welcome!
           </Text>
         </View>
@@ -158,8 +158,9 @@ export default function Login({onLogin}) {
             {/*  */}
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{padding: 0, color: '#000'}}
+                style={{padding: 0}}
                 placeholder="Username"
+                placeholderTextColor={COLORS.grey}
                 onChangeText={text => setUsername(text)}
               />
             </View>
@@ -171,6 +172,7 @@ export default function Login({onLogin}) {
                 <TextInput
                   style={{padding: 0}}
                   placeholder="Password"
+                  placeholderTextColor={COLORS.grey}
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
                 />
@@ -191,9 +193,14 @@ export default function Login({onLogin}) {
                 handleLogin('user');
               }}>
               {isLoading ? (
-                <ActivityIndicator color={'white'} size={'small'} />
+                <ActivityIndicator color={COLORS.white} size={'small'} />
               ) : (
-                <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontWeight: 'bold',
+                    fontSize: 17,
+                  }}>
                   Login
                 </Text>
               )}
@@ -207,7 +214,7 @@ export default function Login({onLogin}) {
               style={[
                 styles.loginButton,
                 {
-                  backgroundColor: '#fff',
+                  backgroundColor: COLORS.white,
                   flexDirection: 'row',
                   padding: 12,
                   justifyContent: 'space-around',
@@ -227,7 +234,8 @@ export default function Login({onLogin}) {
               onPress={() => {
                 handleLogin('guest');
               }}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 17}}>
+              <Text
+                style={{color: COLORS.white, fontWeight: 'bold', fontSize: 17}}>
                 Login as Guest
               </Text>
             </TouchableOpacity>
@@ -235,7 +243,9 @@ export default function Login({onLogin}) {
             {/*  */}
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Don't Have An Account?</Text>
+                <Text style={{color: COLORS.white}}>
+                  Don't Have An Account?
+                </Text>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('Signup');
@@ -243,7 +253,7 @@ export default function Login({onLogin}) {
                   <Text
                     style={{
                       marginLeft: 5,
-                      color: 'teal',
+                      color: COLORS.teal,
                       fontWeight: 'bold',
                     }}>
                     Signup
@@ -253,7 +263,7 @@ export default function Login({onLogin}) {
               <TouchableOpacity>
                 <Text
                   style={{
-                    color: 'teal',
+                    color: COLORS.teal,
                     fontWeight: 'bold',
                   }}>
                   Forget Your Password?
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -322,14 +332,14 @@ const styles = StyleSheet.create({
   customInputContainer: {
     marginVertical: 10,
     borderWidth: 2,
-    borderColor: 'teal',
-    backgroundColor: '#fff',
+    borderColor: COLORS.teal,
+    backgroundColor: COLORS.white,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: 'teal',
+    backgroundColor: COLORS.teal,
     padding: 10,
     alignItems: 'center',
     marginVertical: 10,

@@ -24,6 +24,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState, useEffect, useCallback} from 'react';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../constants/colors';
 
 const Separator = ({title}) => {
   return (
@@ -373,18 +374,18 @@ const ListingForm = ({route, navigation}) => {
       <View style={styles.emptyContainer}>
         {editmode ? (
           <>
-            <Icon name="image" size={30} color={'#CCCCCC'} />
+            <Icon name="image" size={30} color={COLORS.grey} />
             <Text style={styles.emptyTitle}>
               Uploaded images will overwrite existing images. Leave blank if no
               changes.
             </Text>
-            <Text style={{color: '#CCCCCC'}}>Tap the image to remove it</Text>
+            <Text style={{color: COLORS.grey}}>Tap the image to remove it</Text>
           </>
         ) : (
           <>
-            <Icon name="image" size={30} color={'#CCCCCC'} />
+            <Icon name="image" size={30} color={COLORS.grey} />
             <Text style={styles.emptyTitle}>Upload dorm images</Text>
-            <Text style={{color: '#CCCCCC'}}>Tap the image to remove it</Text>
+            <Text style={{color: COLORS.grey}}>Tap the image to remove it</Text>
           </>
         )}
       </View>
@@ -424,7 +425,7 @@ const ListingForm = ({route, navigation}) => {
         </SafeAreaView>
         <View style={{marginTop: 16}}>
           <TouchableOpacity style={styles.button} onPress={pickImage}>
-            <Text style={{color: '#FFFFFF'}}>Upload Images</Text>
+            <Text style={{color: COLORS.white}}>Upload Images</Text>
           </TouchableOpacity>
         </View>
         {/* Name */}
@@ -433,7 +434,7 @@ const ListingForm = ({route, navigation}) => {
           style={[styles.input, errors.name && styles.error]}
           value={initialValues.name}
           placeholder="Establishment Name"
-          placeholderTextColor="#CCCCCC"
+          placeholderTextColor={COLORS.grey}
           onChangeText={value => handleTextInputChange('name', value)}
         />
         <View style={styles.section}>
@@ -443,7 +444,7 @@ const ListingForm = ({route, navigation}) => {
               style={[styles.input, errors.price && styles.error]}
               value={initialValues.price}
               placeholder="Price"
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={COLORS.grey}
               keyboardType="numeric"
               onChangeText={value => handleTextInputChange('price', value)}
             />
@@ -455,7 +456,7 @@ const ListingForm = ({route, navigation}) => {
               style={[styles.input, errors.slots && styles.error]}
               value={initialValues.slots}
               placeholder="Slots Available"
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={COLORS.grey}
               keyboardType="numeric"
               onChangeText={value => handleTextInputChange('slots', value)}
             />
@@ -464,14 +465,14 @@ const ListingForm = ({route, navigation}) => {
         {/* Address */}
         <View
           style={{
-            backgroundColor: '#0E898B',
+            backgroundColor: COLORS.teal,
             padding: 5,
             borderRadius: 5,
             marginTop: 5,
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name="info" color={'white'} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+            <Icon name="info" color={COLORS.white} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
               Example: 303 Recto Ave, Binondo, Manila
             </Text>
           </View>
@@ -480,7 +481,7 @@ const ListingForm = ({route, navigation}) => {
           style={[styles.input, errors.address && styles.error]}
           value={initialValues.address}
           placeholder="Address"
-          placeholderTextColor="#CCCCCC"
+          placeholderTextColor={COLORS.grey}
           height={75}
           textAlignVertical="top"
           multiline
@@ -491,7 +492,7 @@ const ListingForm = ({route, navigation}) => {
           style={[styles.input, errors.desc && styles.error]}
           value={initialValues.desc}
           placeholder="Listing Description"
-          placeholderTextColor="#CCCCCC"
+          placeholderTextColor={COLORS.grey}
           height={150}
           textAlignVertical="top"
           multiline
@@ -505,15 +506,15 @@ const ListingForm = ({route, navigation}) => {
           placeholderStyle={{color: '#CCCCCC'}}
           zIndex={3000}
           zIndexInverse={1000}
-          badgeColors={['#0E898B']}
-          badgeDotColors={['white']}
-          badgeTextStyle={{color: 'white'}}
+          badgeColors={[COLORS.teal]}
+          badgeDotColors={[COLORS.white]}
+          badgeTextStyle={{color: COLORS.white}}
           style={[styles.dropdown, errors.hei && styles.error]}
           containerStyle={{marginVertical: 8}}
           dropDownContainerStyle={{
             borderWidth: 0,
             borderTopWidth: 1,
-            borderTopColor: '#dfdfdf',
+            borderTopColor: COLORS.grey,
             marginTop: 5,
             elevation: 2,
           }}
@@ -533,18 +534,18 @@ const ListingForm = ({route, navigation}) => {
           listMode="SCROLLVIEW"
           dropDownDirection="BOTTOM"
           placeholder="Select Amenities"
-          placeholderStyle={{color: '#CCCCCC'}}
+          placeholderStyle={{color: COLORS.grey}}
           zIndex={2000}
           zIndexInverse={2000}
-          badgeColors={['#0E898B']}
-          badgeDotColors={['white']}
-          badgeTextStyle={{color: 'white'}}
+          badgeColors={[COLORS.teal]}
+          badgeDotColors={[COLORS.white]}
+          badgeTextStyle={{color: COLORS.white}}
           style={[styles.dropdown, errors.amenities && styles.error]}
           containerStyle={{marginVertical: 8}}
           dropDownContainerStyle={{
             borderWidth: 0,
             borderTopWidth: 1,
-            borderTopColor: '#dfdfdf',
+            borderTopColor: COLORS.grey,
             marginTop: 5,
             elevation: 2,
           }}
@@ -565,9 +566,9 @@ const ListingForm = ({route, navigation}) => {
             isChecked={checkboxes.pets}
             onPress={() => handleCheckboxToggle('pets')}
             textStyle={{textDecorationLine: 'none'}}
-            fillColor="#0E898B"
-            unfillColor="#FFFFFF"
-            iconStyle={{borderColor: '#0E898B'}}
+            fillColor={COLORS.teal}
+            unfillColor={COLORS.white}
+            iconStyle={{borderColor: COLORS.teal}}
             text="Pets"
           />
           <BouncyCheckbox
@@ -575,9 +576,9 @@ const ListingForm = ({route, navigation}) => {
             isChecked={checkboxes.visitors}
             onPress={() => handleCheckboxToggle('visitors')}
             textStyle={{textDecorationLine: 'none'}}
-            fillColor="#0E898B"
-            unfillColor="#FFFFFF"
-            iconStyle={{borderColor: '#0E898B'}}
+            fillColor={COLORS.teal}
+            unfillColor={COLORS.white}
+            iconStyle={{borderColor: COLORS.teal}}
             text="Visitors"
           />
           <BouncyCheckbox
@@ -585,9 +586,9 @@ const ListingForm = ({route, navigation}) => {
             isChecked={checkboxes.curfew}
             onPress={() => handleCheckboxToggle('curfew')}
             textStyle={{textDecorationLine: 'none'}}
-            fillColor="#0E898B"
-            unfillColor="#FFFFFF"
-            iconStyle={{borderColor: '#0E898B'}}
+            fillColor={COLORS.teal}
+            unfillColor={COLORS.white}
+            iconStyle={{borderColor: COLORS.teal}}
             text="Curfew"
           />
         </View>
@@ -595,28 +596,28 @@ const ListingForm = ({route, navigation}) => {
         <Separator title="Payment and Duration Terms (Optional)" />
         <View
           style={{
-            backgroundColor: '#0E898B',
+            backgroundColor: COLORS.teal,
             padding: 5,
             borderRadius: 5,
             marginTop: 5,
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name="info" color={'white'} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+            <Icon name="info" color={COLORS.white} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
               Leave it blank if not applicable
             </Text>
           </View>
         </View>
         <View
           style={{
-            backgroundColor: '#0E898B',
+            backgroundColor: COLORS.teal,
             padding: 5,
             borderRadius: 5,
             marginTop: 5,
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name="info" color={'white'} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: 'white'}}>
+            <Icon name="info" color={COLORS.white} size={16} />
+            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
             Enter the duration in 'months' for the minimum stay.
             </Text>
           </View>
@@ -628,7 +629,7 @@ const ListingForm = ({route, navigation}) => {
             style={styles.input}
             value={initialValues.advance_deposit}
             placeholder="Advance Deposit"
-            placeholderTextColor="#CCCCCC"
+            placeholderTextColor={COLORS.grey}
             onChangeText={(value) =>
               handleTextInputChange('advance_deposit', value)
             }
@@ -642,7 +643,7 @@ const ListingForm = ({route, navigation}) => {
             style={styles.input}
             value={initialValues.security_deposit}
             placeholder="Security Deposit"
-            placeholderTextColor="#CCCCCC"
+            placeholderTextColor={COLORS.grey}
             onChangeText={(value) =>
               handleTextInputChange('security_deposit', value)
             }
@@ -657,7 +658,7 @@ const ListingForm = ({route, navigation}) => {
             style={styles.input}
             value={initialValues.utilities}
             placeholder="Utility Exclusivity"
-            placeholderTextColor="#CCCCCC"
+            placeholderTextColor={COLORS.grey}
             onChangeText={(value) =>
               handleTextInputChange('utilities', value)
             }
@@ -670,7 +671,7 @@ const ListingForm = ({route, navigation}) => {
             style={styles.input}
             value={initialValues.minimum_stay}
             placeholder="Minimum Stay"
-            placeholderTextColor="#CCCCCC"
+            placeholderTextColor={COLORS.grey}
             onChangeText={(value) =>
               handleTextInputChange('minimum_stay', value)
             }
@@ -684,9 +685,9 @@ const ListingForm = ({route, navigation}) => {
             onPress={editmode ? _updateListing : _createListing}
             disabled={isLoading}>
             {isLoading ? (
-              <ActivityIndicator size={'small'} color={'#FFFFFF'} />
+              <ActivityIndicator size={'small'} color={COLORS.white} />
             ) : (
-              <Text style={{color: '#FFFFFF'}}>Submit</Text>
+              <Text style={{color: COLORS.white}}>Submit</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -707,7 +708,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
   },
   scrollcontainer: {
     flex: 1,
@@ -733,24 +734,24 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontWeight: 'bold',
-    color: '#CCCCCC',
+    color: COLORS.grey,
     textAlign: 'center',
   },
   cardContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 5,
     elevation: 4,
   },
   card: {
     flex: 1,
     width: width * 0.5,
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
     borderRadius: 3,
     overflow: 'hidden',
   },
   image: {
     resizeMode: 'cover',
-    backgroundColor: '#CCCCCC',
+    backgroundColor: COLORS.grey,
     height: '100%',
     width: '100%',
   },
@@ -767,7 +768,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     elevation: 2,
   },
   error: {
@@ -781,7 +782,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#0E898B',
+    backgroundColor: COLORS.teal,
     marginVertical: 4,
     borderRadius: 5,
     elevation: 4,
