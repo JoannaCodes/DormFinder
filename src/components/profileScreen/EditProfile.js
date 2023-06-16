@@ -50,7 +50,7 @@ export default function EditProfile({user, onLogout}) {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'UniHive',
+          text1: 'StudyHive',
           text2: 'Cannot retrieve account details. Please try again.',
         });
       })
@@ -60,7 +60,7 @@ export default function EditProfile({user, onLogout}) {
   };
 
   function _updateAccount(values) {
-    Alert.alert('UniHive', 'Continue updating account?', [
+    Alert.alert('StudyHive', 'Continue updating account?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Update',
@@ -83,14 +83,14 @@ export default function EditProfile({user, onLogout}) {
               if (message === 'success') {
                 Toast.show({
                   type: 'success',
-                  text1: 'UniHive',
+                  text1: 'StudyHive',
                   text2: 'Account updated',
                 });
                 fetchAccount();
               } else if (message === 'failed') {
                 Toast.show({
                   type: 'error',
-                  text1: 'UniHive',
+                  text1: 'StudyHive',
                   text2: 'Unable to update account. Please Try Again.',
                 });
               }
@@ -105,7 +105,7 @@ export default function EditProfile({user, onLogout}) {
 
   function _deleteAccount() {
     Alert.alert(
-      'UniHive',
+      'StudyHive',
       'Are you sure you want to delete your account? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
@@ -129,7 +129,7 @@ export default function EditProfile({user, onLogout}) {
                 if (message === 'success') {
                   Toast.show({
                     type: 'success',
-                    text1: 'UniHive',
+                    text1: 'StudyHive',
                     text2: 'Account deleted',
                   });
 
@@ -137,7 +137,7 @@ export default function EditProfile({user, onLogout}) {
                 } else if (message === 'failed') {
                   Toast.show({
                     type: 'error',
-                    text1: 'UniHive',
+                    text1: 'StudyHive',
                     text2: 'Unable to delete account. Please Try Again.',
                   });
                 }

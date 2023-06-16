@@ -55,13 +55,13 @@ export default function Login({onLogin}) {
             onLogin(user);
             Toast.show({
               type: 'success',
-              text1: 'UniHive',
+              text1: 'StudyHive',
               text2: `Welcome, ${user.username}.`,
             });
           } else {
             Toast.show({
               type: 'error',
-              text1: 'UniHive',
+              text1: 'StudyHive',
               text2: 'Unable to enter guest mode.',
             });
           }
@@ -69,7 +69,7 @@ export default function Login({onLogin}) {
         .catch(error => {
           Toast.show({
             type: 'error',
-            text1: 'UniHive',
+            text1: 'StudyHive',
             text2: 'Please check your network and try again.',
           });
         })
@@ -99,13 +99,13 @@ export default function Login({onLogin}) {
               onLogin(user);
               Toast.show({
                 type: 'success',
-                text1: 'UniHive',
+                text1: 'StudyHive',
                 text2: `Hello, ${user.username}.`,
               });
             } else {
               Toast.show({
                 type: 'error',
-                text1: 'UniHive',
+                text1: 'StudyHive',
                 text2: 'User not found.',
               });
             }
@@ -113,7 +113,7 @@ export default function Login({onLogin}) {
           .catch(error => {
             Toast.show({
               type: 'error',
-              text1: 'UniHive',
+              text1: 'StudyHive',
               text2: 'Please check your network and try again.',
             });
           })

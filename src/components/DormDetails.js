@@ -105,12 +105,12 @@ const DormDetails = ({navigation, route}) => {
           response.data === 1
           ? (Toast.show({
             type: 'success',
-            text1: 'Dorm Finder',
+            text1: 'StudyHive',
             text2: 'Success',
           })) 
           : (Toast.show({
             type: 'error',
-            text1: 'Dorm Finder',
+            text1: 'StudyHive',
             text2: 'Error',
           }))
       
@@ -123,7 +123,7 @@ const DormDetails = ({navigation, route}) => {
       console.error(error);
       Toast.show({
         type: 'error',
-        text1: 'Dorm Finder',
+        text1: 'StudyHive',
         text2: error.message,
       });
     }

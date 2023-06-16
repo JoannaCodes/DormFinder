@@ -45,13 +45,13 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
         if (message === 'success') {
           Toast.show({
             type: 'success',
-            text1: 'UniHive',
+            text1: 'StudyHive',
             text2: 'Review posted',
           });
         } else {
           Toast.show({
             type: 'error',
-            text1: 'UniHive',
+            text1: 'StudyHive',
             text2: 'Unable to submit review. Please try again.',
           });
         }

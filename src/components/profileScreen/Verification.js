@@ -90,7 +90,7 @@ export default function DocumentStatus() {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'UniHive',
+          text1: 'StudyHive',
           text2: 'An error occured. Please try again.',
         });
       })

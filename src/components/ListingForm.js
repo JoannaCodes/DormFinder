@@ -156,32 +156,32 @@ const ListingForm = ({route, navigation}) => {
 
       console.log(formData);
 
-      // await axios
-      //   .post(BASE_URL, formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   })
-      //   .then(response => {
-      //     const message = response.data;
-      //     if (message === 'success') {
-      //       Toast.show({
-      //         type: 'success',
-      //         text1: 'UniHive',
-      //         text2: 'Dorm Listed',
-      //       });
-      //       navigation.goBack();
-      //     } else if (message === 'failed') {
-      //       Toast.show({
-      //         type: 'error',
-      //         text1: 'UniHive',
-      //         text2: 'Dorm not listed. Please try again.',
-      //       });
-      //     }
-      //   })
-      //   .finally(() => {
-      //     setIsLoading(false);
-      //   });
+      await axios
+        .post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          const message = response.data;
+          if (message === 'success') {
+            Toast.show({
+              type: 'success',
+              text1: 'StudyHive',
+              text2: 'Dorm Listed',
+            });
+            navigation.goBack();
+          } else if (message === 'failed') {
+            Toast.show({
+              type: 'error',
+              text1: 'StudyHive',
+              text2: 'Dorm not listed. Please try again.',
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }
 
@@ -221,32 +221,32 @@ const ListingForm = ({route, navigation}) => {
         });
       });
 
-      // await axios
-      //   .post(BASE_URL, formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   })
-      //   .then(response => {
-      //     const message = response.data;
-      //     if (message === 'success') {
-      //       Toast.show({
-      //         type: 'success',
-      //         text1: 'UniHive',
-      //         text2: 'Dorm Updated',
-      //       });
-      //       navigation.goBack();
-      //     } else if (message === 'failed') {
-      //       Toast.show({
-      //         type: 'error',
-      //         text1: 'UniHive',
-      //         text2: 'Dorm not updated. Please try again.',
-      //       });
-      //     }
-      //   })
-      //   .finally(() => {
-      //     setIsLoading(false);
-      //   });
+      await axios
+        .post(BASE_URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          const message = response.data;
+          if (message === 'success') {
+            Toast.show({
+              type: 'success',
+              text1: 'StudyHive',
+              text2: 'Dorm Updated',
+            });
+            navigation.goBack();
+          } else if (message === 'failed') {
+            Toast.show({
+              type: 'error',
+              text1: 'StudyHive',
+              text2: 'Dorm not updated. Please try again.',
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }
 
@@ -293,7 +293,7 @@ const ListingForm = ({route, navigation}) => {
     if (!isValid) {
       Toast.show({
         type: 'error',
-        text1: 'Dorm Finder',
+        text1: 'StudyHive',
         text2: 'Validation Error. Please fill in all the required fields',
       });
     } else {

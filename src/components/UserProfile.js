@@ -92,13 +92,13 @@ const UserProfile = ({uid}) => {
           if (message === 'success') {
             Toast.show({
               type: 'success',
-              text1: 'UniHive',
+              text1: 'StudyHive',
               text2: 'Profile updated',
             });
           } else if (message === 'failed') {
             Toast.show({
               type: 'error',
-              text1: 'UniHive',
+              text1: 'StudyHive',
               text2:
                 'Cannot update profile. Please check you network and try again',
             });

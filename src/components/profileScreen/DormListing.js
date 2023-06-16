@@ -100,7 +100,7 @@ const DormListing = ({route, navigation}) => {
                 if (message === 'success') {
                   Toast.show({
                     type: 'success',
-                    text1: 'Dorm Finder',
+                    text1: 'StudyHive',
                     text2: 'Dorm listing deleted',
                   });
 
@@ -109,7 +109,7 @@ const DormListing = ({route, navigation}) => {
                 } else if (message === 'failed') {
                   Toast.show({
                     type: 'success',
-                    text1: 'Dorm Finder',
+                    text1: 'StudyHive',
                     text2: 'Unable to delete listing. Please try again.',
                   });
                   fetchData();

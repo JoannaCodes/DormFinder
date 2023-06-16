@@ -43,20 +43,20 @@ const ChangePassword = ({route}) => {
               if (message === 'success') {
                 Toast.show({
                   type: 'success',
-                  text1: 'UniHive',
+                  text1: 'StudyHive',
                   text2: 'Password updated.',
                 });
                 resetForm();
               } else if (message === 'incorrect') {
                 Toast.show({
                   type: 'warning',
-                  text1: 'UniHive',
+                  text1: 'StudyHive',
                   text2: 'Current password is incorrect.',
                 });
               } else {
                 Toast.show({
                   type: 'error',
-                  text1: 'UniHive',
+                  text1: 'StudyHive',
                   text2: 'Unable to update password. Please try again.',
                 });
               }
