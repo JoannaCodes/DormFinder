@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
 
 import {
@@ -14,7 +14,11 @@ import {
   TextSection,
 } from '../components/styles/MessageStyles';
 
-const Messages = [
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL, AUTH_KEY } from '../../constants/index';
+import moment from 'moment';
+
+/*const Messages = [
   {
     id: '1',
     userName: 'Jenny Doe',
@@ -36,17 +40,57 @@ const Messages = [
     messageTime: '1 hours ago',
     messageText: 'PRACTICE LANGGGG',
   },
-];
+];*/
 
 const Inbox = ({ navigation }) => {
+  
+  const [myInfo, setMyInfo] = useState(null);
+  const [chatRooms, setChatRooms] = useState([]);
+  const fetchData = async () => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+    setUser(convertData)
+
+    let formdata = new FormData();
+    formdata.append('action', 'getChatrooms');
+    formdata.append('myid', convertData.id);
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Auth-Key': AUTH_KEY,
+      },
+      body: formdata
+    });
+    
+    const json = await response.json();
+    if(json.code == 200) {
+      setChatRooms(json.data);
+      setMyInfo(convertData);
+    }
+  };
+
+  const [user, setUser] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredMessages, setFilteredMessages] = useState(Messages);
+  const [filteredMessages, setFilteredMessages] = useState([]);
   const [showFlatList, setShowFlatList] = useState(true);
 
+  useEffect(() => {
+    let isMounted = true
+    const intervalId = setInterval(() => fetchData(), 3000);
+
+    return () => {
+      clearInterval(intervalId);
+      isMounted = false
+    }
+  }, [useState])
+
   const handleSearch = (text) => {
+    fetchData();
+
     setSearchQuery(text);
-    const filtered = Messages.filter((message) =>
-      message.userName.toLowerCase().includes(text.toLowerCase())
+    const filtered = chatRooms.filter((data) =>
+      data.username.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredMessages(filtered);
     setShowFlatList(text === '' ? true : filtered.length > 0);
@@ -76,22 +120,33 @@ const Inbox = ({ navigation }) => {
         )}
         <Image source={require('../../assets/img/ic_search.png')} style={styles.searchIcon} />
       </View>
-      {showFlatList ? (
+      {showFlatList && chatRooms.length != 0 ? (
+        
         <FlatList
-          data={filteredMessages}
-          keyExtractor={(item) => item.id}
+          data={searchQuery ? filteredMessages : chatRooms}
+          keyExtractor={(item) => item?.id}
           renderItem={({ item }) => (
-            <Card onPress={() => navigation.navigate('Chat Room', { userName: item.userName })}>
+            <Card onPress={() => 
+              navigation.navigate('Chat Room', { 
+                navigation: navigation,
+                anotherImageUrl: item.imageUrl,
+                username: item.username,
+                unique_code: item.unique_code,
+                myid: myInfo.id,myusername: myInfo.username,
+                anotherid: item?.user_id,
+                user: user
+              })
+            }>
               <UserInfo>
                 <UserImgWrapper>
-                  <UserImg source={item.userImg} />
+                  <UserImg source={{uri: item.imageUrl}} />
                 </UserImgWrapper>
                 <TextSection>
                   <UserInfoText>
-                    <UserName>{item.userName}</UserName>
-                    <PostTime>{item.messageTime}</PostTime>
+                    <UserName>{item.username}</UserName>
+                    <PostTime>{item.time != 0 ? moment.unix(item.time).utcOffset('+0800').format("hh:mm A") : "NEW"}</PostTime>
                   </UserInfoText>
-                  <MessageText>{item.messageText}</MessageText>
+                  <MessageText>{item.message}</MessageText>
                 </TextSection>
               </UserInfo>
             </Card>

@@ -108,7 +108,7 @@ function RootNavigator({route}) {
   const {user, mode} = route.params;
   return (
     <Tab.Navigator
-      initialRouteName={'ExploreTab'}
+      initialRouteName={'InboxTab'}
       screenOptions={({route, navigation}) => ({
         headerRight: () => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
@@ -233,7 +233,10 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen name="Edit Profile">
         {() => <EditProfileComponent user={user} onLogout={onLogout} />}
       </AppStack.Screen>
-      <AppStack.Screen name="Chat Room" component={ChatRoomComponent} />
+      <AppStack.Screen 
+        name="Chat Room" component={ChatRoomComponent}
+        options={{headerShown: false}}
+      />
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Listing Form" component={ListingFormComponent} />
