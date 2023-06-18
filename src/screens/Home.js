@@ -35,9 +35,6 @@ import PushNotification, {Importance} from 'react-native-push-notification';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
-import houses from '../consts/houses';
-
-import Drawer from '../components/drawer';
 
 const HomeScreen = ({navigation, route}) => {
   PushNotification.createChannel(
@@ -74,10 +71,9 @@ const HomeScreen = ({navigation, route}) => {
 
   const _fetchNotif = async () => {
     try {
-      const user_idx = await AsyncStorage.getItem('user_idx');
       let URL = BASE_URL;
       axios
-        .get(URL + '?tag=fetch_saved_notif&user_ref=' + user_idx)
+        .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
         .then(res => {
           console.log(res.data);
           var output = JSON.parse(res.data);
