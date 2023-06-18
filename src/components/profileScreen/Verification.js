@@ -7,71 +7,76 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,,
 } from 'react-native';
 import axios from 'axios';
 import DocumentPicker from 'react-native-document-picker';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 
-export default function Verification({navigation}) {
+export default function Verification({route, navigation}) {
+  const {user} = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setEnabled] = useState(false);
-  const [user_idholder, setUserID] = useState('');
   const [documents, setDocuments] = useState([]);
   const [selectedDocumentLabels, setSelectedDocumentLabels] = useState({
     document1: 'No Document Selected',
     document2: 'No Document Selected',
   });
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const value = await AsyncStorage.getItem("user_idx");
-      setUserID(value);
-      let URL = BASE_URL;
-      axios
-        .get(URL + "?tag=check_ifsubmitted" + "&user_id=" + value, { headers: { 'Cache-Control': 'no-cache' } })
-        .then(res => {
-          console.log(res.data);
-          switch (res.data) {
-            case 0: //pending
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('user_idx');
+        setUserID(value);
+        let URL = BASE_URL;
+        axios
+          .get(URL + '?tag=check_ifsubmitted' + '&user_id=' + value, {
+            headers: {'Cache-Control': 'no-cache'},
+          })
+          .then(res => {
+            console.log(res.data);
+            switch (res.data) {
+              case 0: //pending
+                Alert.alert(
+                  'StudyHive',
+                  'Your uploaded documents are currently being reviewed. Please allow at least 24 hours for the verification process.',
+                  [
+                    {
+                      text: 'OK',
+                      onPress: () => navigation.navigate('Profile Tab'),
+                    },
+                  ],
+                  {cancelable: false},
+                );
+                setEnabled(true);
+                break;
+              case 1: //approved
+                Alert.alert(
+                  'StudyHive',
+                  'Your uploaded documents are verified! please contact the administrator if you want to change your submitted documents.',
+                  [
+                    {
+                      text: 'OK',
+                      onPress: () => navigation.navigate('Profile Tab'),
+                    },
+                  ],
+                  {cancelable: false},
+                );
+                setEnabled(true);
+                break;
+            }
+          })
+          .catch(error => {
+            alert(error);
+          });
+      } catch (error) {
+        alert(error);
+      }
+    };
 
-               Alert.alert(
-                'UniHive',
-                'Your uploaded documents are currently being reviewed. Please allow at least 24 hours for the verification process.',
-                [
-                  { text: 'OK', onPress: () => navigation.navigate('Profile Tab') }
-                ],
-                { cancelable: false }
-              );
-              setEnabled(true);
-            break;
-            case 1: //approved
-              Alert.alert(
-                'UniHive',
-                'Your uploaded documents are verified! please contact the administrator if you want to change your submitted documents.',
-                [
-                  { text: 'OK', onPress: () => navigation.navigate('Profile Tab') }
-                ],
-                { cancelable: false }
-              );
-              setEnabled(true);
-            break;
-          }
-        })
-        .catch(error => {
-          alert(error);
-        });
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  fetchData();
-}, []);
-
-
+    fetchData();
+  }, []);
 
   const handleDocumentSelection = async label => {
     try {
@@ -125,8 +130,7 @@ useEffect(() => {
       name: documents[1].name,
     });
     formData.append('document2', documents[1]);
-    formData.append('user_id', user_idholder);
-
+    formData.append('user_id', user);
 
     const response = axios.post(BASE_URL, formData, {
       headers: {
@@ -135,11 +139,8 @@ useEffect(() => {
     });
 
     response
-      .then((res) => {
-        Alert.alert(
-          'UniHive',
-          res.data,
-        );
+      .then(res => {
+        Alert.alert('StudyHive', res.data);
       })
       .catch(error => {
         Toast.show({
