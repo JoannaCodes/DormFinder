@@ -16,8 +16,10 @@ import {
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 const {width} = Dimensions.get('screen');
+import { API_URL, AUTH_KEY } from '../../constants/index';
 
 import ViewReviews from '../components/ViewReviews';
 
@@ -27,6 +29,7 @@ const DormDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
   const userref = route.params.userref;
 
+  const [user, setUser] = useState([]);
   const [dorms, setDorms] = useState([]);
   const [images, setImages] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,7 +38,11 @@ const DormDetails = ({navigation, route}) => {
   const [rating, setRating] = useState(0);
   const [rate, setRate] = useState(0);
   
-  useEffect(() => {
+  useEffect(async () => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+    setUser(convertData)
+
     fetchData();
     fetchReviews();
   }, []);
@@ -78,8 +85,41 @@ const DormDetails = ({navigation, route}) => {
   />
   };
 
-  const handleMessageNow = () => {
+  const handleMessageNow = async () => {
     // Handle the "Message Now" button press here
+    try {
+      const formdata = new FormData();
+
+      formdata.append('action',  'addChat');
+      formdata.append('unique_code',  dorms.id);
+      formdata.append('myid',  user.id);
+      formdata.append('other_id', dorms.userref);
+
+      await axios.post(API_URL, formdata, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data'
+        },
+      }).then(response => {
+        const json = response.data;
+        if (json.code == 200) {
+          Toast.show({
+            type: 'success',
+            text1: 'UniHive',
+            text2: json.data,
+          });
+        }
+      }).catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'UniHive',
+          text2: 'Error, you already have conversation with this user!',
+        });
+      });
+    } catch(ex) {
+      console.log(ex)
+    }
+    
   };
 
   const handleReportListing = () => {
@@ -393,11 +433,19 @@ const DormDetails = ({navigation, route}) => {
                 Total Price
               </Text>
             </View>
+            {user.id !== dorms.userref ? 
             <TouchableOpacity
               style={style.bookNowBtn}
               onPress={handleMessageNow}>
               <Text style={{color: COLORS.white}}>Message Now</Text>
             </TouchableOpacity>
+            :
+            <TouchableOpacity
+              style={style.bookNowBtn}
+              onPress={() => navigation.navigate('InboxTab')}>
+              <Text style={{color: COLORS.white}}>View Chats</Text>
+            </TouchableOpacity>
+            }
           </View>
         </View>
       </ScrollView>
