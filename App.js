@@ -108,7 +108,7 @@ function RootNavigator({route}) {
   const {user, mode} = route.params;
   return (
     <Tab.Navigator
-      initialRouteName={'InboxTab'}
+      initialRouteName={'ExploreTab'}
       screenOptions={({route, navigation}) => ({
         headerRight: () => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
