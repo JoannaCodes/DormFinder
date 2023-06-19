@@ -12,12 +12,19 @@ import {
   TouchableOpacity, 
   ToastAndroid,
   Linking,
+  Share,
+  Modal,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 const {width} = Dimensions.get('screen');
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageViewer from 'react-native-image-zoom-viewer';
+
+import ReportForm from '../components/ReportForm';
+// import ReviewForm from '../components/ReviewForm';
 
 import ViewReviews from '../components/ViewReviews';
 
@@ -27,21 +34,29 @@ const DormDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
   const userref = route.params.userref;
 
+
   const [dorms, setDorms] = useState([]);
   const [images, setImages] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const [isBookmarked, setBookmarked] = useState(false);
   const [rating, setRating] = useState(0);
   const [rate, setRate] = useState(0);
-  
-  useEffect(() => {
-    fetchData();
-    fetchReviews();
-  }, []);
+  const [selectedDorm, setSelectedDorm] = useState('');
+  const [reportModalVisible, setReportModalVisible] = useState('');
 
-  const fetchData = () => {
-    axios 
+const [isPopupVisible, setPopupVisible] = useState(false);
+const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+
+useEffect(() => {
+  fetchData();
+  fetchRatings();
+}, []);
+
+
+//DORMS
+const fetchData = () => {
+  axios 
     .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
       .then(response => {
         const data = JSON.parse(response.data);
@@ -52,12 +67,14 @@ const DormDetails = ({navigation, route}) => {
       .catch(error => {
         console.error(error);
       });
-  };
+};
 
-  const fetchReviews = async () => {
-    await axios
-      .get(`${BASE_URL}?tag=get_reviews&dormref=${dormref}`)
-      .then(response => {
+
+//REVIEWS AND TOTAL
+const fetchRatings = async () => {
+  await axios
+    .get(`${BASE_URL}?tag=get_reviews&dormref=${dormref}`)
+    .then(response => {
         const data = JSON.parse(response.data);
         const ratings = data.map(val => {
           return val.rating;
@@ -68,25 +85,62 @@ const DormDetails = ({navigation, route}) => {
         setRate(ratings.length);
         setRating(averageRating);
       });
-  };
+};
 
 
-  const InteriorCard = ({item}) => {
-    return <Image
+// SMALL IMAGES
+const InteriorCard = ({item}) => {
+  return <Image
     source={{ uri: `${DORM_UPLOADS}/${dormref}/${item}` }}
     style={style.interiorImage}
   />
-  };
+};
 
-  const handleMessageNow = () => {
-    // Handle the "Message Now" button press here
-  };
 
-  const handleReportListing = () => {
-    // Handle the "Report Listing" button press here
-  };
+// MESSAGE
+const handleMessageNow = () => {
+  // Handle the "Message Now" button press here
+};
 
-  const handleFavorite = async () => {
+
+// SHARE
+const handleShare = async () => {
+  try {
+    const dormref = {dormref}; 
+    const url = `https://studyhive.com/listing/${dormref}`; 
+
+    const shareOptions = {
+      title: 'Check out this listing!', // Title of the shared message
+      message: `Check out this listing at: ${url}`, 
+    };
+
+    const result = await Share.share(shareOptions);
+
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        // Shared via activity type
+        console.log(`Shared via ${result.activityType}`);
+      } else {
+        // Shared directly
+        console.log('Shared directly');
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // Share sheet dismissed by the user
+      console.log('Share dismissed');
+    }
+  } catch (error) {
+    console.error('Error sharing:', error);
+  }
+};
+
+// REPORT
+const handleReportListing = () => {
+  // Handle the "Report Listing" button press here
+};
+
+
+// BOOKMARKS
+const handleFavorite = async () => {
     try {
       const formData = new FormData();
       formData.append('dormref', dormref);
@@ -130,87 +184,102 @@ const DormDetails = ({navigation, route}) => {
   };
   
 
-  const handleRatingPress = () => {
-  };
-
-    const handleAddressPress = () => {
-      const address = encodeURIComponent(dorms.address);
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
-      Linking.openURL(mapsUrl);
-    };
+// RATINGS
+const handleRatingPress = () => {
+};
 
 
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* House image */}
+// ADDRESS
+const handleAddressPress = () => {
+  const address = encodeURIComponent(dorms.address);
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
+    Linking.openURL(mapsUrl);
+};
 
 
-        <View style={style.backgroundImageContainer}>
+return (
+  <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    <ScrollView showsVerticalScrollIndicator={false}>
+
+  
+{/* House image */}
+<View style={style.backgroundImageContainer}>
   <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
     <View style={style.header}>
-      <TouchableOpacity style={style.headerBtn}  onPress={() => {
-                                      handleFavorite();
-                                      setPressed(!pressed)
-                                      }}>
-      <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
+      <TouchableOpacity style={style.headerBtn} onPress={() => {
+        handleFavorite();
+        setPressed(!pressed);
+      }}>
+      <Icon name="favorite" size={20} color={pressed ? COLORS.red : COLORS.grey} />
+      </TouchableOpacity>
+      <TouchableOpacity style={style.headerBtn} onPress={() => {
+        handleShare();
+      }}>
+        <Icon name="share" size={20} color={COLORS.grey} />
       </TouchableOpacity>
     </View>
   </ImageBackground>
 </View>
 
-        <ViewReviews
-              visible={modalVisible}
-              onClose={() => setModalVisible(false)}
-              dormref={dormref}
-            />
 
-        <View style={style.detailsContainer}>
-          {/* Name and rating view container */}
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
-              {dorms.name}
-            </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity
-                  style={style.ratingTag}
-                  onPress={() => {
-                     handleRatingPress();
-                    setModalVisible(true);
-                    // console.log(item.dormref);
-                  }}>
-                  <Text style={{color: COLORS.white}}>{rating}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                     handleRatingPress();
-                    setModalVisible(true);
-                    // console.log(item.dormref);
-                  }}>
-                <Text style={{fontSize: 13, marginLeft: 5}}>{rate} ratings</Text>
-                </TouchableOpacity>
-              </View>
-          </View>
+{/* View Reviews */}
+<ViewReviews
+  visible={modalVisible}
+  onClose={() => setModalVisible(false)}
+  dormref={dormref}
+/>
+<View style={style.detailsContainer}>
 
-          {/* Location text */}
-          <TouchableOpacity onPress={handleAddressPress}>
-        <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline'}}>{dorms.address}</Text>
+
+{/* Name and rating view container */}
+<View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 7}}>
+  <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
+    {dorms.name}
+  </Text>
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <TouchableOpacity
+        style={style.ratingTag}
+        onPress={() => {
+          handleRatingPress();
+          setModalVisible(true);
+          // console.log(item.dormref);
+        }}>
+        <Text style={{color: COLORS.white}}>{rating}</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          handleRatingPress();
+          setModalVisible(true);
+          // console.log(item.dormref);
+        }}>
+        <Text style={{fontSize: 13, marginLeft: 5}}>{rate} ratings</Text>
+      </TouchableOpacity>
+    </View>
+</View>
 
-          <View style={{flexDirection: 'row', marginTop: 5}}>
-            <Text style={{fontSize: 16, color: 'black'}}>
-              Availability: {dorms.slots} slots
-            </Text>
-          </View>
 
-          {/* Facilities container */}
-          <View style={{marginTop: 8}}>
+{/* Location text */}
+<TouchableOpacity onPress={handleAddressPress}>
+  <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline', marginTop: 7}}>{dorms.address}</Text>
+</TouchableOpacity>
+
+
+{/* Availability */}
+<View style={{flexDirection: 'row', marginTop: 10}}>
+  <Text style={{fontSize: 16, color: 'black'}}>
+    Availability: {dorms.slots} slots
+  </Text>
+</View>
+
+
+{/* Amenities container */}
+<View style={{marginTop: 10}}>
   <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
     Amenities
   </Text>
-  </View>
-          <View style={{flexDirection: 'column', marginTop: 4}}>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+</View>
+<View style={{flexDirection: 'column', marginTop: 4}}>
+  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
     <View style={style.facility}>
       <Icon name="ac-unit" size={18} />
       <Text style={style.facilityText}>Air Conditioning</Text>
@@ -224,7 +293,8 @@ const DormDetails = ({navigation, route}) => {
       <Text style={style.facilityText}>Beddings</Text>
     </View>
   </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+
+  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
     <View style={style.facility}>
       <Icon name="kitchen" size={18} />
       <Text style={style.facilityText}>Kitchen</Text>
@@ -238,7 +308,8 @@ const DormDetails = ({navigation, route}) => {
       <Text style={style.facilityText}>Lounge</Text>
     </View>
   </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+
+  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
     <View style={style.facility}>
       <Icon name="local-parking" size={18} />
       <Text style={style.facilityText}>Parking</Text>
@@ -252,26 +323,55 @@ const DormDetails = ({navigation, route}) => {
       <Text style={style.facilityText}>Study room</Text>
     </View>
   </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+
+  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
     <View style={style.facility}>
       <Icon name="wifi" size={18} />
       <Text style={style.facilityText}>Wi-Fi</Text>
     </View>
   </View>
 </View>
-          <Text style={{color: COLORS.grey}}>
-            {dorms.details}
-          </Text>
-          {/* Interior list */}
-          <FlatList
-            contentContainerStyle={{marginTop: 1}}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => String(index)}
-            data={images}
-            renderItem={InteriorCard}
-          />
 
+
+
+{/* Not sure kung ano */}
+<Text style={{color: COLORS.grey}}>
+  {dorms.details}
+</Text>
+
+
+{/* Interior list */}
+<FlatList
+  contentContainerStyle={{ marginTop: 1 }}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  keyExtractor={(item, index) => String(index)}
+  data={images}
+  renderItem={({ item, index }) => (
+    <TouchableOpacity onPress={() => {
+      setSelectedImageIndex(index);
+      setPopupVisible(true);
+    }}>
+      <InteriorCard item={item} />
+    </TouchableOpacity>
+  )}
+/>
+
+<Modal visible={isPopupVisible} transparent={true}>
+  <ImageViewer
+    imageUrls={images.map(image => ({ url: `${DORM_UPLOADS}/${dormref}/${image}` }))}
+    index={selectedImageIndex}
+    onCancel={() => setPopupVisible(false)}
+    renderHeader={() => (
+      <TouchableOpacity style={style.closeButton} onPress={() => setPopupVisible(false)}>
+       <Icon name="close" size={25} color="black" />
+      </TouchableOpacity>
+    )}
+  />
+</Modal>
+
+
+{/*Nearby Schools*/}
 <View style={{marginTop: 20}}>
   <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
     Nearby Schools
@@ -290,16 +390,19 @@ const DormDetails = ({navigation, route}) => {
 </View>
 
 
-      <View style={{marginTop: 20}}>
-        <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-          Description 
-        </Text>
-        <Text style={{fontSize: 15, color: COLORS.black}}>
-         {dorms.desc}
-        </Text>
-      </View>
+{/*Description*/}
+  <View style={{marginTop: 20}}>
+    <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold', marginBottom: 7}}>
+      Description 
+    </Text>
+    <Text style={{fontSize: 15, color: COLORS.black}}>
+      {dorms.desc}
+    </Text>
+  </View>
 
-  <View style={{ marginTop: 15 }}>
+
+{/*Establishment Rules*/}
+  <View style={{ marginTop: 20 }}>
     <Text style={{ fontSize: 16, color: 'black', fontWeight: 'bold' }}>
         Establishment Rules
     </Text>
@@ -331,7 +434,9 @@ const DormDetails = ({navigation, route}) => {
       </View>
   </View>
 
-  <View style={{marginTop: 10}}>
+
+{/*Payment & Duration Terms*/}
+<View style={{marginTop: 12}}>
     <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
         Payment & Duration Terms
     </Text>
@@ -367,42 +472,53 @@ const DormDetails = ({navigation, route}) => {
   {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
     <Text style={{ fontStyle: 'italic' , fontSize: 14}}>No Terms for Payment and Duration</Text>
   )}
-</View>
+    </View>
   </View>
 
   
-  <View style={{marginTop: 13}}>
-      <TouchableOpacity onPress={handleReportListing}>
-        <View style={style.facility}>
-              <Text style={{fontSize: 13, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
-        </View>
-      </TouchableOpacity>
+{/* Report listing*/}
+<View style={{marginTop: 13}}>
+  <TouchableOpacity                 
+    onPress={() => {
+    handleReportListing();
+    setReportModalVisible(true);
+    setSelectedDorm(dormref);
+    }}>
+      <View style={style.facility}>
+        <Text style={{fontSize: 15, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
+      </View>
+  </TouchableOpacity>
+</View>
+
+
+
+{/* footer container */}
+<View style={style.footer}>
+  <View>
+    <Text
+      style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
+      ₱{dorms.price}
+    </Text>
+      <Text
+        style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
+        Total Price
+      </Text>
   </View>
-
-
-
-          {/* footer container */}
-          <View style={style.footer}>
-            <View>
-              <Text
-                style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
-                ₱{dorms.price}
-              </Text>
-              <Text
-                style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
-                Total Price
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={style.bookNowBtn}
-              onPress={handleMessageNow}>
-              <Text style={{color: COLORS.white}}>Message Now</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-      
-    </SafeAreaView>
+    <TouchableOpacity
+      style={[style.bookNowBtn]}
+      onPress={handleMessageNow}>
+        <Text style={{color: COLORS.white}}>Message Now</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+</ScrollView>
+  <ReportForm
+    visible={reportModalVisible}
+    onClose={() => setReportModalVisible(false)}
+    userref={userref}
+    dormref={dormref}
+   />
+</SafeAreaView>
   );
 };
 
@@ -430,7 +546,7 @@ const style = StyleSheet.create({
     height: 40,
     width: 40,
     backgroundColor: COLORS.white,
-    borderRadius: 10,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -496,6 +612,15 @@ const style = StyleSheet.create({
     paddingVertical: 5,
     fontSize: 15,
     color: 'white',
+  },
+  closeButton: {
+      position: 'absolute',
+      top: 20,
+      right: 20,
+      padding: 2,
+      borderRadius: 20,
+      zIndex: 999,
+      backgroundColor: 'white',
   },
 });
 
