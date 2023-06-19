@@ -22,7 +22,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
 const {width} = Dimensions.get('screen');
 import { API_URL, AUTH_KEY } from '../../constants/index';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import ReportForm from '../components/ReportForm';
@@ -145,10 +144,6 @@ const InteriorCard = ({item}) => {
     
   };
 
-// MESSAGE
-const handleMessageNow = () => {
-  // Handle the "Message Now" button press here
-};
 
 
 // SHARE
@@ -565,11 +560,6 @@ return (
     <Text style={{color: COLORS.white}}>View Chats</Text>
   </TouchableOpacity>
   }
-    <TouchableOpacity
-      style={[style.bookNowBtn]}
-      onPress={handleMessageNow}>
-        <Text style={{color: COLORS.white}}>Message Now</Text>
-    </TouchableOpacity>
   </View>
 </View>
 </ScrollView>

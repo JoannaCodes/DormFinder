@@ -14,16 +14,19 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 
-const MAX_CHARACTERS = 400;
+const MAX_CHARACTERS = 300;
 
 const ReportForm = ({ visible, onClose, userref, dormref }) => {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function _postReview() {
+  async function _postReport() {
     setLoading(true);
-
-    // ...
+    const formData = new FormData();
+    formData.append('tag', 'post_report');
+    formData.append('dormref', dormref);
+    formData.append('userref', userref);
+    formData.append('comment', comment);
 
     await axios
       .post(BASE_URL, formData, {
@@ -32,7 +35,21 @@ const ReportForm = ({ visible, onClose, userref, dormref }) => {
         },
       })
       .then((response) => {
-        // ...
+        const message = response.data;
+
+        if (message === 'success') {
+          Toast.show({
+            type: 'success',
+            text1: 'StudyHive',
+            text2: 'Report submitted',
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'StudyHive',
+            text2: 'Unable to submit report. Please try again.',
+          });
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -72,7 +89,7 @@ const ReportForm = ({ visible, onClose, userref, dormref }) => {
             />
             <Text style={styles.characterCount}>{comment.length}/{MAX_CHARACTERS}</Text>
             <TouchableOpacity
-              onPress={_postReview}
+              onPress={_postReport}
               disabled={comment.length === 0}
               style={[
                 styles.button,
