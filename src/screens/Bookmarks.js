@@ -16,6 +16,7 @@ import {BASE_URL, DORM_UPLOADS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useFocusEffect} from '@react-navigation/native';
 import COLORS from '../../constants/colors';
 
 import ReviewForm from '../components/ReviewForm';
@@ -37,6 +38,16 @@ const Bookmarks = ({route, navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+
+      return () => {
+        // Clean up any resources if needed
+      };
+    }, []),
+  );
 
   const fetchData = async () => {
     await axios

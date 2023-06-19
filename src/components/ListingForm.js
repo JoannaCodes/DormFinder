@@ -16,13 +16,13 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL} from '../../constants';
-import {HEI, AMENITIES} from '../../constants/values';
+import {HEI} from '../../constants/values';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 import COLORS from '../../constants/colors';
 
@@ -40,15 +40,12 @@ const ListingForm = ({route, navigation}) => {
   const {dormref, userref, editmode} = route.params;
 
   const [heiOpen, setHeiOpen] = useState(false);
-  const [amenititesOpen, setAmenitiesOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [hei, setHei] = useState(HEI);
-  const [amenities, setAmenities] = useState(AMENITIES);
 
   const [images, setImages] = useState([]);
   const [selectedHei, setSelectedHei] = useState([]);
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [initialValues, setInitialValues] = useState({
     address: '',
     advance_deposit: '',
@@ -60,11 +57,40 @@ const ListingForm = ({route, navigation}) => {
     slots: '',
     utilities: '',
   });
-  const [checkboxes, setCheckboxes] = React.useState({
+  const [rules, setRules] = React.useState({
     pets: false,
     visitors: false,
     curfew: false,
   });
+  const [amenities, setAmenities] = React.useState({
+    aircon: false,
+    elevator: false,
+    beddings: false,
+    kitchen: false,
+    laundry: false,
+    lounge: false,
+    parking: false,
+    security: false,
+    study_room: false,
+    wifi: false,
+  });
+
+  const amenitiesContents = [
+    {name: 'aircon', label: 'Air Conditioning'},
+    {name: 'elevator', label: 'Elevator'},
+    {name: 'beddings', label: 'Beddings'},
+    {name: 'kitchen', label: 'Kitchen'},
+    {name: 'laundry', label: 'Laundry'},
+    {name: 'lounge', label: 'Lounge'},
+    {name: 'parking', label: 'Parking'},
+    {name: 'security', label: 'Security'},
+    {name: 'study_room', label: 'Study Room'},
+    {name: 'wifi', label: 'WiFi'},
+  ];
+
+  const halfLength = Math.ceil(amenitiesContents.length / 2);
+  const firstColumn = amenitiesContents.slice(0, halfLength);
+  const secondColumn = amenitiesContents.slice(halfLength);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -88,7 +114,6 @@ const ListingForm = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         const fetchedHei = data.hei.split(',');
-        const fetchedAmenities = data.amenities.split(',');
 
         // Set initial values
         setInitialValues(prevState => ({
@@ -107,14 +132,24 @@ const ListingForm = ({route, navigation}) => {
         // Set selected HEI
         setSelectedHei(fetchedHei);
 
-        // Set selected amenities
-        setSelectedAmenities(fetchedAmenities);
-
         // Set checkboxes
-        setCheckboxes({
+        setRules({
           pets: Boolean(data.pets),
           visitors: Boolean(data.visitors),
           curfew: Boolean(data.curfew),
+        });
+
+        setAmenities({
+          aircon: Boolean(data.aircon),
+          elevator: Boolean(data.elevator),
+          beddings: Boolean(data.beddings),
+          kitchen: Boolean(data.kitchen),
+          laundry: Boolean(data.laundry),
+          lounge: Boolean(data.lounge),
+          parking: Boolean(data.parking),
+          security: Boolean(data.security),
+          study_room: Boolean(data.study_room),
+          wifi: Boolean(data.wifi),
         });
       });
   };
@@ -138,12 +173,14 @@ const ListingForm = ({route, navigation}) => {
       // Append selected HEI
       formData.append('hei', selectedHei.join(','));
 
-      // Append selected amenities
-      formData.append('amenities', selectedAmenities.join(','));
+      // Append amenities
+      for (const key in amenities) {
+        formData.append(key, amenities[key]);
+      }
 
-      // Append checkboxes
-      for (const key in checkboxes) {
-        formData.append(key, checkboxes[key]);
+      // Append rules
+      for (const key in rules) {
+        formData.append(key, rules[key]);
       }
 
       // Append images
@@ -154,8 +191,6 @@ const ListingForm = ({route, navigation}) => {
           name: item.name,
         });
       });
-
-      console.log(formData);
 
       await axios
         .post(BASE_URL, formData, {
@@ -205,12 +240,14 @@ const ListingForm = ({route, navigation}) => {
       // Append selected HEI
       formData.append('hei', selectedHei.join(','));
 
-      // Append selected amenities
-      formData.append('amenities', selectedAmenities.join(','));
+      // Append rules
+      for (const key in rules) {
+        formData.append(key, rules[key]);
+      }
 
-      // Append checkboxes
-      for (const key in checkboxes) {
-        formData.append(key, checkboxes[key]);
+      // Append amenities
+      for (const key in amenities) {
+        formData.append(key, amenities[key]);
       }
 
       // Append images
@@ -282,7 +319,10 @@ const ListingForm = ({route, navigation}) => {
       newErrors.hei = false;
     }
 
-    if (selectedAmenities.length === 0) {
+    const amenitiesValues = Object.values(amenities);
+    const isAllFalse = amenitiesValues.every(value => value === false);
+
+    if (isAllFalse) {
       newErrors.amenities = true;
       isValid = false;
     } else {
@@ -303,8 +343,15 @@ const ListingForm = ({route, navigation}) => {
     return isValid;
   };
 
-  const handleCheckboxToggle = name => {
-    setCheckboxes(prevState => ({
+  const handleRulesToggle = name => {
+    setRules(prevState => ({
+      ...prevState,
+      [name]: !prevState[name],
+    }));
+  };
+
+  const handleAmenitiesToggle = name => {
+    setAmenities(prevState => ({
       ...prevState,
       [name]: !prevState[name],
     }));
@@ -340,14 +387,6 @@ const ListingForm = ({route, navigation}) => {
       },
     );
   };
-
-  const onHeiOpen = useCallback(() => {
-    setAmenitiesOpen(false);
-  }, []);
-
-  const onAmenitiesOpen = useCallback(() => {
-    setHeiOpen(false);
-  }, []);
 
   const removeItem = id => {
     let arr = images.filter(function (item) {
@@ -519,7 +558,6 @@ const ListingForm = ({route, navigation}) => {
             elevation: 2,
           }}
           open={heiOpen}
-          onOpen={onHeiOpen}
           value={selectedHei}
           items={hei}
           setOpen={setHeiOpen}
@@ -529,42 +567,47 @@ const ListingForm = ({route, navigation}) => {
         />
         {/* Amenities */}
         <Separator title="Amenities" />
-        <DropDownPicker
-          mode="BADGE"
-          listMode="SCROLLVIEW"
-          dropDownDirection="BOTTOM"
-          placeholder="Select Amenities"
-          placeholderStyle={{color: COLORS.grey}}
-          zIndex={2000}
-          zIndexInverse={2000}
-          badgeColors={[COLORS.teal]}
-          badgeDotColors={[COLORS.white]}
-          badgeTextStyle={{color: COLORS.white}}
-          style={[styles.dropdown, errors.amenities && styles.error]}
-          containerStyle={{marginVertical: 8}}
-          dropDownContainerStyle={{
-            borderWidth: 0,
-            borderTopWidth: 1,
-            borderTopColor: COLORS.grey,
-            marginTop: 5,
-            elevation: 2,
-          }}
-          open={amenititesOpen}
-          onOpen={onAmenitiesOpen}
-          value={selectedAmenities}
-          items={amenities}
-          setOpen={setAmenitiesOpen}
-          setValue={setSelectedAmenities}
-          setItems={setAmenities}
-          multiple={true}
-        />
+        <View style={[styles.section, errors.amenities && styles.error]}>
+          <View style={styles.checkboContainer}>
+            {firstColumn.map(item => (
+              <BouncyCheckbox
+                disableBuiltInState
+                key={item.name}
+                isChecked={amenities[item.name]}
+                text={item.label}
+                onPress={() => handleAmenitiesToggle(item.name)}
+                style={{paddingVertical: 2.5}}
+                textStyle={{textDecorationLine: 'none'}}
+                fillColor={COLORS.teal}
+                unfillColor={COLORS.white}
+                iconStyle={{borderColor: COLORS.teal}}
+              />
+            ))}
+          </View>
+          <View style={styles.checkboContainer}>
+            {secondColumn.map(item => (
+              <BouncyCheckbox
+                disableBuiltInState
+                key={item.name}
+                isChecked={amenities[item.name]}
+                text={item.label}
+                onPress={() => handleAmenitiesToggle(item.name)}
+                style={{paddingVertical: 2.5}}
+                textStyle={{textDecorationLine: 'none'}}
+                fillColor={COLORS.teal}
+                unfillColor={COLORS.white}
+                iconStyle={{borderColor: COLORS.teal}}
+              />
+            ))}
+          </View>
+        </View>
         {/* Establishment Rules */}
         <Separator title="Establishment Rules" />
         <View style={styles.section}>
           <BouncyCheckbox
             disableBuiltInState
-            isChecked={checkboxes.pets}
-            onPress={() => handleCheckboxToggle('pets')}
+            isChecked={rules.pets}
+            onPress={() => handleRulesToggle('pets')}
             textStyle={{textDecorationLine: 'none'}}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
@@ -573,8 +616,8 @@ const ListingForm = ({route, navigation}) => {
           />
           <BouncyCheckbox
             disableBuiltInState
-            isChecked={checkboxes.visitors}
-            onPress={() => handleCheckboxToggle('visitors')}
+            isChecked={rules.visitors}
+            onPress={() => handleRulesToggle('visitors')}
             textStyle={{textDecorationLine: 'none'}}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
@@ -583,8 +626,8 @@ const ListingForm = ({route, navigation}) => {
           />
           <BouncyCheckbox
             disableBuiltInState
-            isChecked={checkboxes.curfew}
-            onPress={() => handleCheckboxToggle('curfew')}
+            isChecked={rules.curfew}
+            onPress={() => handleRulesToggle('curfew')}
             textStyle={{textDecorationLine: 'none'}}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
@@ -618,67 +661,65 @@ const ListingForm = ({route, navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={COLORS.white} size={16} />
             <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
-            Enter the duration in 'months' for the minimum stay.
+              Enter the duration in 'months' for the minimum stay.
             </Text>
           </View>
         </View>
         {/* Advance Deposit */}
         <View style={styles.section}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={initialValues.advance_deposit}
-            placeholder="Advance Deposit"
-            placeholderTextColor={COLORS.grey}
-            onChangeText={(value) =>
-              handleTextInputChange('advance_deposit', value)
-            }
-            keyboardType="numeric"
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={initialValues.advance_deposit}
+              placeholder="Advance Deposit"
+              placeholderTextColor={COLORS.grey}
+              onChangeText={value =>
+                handleTextInputChange('advance_deposit', value)
+              }
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={{width: 16}} />
+          {/* Security Deposit */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={initialValues.security_deposit}
+              placeholder="Security Deposit"
+              placeholderTextColor={COLORS.grey}
+              onChangeText={value =>
+                handleTextInputChange('security_deposit', value)
+              }
+              keyboardType="numeric"
+            />
+          </View>
         </View>
-        <View style={{ width: 16 }} />
-        {/* Security Deposit */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={initialValues.security_deposit}
-            placeholder="Security Deposit"
-            placeholderTextColor={COLORS.grey}
-            onChangeText={(value) =>
-              handleTextInputChange('security_deposit', value)
-            }
-            keyboardType="numeric"
-          />
+        <View style={styles.section}>
+          {/* Utility Exclusivity */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={initialValues.utilities}
+              placeholder="Utility Exclusivity"
+              placeholderTextColor={COLORS.grey}
+              onChangeText={value => handleTextInputChange('utilities', value)}
+            />
+          </View>
+          <View style={{width: 16}} />
+          {/* Minimum Stay */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={initialValues.minimum_stay}
+              placeholder="Minimum Stay"
+              placeholderTextColor={COLORS.grey}
+              onChangeText={value =>
+                handleTextInputChange('minimum_stay', value)
+              }
+              keyboardType="numeric"
+            />
+          </View>
         </View>
-      </View>
-      <View style={styles.section}>
-        {/* Utility Exclusivity */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={initialValues.utilities}
-            placeholder="Utility Exclusivity"
-            placeholderTextColor={COLORS.grey}
-            onChangeText={(value) =>
-              handleTextInputChange('utilities', value)
-            }
-          />
-        </View>
-        <View style={{ width: 16 }} />
-        {/* Minimum Stay */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={initialValues.minimum_stay}
-            placeholder="Minimum Stay"
-            placeholderTextColor={COLORS.grey}
-            onChangeText={(value) =>
-              handleTextInputChange('minimum_stay', value)
-            }
-            keyboardType="numeric"
-          />
-        </View>
-      </View>
         <View style={{marginTop: 16}}>
           <TouchableOpacity
             style={styles.button}
@@ -721,6 +762,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    borderRadius: 5,
   },
   flatList: {
     paddingHorizontal: 16,
@@ -779,6 +821,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     elevation: 2,
     borderRadius: 5,
+  },
+  checkboContainer: {
+    flexDirection: 'column',
+    flex: 1,
   },
   button: {
     alignItems: 'center',

@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
+import {useFocusEffect} from '@react-navigation/native';
 
 import ViewReviews from '../ViewReviews';
 import VerifiyPromtpModal from '../modals/VerifiyPromtpModal';
@@ -43,6 +44,16 @@ const DormListing = ({route, navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+
+      return () => {
+        // Clean up any resources if needed
+      };
+    }, []),
+  );
 
   const fetchData = async () => {
     setLoading(true);
@@ -159,14 +170,14 @@ const DormListing = ({route, navigation}) => {
                 setReviewModalVisible(true);
                 setSelectedDorm(item.id);
               }}>
-              <Icon name="insights" size={18} color={COLORS.teal}/>
+              <Icon name="insights" size={18} color={COLORS.teal} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
               onPress={() => {
                 _deleteDorm(item.id);
               }}>
-              <Icon name="delete" size={18} color={COLORS.teal}/>
+              <Icon name="delete" size={18} color={COLORS.teal} />
             </TouchableOpacity>
           </View>
         </View>
