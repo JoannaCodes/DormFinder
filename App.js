@@ -35,6 +35,7 @@ import VerificationComponent from './src/components/profileScreen/Verification';
 import DormListingComponent from './src/components/profileScreen/DormListing';
 import ListingFormComponent from './src/components/ListingForm';
 import GuestModeModal from './src/components/modals/GuestModeModal';
+import HelpComponent from './src/components/profileScreen/Help';
 
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
@@ -240,6 +241,7 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
       <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
       <AppStack.Screen name="Listing Form" component={ListingFormComponent} />
+      <AppStack.Screen name="Help" component={HelpComponent} />
     </AppStack.Navigator>
   );
 }
