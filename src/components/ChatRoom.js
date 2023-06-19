@@ -30,7 +30,7 @@ const ChatRoom = (props) => {
       if(message[0]['text'] != '' || message[0]['image'] != '') {
         let formdata = new FormData();
         formdata.append('action',  'sendChat');
-        formdata.append('unique_code',  props.route.params.unique_code);
+        formdata.append('chatroom_code',  props.route.params.chatroom_code);
         formdata.append('myid',  props.route.params.myid);
         formdata.append('message',  message[0]['text'] ? message[0]['text'] : '');
         formdata.append('image',  message[0]['image'] ? message[0]['image'] : '');
@@ -165,7 +165,7 @@ const ChatRoom = (props) => {
     const formdata = new FormData();
 
     formdata.append('action',  'getPreviouslyChats');
-    formdata.append('unique_code',  props.route.params.unique_code);
+    formdata.append('chatroom_code',  props.route.params.chatroom_code);
     formdata.append('myid',  props.route.params.myid);
     formdata.append('itr', getLastPreviouslyID == 0 ? 0 : getLastPreviouslyID);
 
@@ -222,7 +222,7 @@ const ChatRoom = (props) => {
       const formdata = new FormData();
 
       formdata.append('action',  'getChats');
-      formdata.append('unique_code',  props.route.params.unique_code);
+      formdata.append('chatroom_code',  props.route.params.chatroom_code);
       formdata.append('myid',  props.route.params.myid);
       formdata.append('itr', getLastID == 0 ? 0 : getLastID);
 
@@ -266,7 +266,7 @@ const ChatRoom = (props) => {
       fetchDorm()
       setDormBool(false);
     }
-  })
+  },[])
 
   const renderChat = ({ item }) => {
       return (
@@ -390,8 +390,9 @@ const ChatRoom = (props) => {
           </>
           :
           <View style={styles.chatLoading}>
-            <ActivityIndicator size={'small'} color={'#0072ff'} />
+            
           </View>
+          //<ActivityIndicator size={'small'} color={'#0072ff'} /> 
         }
       </View>
       <View

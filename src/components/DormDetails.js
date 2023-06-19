@@ -17,9 +17,8 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
+import { BASE_URL, DORM_UPLOADS, API_URL, AUTH_KEY  } from '../../constants/index';
 const {width} = Dimensions.get('screen');
-import { API_URL, AUTH_KEY } from '../../constants/index';
 
 import ViewReviews from '../components/ViewReviews';
 
@@ -37,6 +36,7 @@ const DormDetails = ({navigation, route}) => {
   const [isBookmarked, setBookmarked] = useState(false);
   const [rating, setRating] = useState(0);
   const [rate, setRate] = useState(0);
+  const [getAmenities, setAmenities] = useState(true)
   
   useEffect(async () => {
     const data = await AsyncStorage.getItem('user');
@@ -45,7 +45,29 @@ const DormDetails = ({navigation, route}) => {
 
     fetchData();
     fetchReviews();
+    fetchAmenities();
   }, []);
+
+  const fetchAmenities = async () => {
+    const formdata = new FormData();
+
+    formdata.append('action',  'getAmenities');
+    formdata.append('unique_code',  dormref);
+
+    await axios.post(API_URL, formdata, {
+      headers: {
+        'Auth-Key': AUTH_KEY,
+        'Content-Type': 'multipart/form-data'
+      },
+    }).then(response => {
+      const json = response.data;
+      if (json.code == 200) {
+        setAmenities(json.data);
+      }
+    }).catch((ex) => {
+      return false;
+    });
+  };
 
   const fetchData = () => {
     axios 
@@ -84,7 +106,36 @@ const DormDetails = ({navigation, route}) => {
     style={style.interiorImage}
   />
   };
+  const moveToMessage = async () => {
+    const formdata = new FormData();
 
+    formdata.append('action',  'getMessageInfos');
+    formdata.append('unique_code',  dorms.id);
+    formdata.append('myid',  user.id);
+    formdata.append('other_id', dorms.userref);
+
+    const response = await axios.post(API_URL, formdata, {
+      headers: {
+        'Auth-Key': AUTH_KEY,
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+    
+    const json = response.data;
+    if (json.code == 200) {
+      navigation.navigate('Chat Room', { 
+        navigation: navigation,
+        anotherImageUrl: json.data.me.imageUrl,
+        username: json.data.me.username,
+        unique_code: dorms.id,
+        chatroom_code: json.data.chatroom_code,
+        myid: user.id,
+        myusername: json.data.me.username,
+        anotherid: dorms.userref,
+        user: user
+      })
+    }
+  }
   const handleMessageNow = async () => {
     // Handle the "Message Now" button press here
     try {
@@ -108,6 +159,7 @@ const DormDetails = ({navigation, route}) => {
             text1: 'UniHive',
             text2: json.data,
           });
+          moveToMessage();
         }
       }).catch(error => {
         Toast.show({
@@ -187,23 +239,23 @@ const DormDetails = ({navigation, route}) => {
 
 
         <View style={style.backgroundImageContainer}>
-  <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
-    <View style={style.header}>
-      <TouchableOpacity style={style.headerBtn}  onPress={() => {
-                                      handleFavorite();
-                                      setPressed(!pressed)
-                                      }}>
-      <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
-      </TouchableOpacity>
-    </View>
-  </ImageBackground>
-</View>
+          <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
+            <View style={style.header}>
+              <TouchableOpacity style={style.headerBtn}  onPress={() => {
+                                              handleFavorite();
+                                              setPressed(!pressed)
+                                              }}>
+              <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </View>
 
         <ViewReviews
-              visible={modalVisible}
-              onClose={() => setModalVisible(false)}
-              dormref={dormref}
-            />
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          dormref={dormref}
+        />
 
         <View style={style.detailsContainer}>
           {/* Name and rating view container */}
@@ -234,8 +286,8 @@ const DormDetails = ({navigation, route}) => {
 
           {/* Location text */}
           <TouchableOpacity onPress={handleAddressPress}>
-        <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline'}}>{dorms.address}</Text>
-      </TouchableOpacity>
+            <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline'}}>{dorms.address}</Text>
+          </TouchableOpacity>
 
           <View style={{flexDirection: 'row', marginTop: 5}}>
             <Text style={{fontSize: 16, color: 'black'}}>
@@ -245,60 +297,74 @@ const DormDetails = ({navigation, route}) => {
 
           {/* Facilities container */}
           <View style={{marginTop: 8}}>
-  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-    Amenities
-  </Text>
-  </View>
+            <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+              Amenities
+            </Text>
+          </View>
           <View style={{flexDirection: 'column', marginTop: 4}}>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="ac-unit" size={18} />
-      <Text style={style.facilityText}>Air Conditioning</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="elevator" size={18} />
-      <Text style={style.facilityText}>Elevator</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="single-bed" size={18} />
-      <Text style={style.facilityText}>Beddings</Text>
-    </View>
-  </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="kitchen" size={18} />
-      <Text style={style.facilityText}>Kitchen</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="local-laundry-service" size={18} />
-      <Text style={style.facilityText}>Laundry</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="meeting-room" size={18} />
-      <Text style={style.facilityText}>Lounge</Text>
-    </View>
-  </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="local-parking" size={18} />
-      <Text style={style.facilityText}>Parking</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="security" size={18} />
-      <Text style={style.facilityText}>Security</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="menu-book" size={18} />
-      <Text style={style.facilityText}>Study room</Text>
-    </View>
-  </View>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="wifi" size={18} />
-      <Text style={style.facilityText}>Wi-Fi</Text>
-    </View>
-  </View>
-</View>
+            <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+              {getAmenities.aircon == 1 &&
+                <View style={style.facility}>
+                  <Icon name="ac-unit" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Air Conditioning</Text>
+                </View>
+              }
+              {getAmenities.elevator == 1 &&
+                <View style={style.facility}>
+                  <Icon name="elevator" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Elevator</Text>
+                </View>
+              }
+              {getAmenities.beddings == 1 &&
+                <View style={style.facility}>
+                  <Icon name="single-bed" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Beddings</Text>
+                </View>
+              }
+              {getAmenities.kitchen == 1 &&
+                <View style={style.facility}>
+                  <Icon name="kitchen" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Kitchen</Text>
+                </View>
+              }
+              {getAmenities.laundry == 1 &&
+                <View style={style.facility}>
+                  <Icon name="local-laundry-service" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Laundry</Text>
+                </View>
+              }
+              {getAmenities.lounge == 1 &&
+                <View style={style.facility}>
+                  <Icon name="meeting-room" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Lounge</Text>
+                </View>
+              }
+              {getAmenities.parking == 1 &&
+                <View style={style.facility}>
+                  <Icon name="local-parking" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Parking</Text>
+                </View>
+              }
+              {getAmenities.security == 1 &&
+                <View style={style.facility}>
+                  <Icon name="security" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Security</Text>
+                </View>
+              }
+              {getAmenities.study_room == 1 &&
+                <View style={style.facility}>
+                  <Icon name="menu-book" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Study room</Text>
+                </View>
+              }
+              {getAmenities.wifi == 1 &&
+                <View style={style.facility}>
+                  <Icon name="wifi" size={18} style={{alignSelf:"center"}} />
+                  <Text style={style.facilityText}>Wi-Fi</Text>
+                </View>
+              }
+            </View>
+          </View>
           <Text style={{color: COLORS.grey}}>
             {dorms.details}
           </Text>
@@ -312,142 +378,139 @@ const DormDetails = ({navigation, route}) => {
             renderItem={InteriorCard}
           />
 
-<View style={{marginTop: 20}}>
-  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-    Nearby Schools
-  </Text>
-  <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-    {typeof dorms.hei === 'string' && dorms.hei.split(',').map((school, index) => (
-      <View key={index} style={[style.heiContainer]}>
-        <View style={style.heiText}>
-          <Text style={{ fontSize: 15, color: 'white' }}>
-            {school.trim()}
-          </Text>
-        </View>
-      </View>
-    ))}
-  </View>
-</View>
-
-
-      <View style={{marginTop: 20}}>
-        <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-          Description 
-        </Text>
-        <Text style={{fontSize: 15, color: COLORS.black}}>
-         {dorms.desc}
-        </Text>
-      </View>
-
-  <View style={{ marginTop: 15 }}>
-    <Text style={{ fontSize: 16, color: 'black', fontWeight: 'bold' }}>
-        Establishment Rules
-    </Text>
-    <View style={{ flexDirection: 'column', marginTop: 5 }}>
-    <View style={style.facility1}>
-          <Icon name="pets" size={18} />
-          {dorms.pets === 0 ? (
-            <Text style={style.facilityText}>Pets are not allowed</Text>
-          ) : (
-            <Text style={style.facilityText}>Pets are allowed</Text>
-          )}
-        </View>
-        <View style={style.facility1}>
-          <Icon name="group" size={18} />
-          {dorms.visitors === 0 ? (
-            <Text style={style.facilityText}>Visitors are not allowed</Text>
-          ) : (
-            <Text style={style.facilityText}>Visitors are allowed</Text>
-          )}
-        </View>
-        <View style={style.facility1}>
-          <Icon name="schedule" size={18} />
-          {dorms.curfew === 0 ? (
-            <Text style={style.facilityText}>No observance of curfew</Text>
-          ) : (
-            <Text style={style.facilityText}>Observance of curfew</Text>
-          )}
-        </View>
-      </View>
-  </View>
-
-  <View style={{marginTop: 10}}>
-    <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-        Payment & Duration Terms
-    </Text>
-    <View style={{ flexDirection: 'column', marginTop: 5 }}>
-  {dorms.adv_dep !== 'N/A' && (
-    <View style={style.facility1}>
-      <Icon name="payments" size={18} />
-      <Text style={style.facilityText}>Advance Deposit:</Text>
-      <Text style={style.facilityText}>₱ {dorms.adv_dep}.00</Text>
-    </View>
-  )}
-  {dorms.util !== 'N/A' && (
-    <View style={style.facility1}>
-      <Icon name="bolt" size={18} />
-      <Text style={style.facilityText}>Utility Exclusive:</Text>
-      <Text style={style.facilityText}>{dorms.util}</Text>
-    </View>
-  )}
-  {dorms.sec_dep !== 'N/A' && (
-    <View style={style.facility1}>
-      <Icon name="shield" size={18} />
-      <Text style={style.facilityText}>Security Deposit:</Text>
-      <Text style={style.facilityText}>₱ {dorms.sec_dep}.00</Text>
-    </View>
-  )}
-  {dorms.min_stay !== 'N/A' && (
-    <View style={style.facility}>
-      <Icon name="event" size={18} />
-      <Text style={style.facilityText}>Minimum Stay:</Text>
-      <Text style={style.facilityText}>{dorms.min_stay} month/s</Text>
-    </View>
-  )}
-  {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
-    <Text style={{ fontStyle: 'italic' , fontSize: 14}}>No Terms for Payment and Duration</Text>
-  )}
-</View>
-  </View>
-
-  
-  <View style={{marginTop: 13}}>
-      <TouchableOpacity onPress={handleReportListing}>
-        <View style={style.facility}>
-              <Text style={{fontSize: 13, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
-        </View>
-      </TouchableOpacity>
-  </View>
-
-
-
-          {/* footer container */}
-          <View style={style.footer}>
-            <View>
-              <Text
-                style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
-                ₱{dorms.price}
-              </Text>
-              <Text
-                style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
-                Total Price
-              </Text>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+              Nearby Schools
+            </Text>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              {typeof dorms.hei === 'string' && dorms.hei.split(',').map((school, index) => (
+                <View key={index} style={[style.heiContainer]}>
+                  <View style={style.heiText}>
+                    <Text style={{ fontSize: 15, color: 'white' }}>
+                      {school.trim()}
+                    </Text>
+                  </View>
+                </View>
+              ))}
             </View>
-            {user.id !== dorms.userref ? 
-            <TouchableOpacity
-              style={style.bookNowBtn}
-              onPress={handleMessageNow}>
-              <Text style={{color: COLORS.white}}>Message Now</Text>
-            </TouchableOpacity>
-            :
-            <TouchableOpacity
-              style={style.bookNowBtn}
-              onPress={() => navigation.navigate('InboxTab')}>
-              <Text style={{color: COLORS.white}}>View Chats</Text>
-            </TouchableOpacity>
-            }
+          </View>
+
+
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+              Description 
+            </Text>
+            <Text style={{fontSize: 15, color: COLORS.black}}>
+            {dorms.desc}
+            </Text>
+          </View>
+
+          <View style={{ marginTop: 15 }}>
+            <Text style={{ fontSize: 16, color: 'black', fontWeight: 'bold' }}>
+                Establishment Rules
+            </Text>
+            <View style={{ flexDirection: 'column', marginTop: 5 }}>
+            <View style={style.facility1}>
+              <Icon name="pets" size={18} />
+              {dorms.pets === 0 ? (
+                <Text style={style.facilityText2}>Pets are not allowed</Text>
+              ) : (
+                <Text style={style.facilityText2}>Pets are allowed</Text>
+              )}
+            </View>
+            <View style={style.facility1}>
+              <Icon name="group" size={18} />
+              {dorms.visitors === 0 ? (
+                <Text style={style.facilityText2}>Visitors are not allowed</Text>
+              ) : (
+                <Text style={style.facilityText2}>Visitors are allowed</Text>
+              )}
+            </View>
+            <View style={style.facility1}>
+              <Icon name="schedule" size={18} />
+              {dorms.curfew === 0 ? (
+                <Text style={style.facilityText2}>No observance of curfew</Text>
+              ) : (
+                <Text style={style.facilityText2}>Observance of curfew</Text>
+              )}
+            </View>
           </View>
         </View>
+
+        <View style={{marginTop: 10}}>
+          <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+              Payment & Duration Terms
+          </Text>
+          <View style={{ flexDirection: 'column', marginTop: 5 }}>
+            {dorms.adv_dep !== 'N/A' && (
+              <View style={style.facility1}>
+                <Icon name="payments" size={18} />
+                <Text style={style.facilityText2}>Advance Deposit:</Text>
+                <Text style={style.facilityText2}>₱ {dorms.adv_dep}.00</Text>
+              </View>
+            )}
+            {dorms.util !== 'N/A' && (
+              <View style={style.facility1}>
+                <Icon name="bolt" size={18} />
+                <Text style={style.facilityText2}>Utility Exclusive:</Text>
+                <Text style={style.facilityText2}>{dorms.util}</Text>
+              </View>
+            )}
+            {dorms.sec_dep !== 'N/A' && (
+              <View style={style.facility1}>
+                <Icon name="shield" size={18} />
+                <Text style={style.facilityText2}>Security Deposit:</Text>
+                <Text style={style.facilityText2}>₱ {dorms.sec_dep}.00</Text>
+              </View>
+            )}
+            {dorms.min_stay !== 'N/A' && (
+              <View style={style.facility}>
+                <Icon name="event" size={18} />
+                <Text style={style.facilityText2}>Minimum Stay:</Text>
+                <Text style={style.facilityText2}>{dorms.min_stay} month/s</Text>
+              </View>
+            )}
+            {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
+              <Text style={{ fontStyle: 'italic' , fontSize: 14}}>No Terms for Payment and Duration</Text>
+            )}
+          </View>
+        </View>
+
+        <View style={{marginTop: 13}}>
+          <TouchableOpacity onPress={handleReportListing}>
+            <View style={style.facility}>
+              <Text style={{fontSize: 13, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* footer container */}
+        <View style={style.footer}>
+          <View>
+            <Text
+              style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
+              ₱{dorms.price}
+            </Text>
+            <Text
+              style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
+              Total Price
+            </Text>
+          </View>
+          {user.id !== dorms.userref ? 
+          <TouchableOpacity
+            style={style.bookNowBtn}
+            onPress={handleMessageNow}>
+            <Text style={{color: COLORS.white}}>Message Now</Text>
+          </TouchableOpacity>
+          :
+          <TouchableOpacity
+            style={style.bookNowBtn}
+            onPress={() => navigation.navigate('InboxTab')}>
+            <Text style={{color: COLORS.white}}>View Chats</Text>
+          </TouchableOpacity>
+          }
+        </View>
+      </View>
       </ScrollView>
       
     </SafeAreaView>
@@ -520,8 +583,13 @@ const style = StyleSheet.create({
     marginTop: 15
   },
   facility: {
-  flexDirection: 'row', 
-  marginRight: 15,
+    width:'33.333%',
+    textAlign:"center",
+    textAlignVertical:"center",
+    paddingVertical: 10,
+    alignSelf:"center",
+    alignContent:"center",
+    alignSelf:"center"
   },
   facility1: {
     flexDirection: 'row', 
@@ -529,7 +597,12 @@ const style = StyleSheet.create({
     marginBottom: 7,
   },
   facilityText: {
-    marginLeft: 5, 
+    textAlign:"center",
+    marginTop: 10
+  },
+  facilityText2: {
+    textAlign:"center",
+    marginLeft: 10
   },
   heiContainer: {
     flexDirection: 'row',

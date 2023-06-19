@@ -132,6 +132,7 @@ const Inbox = ({ navigation }) => {
                 anotherImageUrl: item.imageUrl,
                 username: item.username,
                 unique_code: item.unique_code,
+                chatroom_code: item.chatroom_code,
                 myid: myInfo.id,myusername: myInfo.username,
                 anotherid: item?.user_id,
                 user: user
