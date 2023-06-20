@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import {
   ImageBackground,
@@ -19,9 +20,8 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL, DORM_UPLOADS } from '../../constants/index';
+import { BASE_URL, DORM_UPLOADS, API_URL, AUTH_KEY  } from '../../constants/index';
 const {width} = Dimensions.get('screen');
-import { API_URL, AUTH_KEY } from '../../constants/index';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import ReportForm from '../components/ReportForm';
@@ -43,6 +43,7 @@ const DormDetails = ({navigation, route}) => {
   const [pressed, setPressed] = useState(false);
   const [rating, setRating] = useState(0);
   const [rate, setRate] = useState(0);
+  const [getAmenities, setAmenities] = useState(true)
   
   useEffect(async () => {
     const data = await AsyncStorage.getItem('user');
@@ -50,19 +51,14 @@ const DormDetails = ({navigation, route}) => {
     setUser(convertData)
 
     fetchData();
-    fetchReviews();
+    fetchRatings();
+    fetchAmenities();
   }, []);
   const [selectedDorm, setSelectedDorm] = useState('');
   const [reportModalVisible, setReportModalVisible] = useState('');
 
 const [isPopupVisible, setPopupVisible] = useState(false);
 const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
-
-useEffect(() => {
-  fetchData();
-  fetchRatings();
-}, []);
 
 
 //DORMS
@@ -78,6 +74,27 @@ const fetchData = () => {
       .catch(error => {
         console.error(error);
       });
+};
+
+const fetchAmenities = async () => {
+  const formdata = new FormData();
+
+  formdata.append('action',  'getAmenities');
+  formdata.append('unique_code',  dormref);
+
+  await axios.post(API_URL, formdata, {
+    headers: {
+      'Auth-Key': AUTH_KEY,
+      'Content-Type': 'multipart/form-data'
+    },
+  }).then(response => {
+    const json = response.data;
+    if (json.code == 200) {
+      setAmenities(json.data);
+    }
+  }).catch((ex) => {
+    return false;
+  });
 };
 
 
@@ -105,8 +122,37 @@ const InteriorCard = ({item}) => {
     source={{ uri: `${DORM_UPLOADS}/${dormref}/${item}` }}
     style={style.interiorImage}
   />
-};
+  };
+  const moveToMessage = async () => {
+    const formdata = new FormData();
 
+    formdata.append('action',  'getMessageInfos');
+    formdata.append('unique_code',  dorms.id);
+    formdata.append('myid',  user.id);
+    formdata.append('other_id', dorms.userref);
+
+    const response = await axios.post(API_URL, formdata, {
+      headers: {
+        'Auth-Key': AUTH_KEY,
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+    
+    const json = response.data;
+    if (json.code == 200) {
+      navigation.navigate('Chat Room', { 
+        navigation: navigation,
+        anotherImageUrl: json.data.me.imageUrl,
+        username: json.data.me.username,
+        unique_code: dorms.id,
+        chatroom_code: json.data.chatroom_code,
+        myid: user.id,
+        myusername: json.data.me.username,
+        anotherid: dorms.userref,
+        user: user
+      })
+    }
+  }
   const handleMessageNow = async () => {
     // Handle the "Message Now" button press here
     try {
@@ -130,6 +176,7 @@ const InteriorCard = ({item}) => {
             text1: 'UniHive',
             text2: json.data,
           });
+          moveToMessage();
         }
       }).catch(error => {
         Toast.show({
@@ -247,22 +294,23 @@ return (
   
 {/* House image */}
 <View style={style.backgroundImageContainer}>
-  <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
-    <View style={style.header}>
-      <TouchableOpacity style={style.headerBtn} onPress={() => {
-        handleFavorite();
-        setPressed(!pressed);
-      }}>
-      <Icon name="favorite" size={20} color={pressed ? COLORS.red : COLORS.grey} />
-      </TouchableOpacity>
-      <TouchableOpacity style={style.headerBtn} onPress={() => {
-        handleShare();
-      }}>
-        <Icon name="share" size={20} color={COLORS.grey} />
-      </TouchableOpacity>
-    </View>
-  </ImageBackground>
-</View>
+          <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
+            <View style={style.header}>
+              <TouchableOpacity style={style.headerBtn}  onPress={() => {
+                                              handleFavorite();
+                                              setPressed(!pressed)
+                                              }}>
+              <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </View>
+
+        <ViewReviews
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          dormref={dormref}
+        />
 
 
 {/* View Reviews */}
@@ -299,7 +347,6 @@ return (
       </TouchableOpacity>
     </View>
 </View>
-
 
 {/* Location text */}
 <TouchableOpacity onPress={handleAddressPress}>
@@ -375,7 +422,76 @@ return (
   </View>
 </View>
 
-
+{/* Facilities container */}
+<View style={{marginTop: 8}}>
+  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+    Amenities
+  </Text>
+</View>
+<View style={{flexDirection: 'column', marginTop: 4}}>
+  <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+    {getAmenities.aircon == 1 &&
+      <View style={style.facility}>
+        <Icon name="ac-unit" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Air Conditioning</Text>
+      </View>
+    }
+    {getAmenities.elevator == 1 &&
+      <View style={style.facility}>
+        <Icon name="elevator" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Elevator</Text>
+      </View>
+    }
+    {getAmenities.beddings == 1 &&
+      <View style={style.facility}>
+        <Icon name="single-bed" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Beddings</Text>
+      </View>
+    }
+    {getAmenities.kitchen == 1 &&
+      <View style={style.facility}>
+        <Icon name="kitchen" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Kitchen</Text>
+      </View>
+    }
+    {getAmenities.laundry == 1 &&
+      <View style={style.facility}>
+        <Icon name="local-laundry-service" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Laundry</Text>
+      </View>
+    }
+    {getAmenities.lounge == 1 &&
+      <View style={style.facility}>
+        <Icon name="meeting-room" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Lounge</Text>
+      </View>
+    }
+    {getAmenities.parking == 1 &&
+      <View style={style.facility}>
+        <Icon name="local-parking" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Parking</Text>
+      </View>
+    }
+    {getAmenities.security == 1 &&
+      <View style={style.facility}>
+        <Icon name="security" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Security</Text>
+      </View>
+    }
+    {getAmenities.study_room == 1 &&
+      <View style={style.facility}>
+        <Icon name="menu-book" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Study room</Text>
+      </View>
+    }
+    {getAmenities.wifi == 1 &&
+      <View style={style.facility}>
+        <Icon name="wifi" size={18} style={{alignSelf:"center"}} />
+        <Text style={style.facilityText}>Wi-Fi</Text>
+      </View>
+    }
+  </View>
+</View>
 
 {/* Not sure kung ano */}
 <Text style={{color: COLORS.grey}}>
@@ -639,8 +755,13 @@ const style = StyleSheet.create({
     marginTop: 15
   },
   facility: {
-  flexDirection: 'row', 
-  marginRight: 15,
+    width:'33.333%',
+    textAlign:"center",
+    textAlignVertical:"center",
+    paddingVertical: 10,
+    alignSelf:"center",
+    alignContent:"center",
+    alignSelf:"center"
   },
   facility1: {
     flexDirection: 'row', 
@@ -648,7 +769,12 @@ const style = StyleSheet.create({
     marginBottom: 7,
   },
   facilityText: {
-    marginLeft: 5, 
+    textAlign:"center",
+    marginTop: 10
+  },
+  facilityText2: {
+    textAlign:"center",
+    marginLeft: 10
   },
   heiContainer: {
     flexDirection: 'row',
