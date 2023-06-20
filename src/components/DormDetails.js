@@ -54,6 +54,8 @@ const DormDetails = ({navigation, route}) => {
     fetchRatings();
     fetchAmenities();
   }, []);
+
+
   const [selectedDorm, setSelectedDorm] = useState('');
   const [reportModalVisible, setReportModalVisible] = useState('');
 
@@ -104,14 +106,17 @@ const fetchRatings = async () => {
     .get(`${BASE_URL}?tag=get_reviews&dormref=${dormref}`)
     .then(response => {
         const data = JSON.parse(response.data);
-        const ratings = data.map(val => {
-          return val.rating;
-        });
-        const totalRatings = ratings.reduce((a, b) => a + b, 0);
-        const averageRating = totalRatings / ratings.length;
-
-        setRate(ratings.length);
-        setRating(averageRating);
+        if(data.length != 0) {
+          
+          const ratings = data.map(val => {
+            return val.rating;
+          });
+          const totalRatings = ratings.reduce((a, b) => a + b, 0) ?? 0;
+          const averageRating = totalRatings / ratings.length ?? 0;
+          
+          setRate(ratings.length ?? 0);
+          setRating(averageRating ?? 0);
+        }
       });
 };
 
@@ -127,7 +132,7 @@ const InteriorCard = ({item}) => {
     const formdata = new FormData();
 
     formdata.append('action',  'getMessageInfos');
-    formdata.append('unique_code',  dorms.id);
+    formdata.append('unique_code',  dorms.dormref);
     formdata.append('myid',  user.id);
     formdata.append('other_id', dorms.userref);
 
@@ -144,7 +149,7 @@ const InteriorCard = ({item}) => {
         navigation: navigation,
         anotherImageUrl: json.data.me.imageUrl,
         username: json.data.me.username,
-        unique_code: dorms.id,
+        unique_code: dorms.dormref,
         chatroom_code: json.data.chatroom_code,
         myid: user.id,
         myusername: json.data.me.username,
@@ -157,9 +162,8 @@ const InteriorCard = ({item}) => {
     // Handle the "Message Now" button press here
     try {
       const formdata = new FormData();
-
       formdata.append('action',  'addChat');
-      formdata.append('unique_code',  dorms.id);
+      formdata.append('unique_code',  dorms.dormref);
       formdata.append('myid',  user.id);
       formdata.append('other_id', dorms.userref);
 
@@ -179,11 +183,13 @@ const InteriorCard = ({item}) => {
           moveToMessage();
         }
       }).catch(error => {
+        moveToMessage();
+        /*
         Toast.show({
           type: 'error',
           text1: 'UniHive',
           text2: 'Error, you already have conversation with this user!',
-        });
+        });*/
       });
     } catch(ex) {
       console.log(ex)
@@ -361,67 +367,6 @@ return (
   </Text>
 </View>
 
-
-{/* Amenities container */}
-<View style={{marginTop: 10}}>
-  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-    Amenities
-  </Text>
-</View>
-<View style={{flexDirection: 'column', marginTop: 4}}>
-  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="ac-unit" size={18} />
-      <Text style={style.facilityText}>Air Conditioning</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="elevator" size={18} />
-      <Text style={style.facilityText}>Elevator</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="single-bed" size={18} />
-      <Text style={style.facilityText}>Beddings</Text>
-    </View>
-  </View>
-
-  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="kitchen" size={18} />
-      <Text style={style.facilityText}>Kitchen</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="local-laundry-service" size={18} />
-      <Text style={style.facilityText}>Laundry</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="meeting-room" size={18} />
-      <Text style={style.facilityText}>Lounge</Text>
-    </View>
-  </View>
-
-  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="local-parking" size={18} />
-      <Text style={style.facilityText}>Parking</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="security" size={18} />
-      <Text style={style.facilityText}>Security</Text>
-    </View>
-    <View style={style.facility}>
-      <Icon name="menu-book" size={18} />
-      <Text style={style.facilityText}>Study room</Text>
-    </View>
-  </View>
-
-  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <View style={style.facility}>
-      <Icon name="wifi" size={18} />
-      <Text style={style.facilityText}>Wi-Fi</Text>
-    </View>
-  </View>
-</View>
-
 {/* Facilities container */}
 <View style={{marginTop: 8}}>
   <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
@@ -569,25 +514,25 @@ return (
     <View style={style.facility1}>
           <Icon name="pets" size={18} />
           {dorms.pets === 0 ? (
-            <Text style={style.facilityText}>Pets are not allowed</Text>
+            <Text style={style.facilityText2}>Pets are not allowed</Text>
           ) : (
-            <Text style={style.facilityText}>Pets are allowed</Text>
+            <Text style={style.facilityText2}>Pets are allowed</Text>
           )}
         </View>
         <View style={style.facility1}>
           <Icon name="group" size={18} />
           {dorms.visitors === 0 ? (
-            <Text style={style.facilityText}>Visitors are not allowed</Text>
+            <Text style={style.facilityText2}>Visitors are not allowed</Text>
           ) : (
-            <Text style={style.facilityText}>Visitors are allowed</Text>
+            <Text style={style.facilityText2}>Visitors are allowed</Text>
           )}
         </View>
         <View style={style.facility1}>
           <Icon name="schedule" size={18} />
           {dorms.curfew === 0 ? (
-            <Text style={style.facilityText}>No observance of curfew</Text>
+            <Text style={style.facilityText2}>No observance of curfew</Text>
           ) : (
-            <Text style={style.facilityText}>Observance of curfew</Text>
+            <Text style={style.facilityText2}>Observance of curfew</Text>
           )}
         </View>
       </View>
@@ -603,29 +548,29 @@ return (
   {dorms.adv_dep !== 'N/A' && (
     <View style={style.facility1}>
       <Icon name="payments" size={18} />
-      <Text style={style.facilityText}>Advance Deposit:</Text>
-      <Text style={style.facilityText}>₱ {dorms.adv_dep}.00</Text>
+      <Text style={style.facilityText2}>Advance Deposit:</Text>
+      <Text style={style.facilityText2}>₱ {dorms.adv_dep}.00</Text>
     </View>
   )}
   {dorms.util !== 'N/A' && (
     <View style={style.facility1}>
       <Icon name="bolt" size={18} />
-      <Text style={style.facilityText}>Utility Exclusive:</Text>
-      <Text style={style.facilityText}>{dorms.util}</Text>
+      <Text style={style.facilityText2}>Utility Exclusive:</Text>
+      <Text style={style.facilityText2}>{dorms.util}</Text>
     </View>
   )}
   {dorms.sec_dep !== 'N/A' && (
     <View style={style.facility1}>
       <Icon name="shield" size={18} />
-      <Text style={style.facilityText}>Security Deposit:</Text>
-      <Text style={style.facilityText}>₱ {dorms.sec_dep}.00</Text>
+      <Text style={style.facilityText2}>Security Deposit:</Text>
+      <Text style={style.facilityText2}>₱ {dorms.sec_dep}.00</Text>
     </View>
   )}
   {dorms.min_stay !== 'N/A' && (
     <View style={style.facility}>
       <Icon name="event" size={18} />
-      <Text style={style.facilityText}>Minimum Stay:</Text>
-      <Text style={style.facilityText}>{dorms.min_stay} month/s</Text>
+      <Text style={style.facilityText2}>Minimum Stay:</Text>
+      <Text style={style.facilityText2}>{dorms.min_stay} month/s</Text>
     </View>
   )}
   {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
@@ -643,7 +588,7 @@ return (
     setReportModalVisible(true);
     setSelectedDorm(dormref);
     }}>
-      <View style={style.facility}>
+      <View>
         <Text style={{fontSize: 15, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
       </View>
   </TouchableOpacity>

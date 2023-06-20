@@ -171,7 +171,6 @@ const HomeScreen = ({navigation, route}) => {
       axios
         .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
         .then(res => {
-          console.log(res.data);
           var output = JSON.parse(res.data);
           try {
             if (output.length !== 0) {
@@ -260,19 +259,19 @@ const HomeScreen = ({navigation, route}) => {
 
               const formdata = new FormData();
               formdata.append('action', 'nearest_dorm');
-              formdata.append('aircon', a);
-              formdata.append('elevator', b);
-              formdata.append('beddings', c);
-              formdata.append('kitchen', d);
-              formdata.append('laundry', e);
-              formdata.append('parking', f);
-              formdata.append('lounge', g);
-              formdata.append('security', h);
-              formdata.append('study_room', i);
-              formdata.append('wifi', j);
-              formdata.append('pet', k);
-              formdata.append('visitor', l);
-              formdata.append('curfew', m);
+              formdata.append('aircon', a ?? 0);
+              formdata.append('elevator', b ?? 0);
+              formdata.append('beddings', c ?? 0);
+              formdata.append('kitchen', d ?? 0);
+              formdata.append('laundry', e ?? 0);
+              formdata.append('parking', f ?? 0);
+              formdata.append('lounge', g ?? 0);
+              formdata.append('security', h ?? 0);
+              formdata.append('study_room', i ?? 0);
+              formdata.append('wifi', j ?? 0);
+              formdata.append('pet', k ?? 0);
+              formdata.append('visitor', l ?? 0);
+              formdata.append('curfew', m ?? 0);
               formdata.append('latitude', latitude);
               formdata.append('longitude', longitude);
 
@@ -298,7 +297,6 @@ const HomeScreen = ({navigation, route}) => {
                   text2: json.data,
                 });
               }
-              console.log(response);
             },
             error => {
               console.log('Error getting current position:', error);
@@ -329,19 +327,19 @@ const HomeScreen = ({navigation, route}) => {
     } else {
       let formdata = new FormData();
       formdata.append('action', tag);
-      formdata.append('aircon', a);
-      formdata.append('elevator', b);
-      formdata.append('beddings', c);
-      formdata.append('kitchen', d);
-      formdata.append('laundry', e);
-      formdata.append('parking', f);
-      formdata.append('lounge', g);
-      formdata.append('security', h);
-      formdata.append('study_room', i);
-      formdata.append('wifi', j);
-      formdata.append('pet', k);
-      formdata.append('visitor', l);
-      formdata.append('curfew', m);
+      formdata.append('aircon', a ?? 0);
+      formdata.append('elevator', b ?? 0);
+      formdata.append('beddings', c ?? 0);
+      formdata.append('kitchen', d ?? 0);
+      formdata.append('laundry', e ?? 0);
+      formdata.append('parking', f ?? 0);
+      formdata.append('lounge', g ?? 0);
+      formdata.append('security', h ?? 0);
+      formdata.append('study_room', i ?? 0);
+      formdata.append('wifi', j ?? 0);
+      formdata.append('pet', k ?? 0);
+      formdata.append('visitor', l ?? 0);
+      formdata.append('curfew', m ?? 0);
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -355,7 +353,6 @@ const HomeScreen = ({navigation, route}) => {
       if (json.code === 200) {
         setDorms([]);
         setDorms(json.data);
-        console.log('JSON Data', json.data);
       } else if (json.code === 403) {
         setDorms([]);
         Toast.show({
@@ -453,7 +450,7 @@ const HomeScreen = ({navigation, route}) => {
   const handleSearch = text => {
     setSearchQuery(text);
     const filtered = dorms.filter(data =>
-      data.name.toLowerCase().includes(text.toLowerCase()),
+      data.name.toLowerCase().includes(text.toLowerCase()) || data.address.toLowerCase().includes(text.toLowerCase()),
     );
     setFilteredDorms(filtered);
   };
