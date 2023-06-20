@@ -45,6 +45,7 @@
     "react-native-svg-transformer": "^1.0.0",
     "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^13.2.2",
     "styled-components": "^5.3.11",
     "yup": "^1.0.2"
   },

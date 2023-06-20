@@ -16,6 +16,7 @@ import {
   Share,
   Modal,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../constants/colors';
@@ -579,7 +580,12 @@ return (
     </View>
   </View>
 
-  
+
+  <WebView
+  source={{ uri: 'https://goo.gl/maps/DeKwqpdnh8H5bsJV9' }}
+  style={{ marginTop: 20, height: 300 }}
+/>
+
 {/* Report listing*/}
 <View style={{marginTop: 13}}>
   <TouchableOpacity                 
