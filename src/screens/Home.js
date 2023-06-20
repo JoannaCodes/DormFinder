@@ -17,17 +17,25 @@ import {
   TextInput,
   FlatList,
   ScrollView,
-  Dimensions,
+Dimensions,
   StatusBar,
   Pressable,
   Linking,
   PermissionsAndroid,
+  LogBox
 } from 'react-native';
+
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs([/Warning: /]);
+LogBox.ignoreLogs(['Please report: ...']);
+LogBox.ignoreLogs([/Please report: /]);
+LogBox.ignoreLogs(['AsyncStorage ...']);
+LogBox.ignoreLogs([/AsyncStorage /]);
 
 import Geolocation from '@react-native-community/geolocation';
 
 import axios from 'axios';
-import {BASE_URL, DORM_UPLOADS} from '../../constants/index';
+import {API_URL, BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../constants/index';
 
 import PushNotificationConfig from '../components/PushNotificationConfig';
 import PushNotification, {Importance} from 'react-native-push-notification';
@@ -35,8 +43,28 @@ import PushNotification, {Importance} from 'react-native-push-notification';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
+import houses from '../consts/houses';
+import Drawer from '../components/drawer';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Toast from 'react-native-toast-message';
 
 const HomeScreen = ({navigation, route}) => {
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+
+  const [filteredAircon, setFilteredAircon] = useState(0);
+  const [filteredElevator, setFilteredElevator] = useState(0);
+  const [filteredBeddings, setFilteredBeddings] = useState(0);
+  const [filteredKitchen, setFilteredKitchen] = useState(0);
+  const [filteredLaundry, setFilteredLaundry] = useState(0);
+  const [filteredLounge, setFilteredLounge] = useState(0);
+  const [filteredParking, setFilteredParking] = useState(0);
+  const [filteredSecurity, setFilteredSecurity] = useState(0);
+  const [filteredStudyRoom, setFilteredStudyRoom] = useState(0);
+  const [filteredWifi, setFilteredWifi] = useState(0);
+  const [filteredPet, setFilteredPet] = useState(0);
+  const [filteredVisitor, setFilteredVisitor] = useState(0);
+  const [filteredCurfew, setFilteredCurfew] = useState(0);
+  
   PushNotification.createChannel(
     {
       channelId: 'channel-id', // (required)
@@ -59,15 +87,29 @@ const HomeScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
+    var a = filteredAircon;
+    var b = filteredElevator;
+    var c = filteredBeddings;
+    var d = filteredKitchen;
+    var e = filteredLaundry;
+    var f = filteredLounge;
+    var g = filteredParking;
+    var h = filteredSecurity;
+    var i = filteredStudyRoom;
+    var j = filteredWifi;
+    var k = filteredPet;
+    var l = filteredVisitor;
+    var m = filteredCurfew;
+
     if (selectedCategoryIndex === 0) {
       _fetchNotif();
-      fetchDormsByCategory('popular_dorm');
+      fetchDormsByCategory('popular_dorm', a,b,c,d,e,f,g,h,i,j,k,l,m);
     } else if (selectedCategoryIndex === 1) {
-      fetchDormsByCategory('latest_dorm');
+      fetchDormsByCategory('latest_dorm', a,b,c,d,e,f,g,h,i,j,k,l,m);
     } else if (selectedCategoryIndex === 2) {
-      fetchDormsByCategory('nearest_dorm');
+      fetchDormsByCategory('nearest_dorm', a,b,c,d,e,f,g,h,i,j,k,l,m);
     }
-  }, [selectedCategoryIndex]);
+  }, [selectedCategoryIndex, filteredAircon, filteredElevator, filteredBeddings, filteredKitchen, filteredLaundry, filteredLounge,filteredParking, filteredSecurity, filteredStudyRoom, filteredWifi, filteredPet, filteredVisitor, filteredCurfew]);
 
   const _fetchNotif = async () => {
     try {
@@ -108,22 +150,32 @@ const HomeScreen = ({navigation, route}) => {
     }
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredDorms, setFilteredDorms] = useState([]);
   const [dorms, setDorms] = useState([]);
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+  const [modal, setModal] = useState(false);
 
-  const fetchData = () => {
-    axios
-      .get(`${BASE_URL}?tag=popular_dorm`)
-      .then(response => {
-        const data = JSON.parse(response.data);
-        setDorms(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
+  const fetchData = async (a,b,c,d,e,f,g,h,i,j,k,l,m) => {
+    let formdata = new FormData();
+    formdata.append('action', 'popular_dorm');
 
-  const fetchDormsByCategory = async tag => {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Auth-Key': AUTH_KEY,
+        'Content-Type': 'multipart/form-data'
+      },
+      body: formdata
+    });
+
+    
+    const json = await response.text();
+    if(json.code == 200) {
+      setDorms(json.data);
+    }
+  };  
+  
+  const fetchDormsByCategory = async (tag,a,b,c,d,e,f,g,h,i,j,k,l,m) => {
     if (tag === 'nearest_dorm') {
       setSelectedCategoryIndex(
         categoryList.findIndex(category => category.tag === tag),
@@ -138,8 +190,8 @@ const HomeScreen = ({navigation, route}) => {
           Geolocation.getCurrentPosition(
             async position => {
               const {latitude, longitude} = position.coords;
-
-              const formData = new FormData();
+              
+              /*const formData = new FormData();
               formData.append('tag', 'nearest_dorm');
               formData.append('latitude', latitude);
               formData.append('longitude', longitude);
@@ -158,7 +210,48 @@ const HomeScreen = ({navigation, route}) => {
                 setDorms(data);
               } catch (error) {
                 console.error(error);
+              }*/
+              const formdata = new FormData();
+              formdata.append('action',  'nearest_dorm');
+              formdata.append('aircon', a);
+              formdata.append('elevator', b);
+              formdata.append('beddings', c);
+              formdata.append('kitchen', d);
+              formdata.append('laundry', e);
+              formdata.append('parking', f);
+              formdata.append('lounge', g);
+              formdata.append('security', h);
+              formdata.append('study_room', i);
+              formdata.append('wifi', j);
+              formdata.append('pet', k);
+              formdata.append('visitor', l);
+              formdata.append('curfew', m);
+              formdata.append('latitude', latitude);
+              formdata.append('longitude', longitude);
+
+              const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                  'Auth-Key': AUTH_KEY,
+                  'Content-Type': 'multipart/form-data'
+                },
+                body: formdata
+              });
+              
+              const json = await response.json();
+              
+              if(json.code == 200) {
+                setDorms([]);
+                setDorms(json.data);
+              } else if(json.code == 403) {
+                setDorms([]);
+                Toast.show({
+                  type: 'error',
+                  text1: 'UniHive',
+                  text2: json.data,
+                });
               }
+              console.log(response);
             },
             error => {
               console.log('Error getting current position:', error);
@@ -187,23 +280,45 @@ const HomeScreen = ({navigation, route}) => {
         console.log('Error requesting location permission:', error);
       }
     } else {
-      // Fetch dorms for other categories
-      axios
-        .get(`${BASE_URL}?tag=${tag}`, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(response => {
-          const data = JSON.parse(response.data);
-          setDorms(data);
-          setSelectedCategoryIndex(
-            categoryList.findIndex(category => category.tag === tag),
-          );
-        })
-        .catch(error => {
-          console.error(error);
+      let formdata = new FormData();
+      formdata.append('action', tag);
+      formdata.append('aircon', a);
+      formdata.append('elevator', b);
+      formdata.append('beddings', c);
+      formdata.append('kitchen', d);
+      formdata.append('laundry', e);
+      formdata.append('parking', f);
+      formdata.append('lounge', g);
+      formdata.append('security', h);
+      formdata.append('study_room', i);
+      formdata.append('wifi', j);
+      formdata.append('pet', k);
+      formdata.append('visitor', l);
+      formdata.append('curfew', m);
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formdata
+      });
+      const json = await response.json();
+      if(json.code == 200) {
+        setDorms([]);
+        setDorms(json.data);
+      } else if(json.code == 403) {
+        setDorms([]);
+        Toast.show({
+          type: 'error',
+          text1: 'UniHive',
+          text2: json.data,
         });
+      }
+      setSelectedCategoryIndex(
+        categoryList.findIndex(category => category.tag === tag),
+      );
     }
   };
 
@@ -285,8 +400,248 @@ const HomeScreen = ({navigation, route}) => {
     );
   };
 
+  const filter = () => {
+  }
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    const filtered = dorms.filter((data) =>
+      data.name.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredDorms(filtered);
+  };
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
+      <Modal
+        animationType={'fade'}
+        transparent={true}
+        visible={modal}
+        onRequestClose={() => {
+          Toast.show({
+            type: 'success',
+            text1: 'UniHive',
+            text2: 'Modal has been closed.',
+          });
+          setModal(!modal);
+      }}>
+          <TouchableOpacity style={{position:'absolute',left: 0, right:0,top:0, bottom:0, height:"100%",backgroundColor:"#0000004a",}} onPress={() => setModal(!modal)}>
+          </TouchableOpacity>
+          <View style={{marginHorizontal: 50,marginTop: 100,padding: 10}}>
+            <View style={{backgroundColor:"#fff",padding: 10,borderRadius: 10, height: 300}}>
+              <ScrollView>
+                <Text style={{textAlign:"center",fontWeight:'bold',color:"#000",borderBottomColor:"#ddd",borderBottomWidth: 1,paddingVertical: 10}}>Filters</Text>
+                <View>
+                  <Text style={{textAlign:"left",fontWeight:'bold',color:"#000",paddingVertical: 10}}>Amenities</Text>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredAircon == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredAircon(filteredAircon == 1 ? 0 : 1)
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Air Conditioning"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredElevator == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredElevator(filteredElevator == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Elevator"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredKitchen == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredKitchen(filteredKitchen == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Kitchen"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredBeddings == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredBeddings(filteredBeddings == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Beddings"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredLaundry == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredLaundry(filteredLaundry == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Laundry"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredLounge == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredLounge(filteredLounge == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Lounge"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredSecurity}
+                      onPress={() => {
+                        setFilteredSecurity(filteredSecurity == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Security"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredParking == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredParking(filteredParking == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Parking"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredSecurity == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredSecurity(filteredSecurity == 1 ? 0 : 1);
+                        filter();
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Security"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredStudyRoom == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredStudyRoom(filteredStudyRoom == 1 ? 0 : 1);
+                        filter()
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Study Room"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredWifi == 1 ? true : false}
+                      onPress={() => {
+                        setFilteredWifi(filteredWifi == 1 ? 0 : 1);
+                        filter()
+                      }}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Wi-Fi"
+                    />
+                  </View>
+                </View>
+                <View>
+                  <Text style={{textAlign:"left",fontWeight:'bold',color:"#000",paddingVertical: 10}}>Establishment Rules</Text>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredPet}
+                      onPress={() => setFilteredPet(filteredPet == 1 ? 0 : 1)}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Pets"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredVisitor == 1 ? true : false}
+                      onPress={() => setFilteredVisitor(filteredVisitor == 1 ? 0 : 1)}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Visitor"
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <BouncyCheckbox
+                      size={15}
+                      isChecked={filteredCurfew == 1 ? true : false}
+                      onPress={() => setFilteredCurfew(filteredCurfew == 1 ? 0 : 1)}
+                      textStyle={{marginLeft: -5,fontSize: 13,textDecorationLine: 'none',marginBottom: -10}}
+                      fillColor={COLORS.teal}
+                      unfillColor={COLORS.white}
+                      iconStyle={{borderColor: COLORS.teal,marginBottom: -10}}
+                      text="Curfew"
+                    />
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          </View>
+      </Modal>
       <StatusBar
         translucent={false}
         backgroundColor={COLORS.white}
@@ -308,9 +663,9 @@ const HomeScreen = ({navigation, route}) => {
         }}>
         <View style={styles.searchInputContainer}>
           <Icon name="search" color={COLORS.grey} size={25} />
-          <TextInput placeholder="Search address, city, location" />
+          <TextInput placeholder="Search address, city, location" value={searchQuery} onChangeText={handleSearch}/>
         </View>
-        <TouchableOpacity onPress={() => console.log('Sort button pressed')}>
+        <TouchableOpacity  onPress={() => setModal(!modal)}>
           <View style={styles.sortBtn}>
             <Icon name="tune" color={COLORS.white} size={25} />
           </View>
@@ -322,7 +677,7 @@ const HomeScreen = ({navigation, route}) => {
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
         horizontal={false}
-        data={dorms}
+        data={searchQuery ? filteredDorms : dorms}
         ListHeaderComponent={() => <View />}
         renderItem={Card}
         keyExtractor={item => item.id}
@@ -417,6 +772,16 @@ const styles = StyleSheet.create({
   },
   facility: {flexDirection: 'row', marginRight: 15},
   facilityText: {marginLeft: 5, color: COLORS.grey},
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
+  label: {
+    margin: 8,
+  },
 });
 
 export default HomeScreen;
