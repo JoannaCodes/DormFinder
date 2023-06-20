@@ -2,7 +2,6 @@
 import {
   Alert,
   KeyboardAvoidingView,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -37,10 +36,6 @@ export default function Profile({user, verified, onLogout}) {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleEmailPress = () => {
-    Linking.openURL('mailto:info.studyhive@gmail.com');
   };
 
   return (
@@ -100,32 +95,6 @@ export default function Profile({user, verified, onLogout}) {
             <Icon name="help" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 5}}>Help</Text>
           </TouchableOpacity>
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={[styles.label, {textAlign: 'center'}]}>
-                Contact us at
-              </Text>
-              <TouchableOpacity onPress={handleEmailPress}>
-                <Text
-                  style={[
-                    styles.label,
-                    {
-                      marginStart: 5,
-                      textAlign: 'center',
-                      color: COLORS.blue,
-                      textDecorationLine: 'underline',
-                    },
-                  ]}>
-                  info.studyhive@gmail.com
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
         </View>
 
         {/* Logout section */}

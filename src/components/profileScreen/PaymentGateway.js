@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     flex: 1,
+    backgroundColor: COLORS.white,
   },
   title: {
     fontSize: 24,
