@@ -55,7 +55,6 @@ const Bookmarks = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
-        setStatus('failed');
 
         const dataWithoutImages = data.map(item => {
           const {images, ...rest} = item;

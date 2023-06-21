@@ -21,7 +21,7 @@ import COLORS from '../../constants/colors';
 export default function Notifications({route, navigation}) {
   const {user} = route.params;
   const [notifContainer, setNotifContainer] = useState('');
-  const [status, setStatus] = useState('failed');
+  const [status, setStatus] = useState('success');
   const [isLoading, setLoading] = useState(true);
   // const [longContainer, setLongContainer] = useState('');
   // const [downloadedID, setDownloadedID] = useState('');
@@ -58,7 +58,6 @@ export default function Notifications({route, navigation}) {
         .then(res => {
           var output = JSON.parse(res.data);
           setNotifContainer(output);
-          setStatus('success');
           AsyncStorage.setItem('notifications', JSON.stringify(output));
         });
     } catch (error) {
