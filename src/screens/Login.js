@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 import COLORS from '../../constants/colors';
 
-import BackgroundImg from '../../assets/img/bg-transferent.png';
+import BackgroundImg from '../../assets/img/bg1.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
 
@@ -25,7 +25,7 @@ const Separator = ({title}) => {
   return (
     <View style={styles.separator}>
       <View style={styles.line} />
-      <Text style={{marginHorizontal: 5, color: COLORS.white}}>{title}</Text>
+      <Text style={{marginHorizontal: 5, color: 'gray'}}>{title}</Text>
       <View style={styles.line} />
     </View>
   );
@@ -36,6 +36,7 @@ export default function Login({onLogin}) {
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userData, setUserData] = useState({});
   const navigation = useNavigation();
 
   const handleLogin = async mode => {
@@ -149,7 +150,7 @@ export default function Login({onLogin}) {
       <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
-          <Text style={{color: COLORS.white, fontSize: 30, fontWeight: 'bold'}}>
+          <Text style={{color: 'black', fontSize: 30, fontWeight: 'bold', marginTop: 20}}>
             Welcome!
           </Text>
         </View>
@@ -160,7 +161,6 @@ export default function Login({onLogin}) {
               <TextInput
                 style={{padding: 0}}
                 placeholder="Username"
-                placeholderTextColor={COLORS.grey}
                 onChangeText={text => setUsername(text)}
               />
             </View>
@@ -172,7 +172,6 @@ export default function Login({onLogin}) {
                 <TextInput
                   style={{padding: 0}}
                   placeholder="Password"
-                  placeholderTextColor={COLORS.grey}
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
                 />
@@ -243,7 +242,7 @@ export default function Login({onLogin}) {
             {/*  */}
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: COLORS.white}}>
+                <Text style={{color: 'black'}}>
                   Don't Have An Account?
                 </Text>
                 <TouchableOpacity
@@ -281,7 +280,7 @@ export default function Login({onLogin}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#050907',
+    backgroundColor: 'white',
   },
   separator: {
     flexDirection: 'row',
@@ -291,7 +290,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.grey,
+    backgroundColor: 'gray',
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -299,7 +298,7 @@ const styles = StyleSheet.create({
   },
   backgroundImg: {
     height: '100%',
-    width: '80%',
+    width: '90%',
     marginRight: -15,
   },
   bottomBackgroundImgContainer: {
@@ -320,19 +319,20 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    bottom: 30,
+    marginBottom: 30,
   },
   formBottomSubContainer: {
     width: '95%',
     borderRadius: 10,
     backgroundColor: 'rgba(127,127,127,0.5)',
-    padding: 20,
-    marginTop: 50,
+    padding: 15,
+    marginTop: 10,
+    marginBottom: 10,
   },
   customInputContainer: {
     marginVertical: 10,
     borderWidth: 2,
-    borderColor: COLORS.teal,
+    borderColor: 'teal',
     backgroundColor: COLORS.white,
     paddingHorizontal: 15,
     paddingVertical: 10,

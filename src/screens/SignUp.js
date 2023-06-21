@@ -13,16 +13,25 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BackgroundImg from '../../assets/img/bg-transferent.png';
+import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
 import COLORS from '../../constants/colors';
+
+//google
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+
+GoogleSignin.configure({
+  webClientId: 
+  '232767448599-9kc9mhpe3qo3rt7q82f93m8s7t3v7pmo.apps.googleusercontent.com',
+});
 
 const Separator = ({title}) => {
   return (
     <View style={styles.separator}>
       <View style={styles.line} />
-      <Text style={{marginHorizontal: 5, color: '#FFFFFF'}}>{title}</Text>
+      <Text style={{marginHorizontal: 5, color: 'gray'}}>{title}</Text>
       <View style={styles.line} />
     </View>
   );
@@ -88,14 +97,20 @@ export default function Signup() {
       </View>
       <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
-        <View style={styles.formTopContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Icon name="arrow-back-ios" size={30} color={COLORS.white} />
-          </TouchableOpacity>
-          <Text style={{color: COLORS.white, fontSize: 30, fontWeight: 'bold'}}>
-            Register
-          </Text>
-        </View>
+
+
+      <View style={styles.formTopContainer}>
+    <View style={{ flexDirection: 'row', alignItems: 'center' , }}>
+    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 20 }}>
+        <Icon name="arrow-back-ios" size={30} color={COLORS.black} />
+      </TouchableOpacity>
+      <Text style={{ color: 'black', fontSize: 30, fontWeight: 'bold', marginLeft: 10, marginTop: 20 }}>
+        Register
+      </Text>
+    </View>
+</View>
+
+
         <View style={styles.formBottomContainer}>
           <View style={styles.formBottomSubContainer}>
             <View style={styles.customInputContainer}>
@@ -161,7 +176,7 @@ export default function Signup() {
 
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: COLORS.white}}>
+                <Text style={{color: 'black'}}>
                   Already Have An Account?
                 </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -186,7 +201,7 @@ export default function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#050907',
+    backgroundColor: 'white',
   },
   separator: {
     flexDirection: 'row',
@@ -196,7 +211,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.grey,
+    backgroundColor: 'gray',
   },
   topBackgroundImgContainer: {
     flex: 1.5,
@@ -204,7 +219,7 @@ const styles = StyleSheet.create({
   },
   backgroundImg: {
     height: '100%',
-    width: '80%',
+    width: '85%',
     marginRight: -15,
   },
   bottomBackgroundImgContainer: {
@@ -225,12 +240,15 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   formBottomSubContainer: {
     width: '95%',
     borderRadius: 10,
     backgroundColor: 'rgba(127,127,127,0.5)',
-    padding: 20,
+    padding: 15,
+    marginTop: 10,
+    marginBottom: 10,
   },
   customInputContainer: {
     marginVertical: 10,

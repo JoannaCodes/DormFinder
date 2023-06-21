@@ -34,7 +34,7 @@ const Help = () => {
   function renderContent(section, _, isActive) {
     return (
       <View style={styles.accordBody}>
-        <Text>{section.content}</Text>
+        <Text style={{ color: 'black' , textAlign: 'justify'}}>{section.content}</Text>
       </View>
     );
   }
@@ -46,6 +46,7 @@ const Help = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <Text style={[styles.label1, { color: 'teal' }]}>How can we help?</Text>
         <Text style={styles.label}>For Tenants</Text>
         <Accordion
           align="bottom"
@@ -79,7 +80,7 @@ const Help = () => {
               style={{
                 marginStart: 5,
                 textAlign: 'center',
-                color: COLORS.blue,
+                color: 'teal',
                 textDecorationLine: 'underline',
               }}>
               info.studyhive@gmail.com
@@ -101,7 +102,15 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 7,
+    color: 'black',
+    fontSize: 15,
+    },
+  label1: {
+    fontWeight: 'bold',
+    marginBottom: 15,
+    fontSize: 25,
+    color: 'teal',
   },
   accordContainer: {
     paddingBottom: 5,
@@ -118,6 +127,7 @@ const styles = StyleSheet.create({
   },
   accordTitle: {
     fontSize: 16,
+    color: 'black',
   },
   accordBody: {
     padding: 16,
