@@ -364,7 +364,7 @@ return (
 {/* Availability */}
 <View style={{flexDirection: 'row', marginTop: 10}}>
   <Text style={{fontSize: 16, color: 'black'}}>
-    Availability: {dorms.slots} slots
+  Availability: {dorms.slots} {dorms.slots > 1 ? 'slots' : 'slot'}
   </Text>
 </View>
 

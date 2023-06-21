@@ -426,18 +426,13 @@ const HomeScreen = ({navigation, route}) => {
               {item.address}
             </Text>
             <View style={{marginTop: 10, flexDirection: 'row'}}>
-              <View style={styles.facility}>
+            <View style={styles.facility}>
                 <Icon name="hotel" size={18} />
-                <Text style={styles.facilityText}>2</Text>
-              </View>
-              <View style={styles.facility}>
-                <Icon name="bathtub" size={18} />
-                <Text style={styles.facilityText}>2</Text>
-              </View>
-              <View style={styles.facility}>
-                <Icon name="aspect-ratio" size={18} />
-                <Text style={styles.facilityText}>100m</Text>
-              </View>
+                <Text style=
+                  {styles.facilityText}>
+                    Availability: {item.slots} {item.slots > 1 ? 'slots' : 'slot'}
+                </Text>
+          </View>
             </View>
           </View>
         </View>

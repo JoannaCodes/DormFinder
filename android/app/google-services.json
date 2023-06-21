@@ -1,42 +1,41 @@
 {
   "project_info": {
-    "project_number": "152129696735",
-    "firebase_url": "https://dormfinder-5e354-default-rtdb.firebaseio.com",
-    "project_id": "dormfinder-5e354",
-    "storage_bucket": "dormfinder-5e354.appspot.com"
+    "project_number": "232767448599",
+    "project_id": "studyhive-e5303",
+    "storage_bucket": "studyhive-e5303.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:152129696735:android:c67fcefc3ea37ecb8d8a6a",
+        "mobilesdk_app_id": "1:232767448599:android:86077ae3873395d6121e52",
         "android_client_info": {
           "package_name": "com.dormfinder"
         }
       },
       "oauth_client": [
         {
-          "client_id": "152129696735-amku2vp20edimd7m7uaf6vqiabq8ne38.apps.googleusercontent.com",
+          "client_id": "232767448599-eium8sglogn6bpd4hvt332nrkci3cjfp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.dormfinder",
-            "certificate_hash": "c506ec5dced96b4f83847842acda6446e98ccde8"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "152129696735-6v6gjrvupt0bdckgjp8tf6b145jq73tb.apps.googleusercontent.com",
+          "client_id": "232767448599-9kc9mhpe3qo3rt7q82f93m8s7t3v7pmo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCsd4B4xOP0HiWEwNzTjJFsW9oF820q0Fk"
+          "current_key": "AIzaSyAKUvJrUgwDnGEhrlkakHwqnLmMy1cjOQg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "152129696735-6v6gjrvupt0bdckgjp8tf6b145jq73tb.apps.googleusercontent.com",
+              "client_id": "232767448599-9kc9mhpe3qo3rt7q82f93m8s7t3v7pmo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
