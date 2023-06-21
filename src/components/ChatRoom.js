@@ -1,77 +1,82 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ActivityIndicator, ImageBackground, Text, FlatList, View, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, TextInput } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  ActivityIndicator,
+  ImageBackground,
+  Text,
+  FlatList,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  TextInput,
+} from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
-import { API_URL, AUTH_KEY, CHATROOM_UPLOADS, DORM_UPLOADS } from '../../constants/index';
+import {
+  API_URL,
+  AUTH_KEY,
+  CHATROOM_UPLOADS,
+  DORM_UPLOADS,
+} from '../../constants/index';
 import moment from 'moment';
 import axios from 'axios';
 import {LogBox} from 'react-native';
 import Toast from 'react-native-toast-message';
+import COLORS from '../../constants/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
 LogBox.ignoreLogs(['Please report: ...']);
 LogBox.ignoreLogs([/Please report: /]);
 
-const ChatRoom = (props) => {
+const ChatRoom = props => {
   const [text, setText] = useState('');
   const [messages, setMessages] = useState([]);
 
-  const [getDormImage, setDormImage] = useState("")
-  const [getDormBool, setDormBool] = useState(true)
+  const [getDormImage, setDormImage] = useState('');
+  const [getDormBool, setDormBool] = useState(true);
   const [getDorm, setDorm] = useState([]);
-  const [getLastID, setGetLastID] = useState(0);
+  const [getLastID, setGetLastID] = useState('');
   const [getLastPreviouslyID, setLastPreviouslyID] = useState(0);
-
-  
+  const [sending, setSending] = useState(false);
 
   const onSend = useCallback(async (message = []) => {
     try {
-      if(message[0]['text'] != '' || message[0]['image'] != '') {
+      setSending(true);
+
+      if (message[0].text !== '' || message[0].image !== '') {
         let formdata = new FormData();
-        formdata.append('action',  'sendChat');
-        formdata.append('chatroom_code',  props.route.params.chatroom_code);
-        formdata.append('myid',  props.route.params.myid);
-        formdata.append('message',  message[0]['text'] ? message[0]['text'] : '');
-        formdata.append('image',  message[0]['image'] ? message[0]['image'] : '');
-        
-        await axios.post(API_URL, formdata, {
-          headers: {
-            'Auth-Key': AUTH_KEY,
-            'Content-Type': 'multipart/form-data'
-          },
-        }).then(response => {
-          const code = response.data.code;
-          if(code === 200) {
-            Toast.show({
-              type: 'success',
-              text1: 'UniHive',
-              text2: response.data.data,
-            });
-            
-          }/* else {
-            
-            Toast.show({
-              type: 'error',
-              text1: 'UniHive',
-              text2: 'Error! There\'s something wrong.',
-            });
-          }*/
-          setText('')
-        });
+        formdata.append('action', 'sendChat');
+        formdata.append('chatroom_code', props.route.params.chatroom_code);
+        formdata.append('myid', props.route.params.myid);
+        formdata.append('message', message[0].text ? message[0].text : '');
+        formdata.append('image', message[0].image ? message[0].image : '');
+
+        await axios
+          .post(API_URL, formdata, {
+            headers: {
+              'Auth-Key': AUTH_KEY,
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then(response => {
+            setText('');
+          });
       }
       return false;
-    } catch(ex) {
-      console.error(ex)
+    } catch (ex) {
+      console.error(ex);
     }
-    
   }, []);
 
   const sendMe = () => {
-    if(text.length === 0) {
+    if (text.length === 0) {
       Toast.show({
         type: 'error',
-        text1: 'UniHive',
+        text1: 'StudyHive',
         text2: 'Please enter a value in the textbox!',
       });
       return false;
@@ -84,12 +89,12 @@ const ChatRoom = (props) => {
         user: {
           _id: props.route.params.myid,
         },
-        image: "",
+        image: '',
       },
     ];
 
     onSend(message);
-  }
+  };
   const handleCameraButton = () => {
     const options = {
       title: 'Take a photo',
@@ -100,15 +105,15 @@ const ChatRoom = (props) => {
       includeBase64: true,
     };
 
-    ImagePicker.launchCamera(options, (response) => {
+    ImagePicker.launchCamera(options, response => {
       if (response.didCancel) {
-        alert('User cancelled taking a photo');
+        console.log('User cancelled taking a photo');
         return;
       } else if (response.error) {
-        alert('ImagePicker Error: ', response.error);
+        console.log('ImagePicker Error: ', response.error);
         return;
       }
-      
+
       const message = [
         {
           _id: new Date().getTime(),
@@ -117,12 +122,11 @@ const ChatRoom = (props) => {
           user: {
             _id: props.route.params.myid,
           },
-          image: "data:image/png;base64," + response['assets'][0].base64,
+          image: 'data:image/png;base64,' + response.assets[0].base64,
         },
       ];
 
       onSend(message);
-      
     });
   };
 
@@ -136,14 +140,14 @@ const ChatRoom = (props) => {
       includeBase64: true,
     };
 
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.launchImageLibrary(options, response => {
       if (response.didCancel) {
-        alert('User cancelled taking a photo');
+        console.log('User cancelled taking a photo');
         return;
       } else if (response.error) {
-        alert('ImagePicker Error: ', response.error);
+        console.log('ImagePicker Error: ', response.error);
         return;
-      } 
+      }
       const message = [
         {
           _id: new Date().getTime(),
@@ -152,225 +156,235 @@ const ChatRoom = (props) => {
           user: {
             _id: props.route.params.myid,
           },
-          image: "data:image/png;base64," + response['assets'][0].base64,
+          image: 'data:image/png;base64,' + response.assets[0].base64,
         },
       ];
 
       onSend(message);
-      
     });
   };
 
   const previouslyChats = async () => {
     const formdata = new FormData();
 
-    formdata.append('action',  'getPreviouslyChats');
-    formdata.append('chatroom_code',  props.route.params.chatroom_code);
-    formdata.append('myid',  props.route.params.myid);
-    formdata.append('itr', getLastPreviouslyID == 0 ? 0 : getLastPreviouslyID);
+    formdata.append('action', 'getPreviouslyChats');
+    formdata.append('chatroom_code', props.route.params.chatroom_code);
+    formdata.append('myid', props.route.params.myid);
+    formdata.append('itr', getLastPreviouslyID === 0 ? 0 : getLastPreviouslyID);
 
-    await axios.post(API_URL, formdata, {
-      headers: {
-        'Auth-Key': AUTH_KEY,
-        'Content-Type': 'multipart/form-data'
-      },
-    }).then(response => {
-      const json = response.data;
-      if (json.code == 200) {
-        if(json.length != 0) {
-          Toast.show({
-            type: 'success',
-            text1: 'UniHive',
-            text2: 'Successfully fetched!',
-          });
-          setLastPreviouslyID(json[json.length-1].itr)
-          setMessages((prev) => [...prev, ...json]);
+    await axios
+      .post(API_URL, formdata, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        const json = response.data;
+        if (json.code === 200) {
+          if (json.length !== 0) {
+            setLastPreviouslyID(json[json.length - 1].itr);
+            setMessages(prev => [...prev, ...json]);
+            setSending(false);
+          }
         }
-      }
-    }).catch((ex) => {
-      Toast.show({
-        type: 'error',
-        text1: 'UniHive',
-        text2: 'No results found.',
+      })
+      .catch(ex => {
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: 'No results found.',
+        });
       });
-    });
-  }
+  };
 
   const fetchDorm = async () => {
     const formdata = new FormData();
 
-    formdata.append('action',  'getDorm');
-    formdata.append('unique_code',  props.route.params.unique_code);
+    formdata.append('action', 'getDorm');
+    formdata.append('unique_code', props.route.params.unique_code);
 
-    await axios.post(API_URL, formdata, {
-      headers: {
-        'Auth-Key': AUTH_KEY,
-        'Content-Type': 'multipart/form-data'
-      },
-    }).then(response => {
-      const json = response.data.data;
-      setDorm(json)
-    }).catch((ex) => {
-      return false;
-    })
-  }
-  
+    await axios
+      .post(API_URL, formdata, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        const json = response.data.data;
+        setDorm(json);
+      })
+      .catch(ex => {
+        return false;
+      });
+  };
+
   useEffect(() => {
-    let isMounted = true
-    
+    let isMounted = true;
+
     const intervalId = setInterval(async () => {
       const formdata = new FormData();
 
-      formdata.append('action',  'getChats');
-      formdata.append('chatroom_code',  props.route.params.chatroom_code);
-      formdata.append('myid',  props.route.params.myid);
-      formdata.append('itr', getLastID == 0 ? 0 : getLastID);
+      formdata.append('action', 'getChats');
+      formdata.append('chatroom_code', props.route.params.chatroom_code);
+      formdata.append('myid', props.route.params.myid);
+      formdata.append('itr', getLastID === 0 ? 0 : getLastID);
 
-      await axios.post(API_URL, formdata, {
-        headers: {
-          'Auth-Key': AUTH_KEY,
-          'Content-Type': 'multipart/form-data'
-        },
-      }).then(response => {
-        if(!isMounted) return
-        const json = response.data.data;
-
-        if (json == "No results found.") {
-          return false;
-        } else {
-          if(json.length != 0) {
-            for(var i = 0; i < json.length; i++) {
-              if(i == 0) {
-                setGetLastID(json[i].itr)
-              } else {
-                setLastPreviouslyID(json[i].itr)
-              }
-            }
-            setMessages((prev) => [...json, ...prev]);
+      await axios
+        .post(API_URL, formdata, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          if (!isMounted) {
+            return;
           }
-        }
-      }).catch((ex) => {
-        return false;
-      });
+          const json = response.data.data;
+          if (json === 'No results found.') {
+            return false;
+          } else {
+            if (json.length !== 0) {
+              for (var i = 0; i < json.length; i++) {
+                if (i === 0) {
+                  setGetLastID(json[i].itr);
+                } else {
+                  setLastPreviouslyID(json[i].itr);
+                }
+              }
+              setMessages(prev => [...json, ...prev]);
+              setSending(false);
+            }
+          }
+        })
+        .catch(ex => {
+          return false;
+        });
     }, 5000);
 
     return () => {
       clearInterval(intervalId);
-      isMounted = false
-    }
-  }, [useState, getLastID, getLastPreviouslyID])
-  
+      isMounted = false;
+    };
+  }, [useState, getLastID, getLastPreviouslyID]);
+
   // Get dorm
   useEffect(() => {
-    if(getDormBool === true) {
-      fetchDorm()
+    if (getDormBool === true) {
+      fetchDorm();
       setDormBool(false);
     }
-  },[])
+  }, []);
 
-  const renderChat = ({ item }) => {
-      return (
-        [item.balloon == false ?
-          <View style={styles.chatOther}>
-            <Text style={styles.chatOtherUsername}>{item.username}</Text>
-            <ImageBackground 
-              style={styles.chatAvatar}
-              source={{ uri: item.imageUrl }}
-              resizeMode="cover"
-            ></ImageBackground>
-            <View style={styles.chatBalloon}>
-              {item.message == '' ?
-                <ImageBackground 
-                  style={{height:200}}
-                  source={{ uri: CHATROOM_UPLOADS + item.image }}
-                  resizeMode="contain"
-                />
-                :
-                <Text style={styles.chatOtherMessage}>{item.message}</Text>
-              }
-              <Text style={styles.chatOtherTime}>
-                {moment.unix(item.time).utcOffset('+0800').format("MM/DD/YYYY hh:mm:ssA")}
-              </Text>
-            </View>
+  const renderChat = ({item}) => {
+    return [
+      item.balloon === false ? (
+        <View style={styles.chatOther}>
+          <Text style={styles.chatOtherUsername}>{item.username}</Text>
+          <ImageBackground
+            style={styles.chatAvatar}
+            source={{uri: item.imageUrl}}
+            resizeMode="cover"
+          />
+          <View style={styles.chatBalloon}>
+            {item.message === '' ? (
+              <ImageBackground
+                style={{height: 200}}
+                source={{uri: `${CHATROOM_UPLOADS}${item.image}`}}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={styles.chatOtherMessage}>{item.message}</Text>
+            )}
+            <Text style={styles.chatOtherTime}>
+              {moment
+                .unix(item.time)
+                .utcOffset('+0800')
+                .format('MM/DD/YYYY         hh:mm A')}
+            </Text>
           </View>
-          : 
-        
-          <View style={styles.chatMe}>
-            <Text style={styles.chatMeUsername}>{item.username}</Text>
-            <View style={styles.chatBalloon}>
-              
-              {item.message == '' ?
-                <ImageBackground 
-                  style={{height:200}}
-                  source={{ uri: CHATROOM_UPLOADS + item.image }}
-                  resizeMode="contain"
-                />
-                :
-                <Text style={styles.chatMeMessage}>{item.message}</Text>
-              }
-              <Text style={styles.chatMeTime}>
-                {moment.unix(item.time).utcOffset('+0800').format("MM/DD/YYYY hh:mm:ssA")}
-              </Text>
-            </View>
-            <ImageBackground 
-              style={styles.chatAvatar}
-              source={{ uri: item.imageUrl }}
-              resizeMode="cover"
-            ></ImageBackground>
+        </View>
+      ) : (
+        <View style={styles.chatMe}>
+          <Text style={styles.chatMeUsername}>{item.username}</Text>
+          <View style={styles.chatBalloon}>
+            {item.message === '' ? (
+              <ImageBackground
+                style={{height: 200}}
+                source={{uri: CHATROOM_UPLOADS + item.image}}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={styles.chatMeMessage}>{item.message}</Text>
+            )}
+            <Text style={styles.chatMeTime}>
+              {moment
+                .unix(item.time)
+                .utcOffset('+0800')
+                .format('MM/DD/YYYY         hh:mm A')}
+            </Text>
           </View>
-          ]
-          
-        )
-  }
-  
+          <ImageBackground
+            style={styles.chatAvatar}
+            source={{uri: item.imageUrl}}
+            resizeMode="cover"
+          />
+        </View>
+      ),
+    ];
+  };
+
   return (
     <>
       <View style={styles.container}>
-        <View 
-          style={styles.header}
-        >
+        <View style={styles.header}>
           <TouchableOpacity
-            style={{flexDirection:'row',}}
-            onPress={()=> props.route.params.navigation.navigate('InboxTab')}
-          >
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              size={25}
-              color="gray"
-            />
+            style={{flexDirection: 'row', marginEnd: 20}}
+            onPress={() => props.route.params.navigation.navigate('InboxTab')}>
+            <Icon name="arrow-back" size={25} color={COLORS.dark} />
           </TouchableOpacity>
-          <Image 
-            style={{width: 30, height: 30,marginHorizontal: 10,}}
-            source={{ uri: props.route.params.anotherImageUrl }}
+          <Image
+            style={[styles.chatAvatar, {marginHorizontal: 5}]}
+            source={{uri: props.route.params.anotherImageUrl}}
             resizeMode="contain"
           />
           <Text style={styles.headerText}>{props.route.params.username}</Text>
         </View>
         <View style={styles.dormDetails}>
           <View style={styles.dormDetailsContent}>
-            <Image 
+            <Image
               style={styles.dormDetailsImage}
-              source={{ uri: `${DORM_UPLOADS}/${props.route.params.unique_code}/${getDorm?.first_image}` }}
+              source={{
+                uri: `${DORM_UPLOADS}/${props.route.params.unique_code}/${getDorm?.first_image}`,
+              }}
               resizeMode="contain"
             />
-            <View style={{flex:0.7}}>
-              <Text style={{fontWeight:'bold',fontSize: 18,}}>{getDorm?.name}</Text>
+            <View style={{flex: 0.7}}>
+              <Text
+                style={{fontWeight: 'bold', fontSize: 18, color: COLORS.dark}}>
+                {getDorm?.name}
+              </Text>
               <Text style={{fontSize: 12}}>{getDorm?.address}</Text>
-              <Text style={{fontWeight:'bold'}}>{getDorm?.price}</Text>
+              <Text style={{fontWeight: 'bold'}}>₱{getDorm?.price}</Text>
             </View>
-            
           </View>
-          <TouchableOpacity style={styles.dormDetailsButton}
-          onPress={() => {
-            props.route.params.navigation.navigate('Dorm Details', {
-              dormref: props.route.params.unique_code,
-              userref: props.route.params.user,
-            })
-          }}>
-              <Text style={{color:"white",fontWeight:"bold",textAlign:"center"}}>View Dorm Details</Text>
+          <TouchableOpacity
+            style={styles.dormDetailsButton}
+            onPress={() => {
+              props.route.params.navigation.navigate('Dorm Details', {
+                dormref: props.route.params.unique_code,
+                userref: props.route.params.user,
+              });
+            }}>
+            <Text
+              style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}>
+              View Dorm Details
+            </Text>
           </TouchableOpacity>
         </View>
-        {messages.length != 0 ?
+        {messages.length !== 0 ? (
           <>
             <FlatList
               data={messages}
@@ -378,62 +392,51 @@ const ChatRoom = (props) => {
               keyExtractor={item => item.id}
               renderItem={renderChat}
               ListFooterComponent={() => (
-                <TouchableOpacity 
-                  onPress={() => previouslyChats()} 
-                  style={{backgroundColor:"#ddd",paddingVertical: 10}}
-                >
-                    <Text style={{fontSize: 10,textAlign:"center"}}>See More</Text>
+                <TouchableOpacity
+                  onPress={() => previouslyChats()}
+                  style={{backgroundColor: '#ddd', paddingVertical: 10}}>
+                  <Text style={{fontSize: 10, textAlign: 'center'}}>
+                    See More
+                  </Text>
                 </TouchableOpacity>
               )}
               inverted
             />
           </>
-          :
+        ) : (
           <View style={styles.chatLoading}>
-            
+            <ActivityIndicator size={'large'} color={COLORS.teal} />
           </View>
-          //<ActivityIndicator size={'small'} color={'#0072ff'} /> 
-        }
+        )}
       </View>
-      <View
-        style={styles.actionBar}
-      >
-        <TouchableOpacity 
+      <View style={styles.actionBar}>
+        <TouchableOpacity
           style={styles.actionBarButton}
-          onPress={handleCameraButton}
-        >
-          <MaterialCommunityIcons
-            name="camera"
-            size={25}
-            color="gray"
-          />
+          onPress={handleCameraButton}>
+          <Icon name="camera-alt" size={25} color="gray" />
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.actionBarButton}
-          onPress={handleAttachmentButton}
-        >
-        <MaterialCommunityIcons
-          name="attachment"
-          size={25}
-          color="gray"
-        />
+          onPress={handleAttachmentButton}>
+          <Icon name="attachment" size={25} color="gray" />
         </TouchableOpacity>
-        <TextInput 
+        <TextInput
           style={styles.actionBarInput}
           placeholder="Aa"
-          onChangeText={(text) => setText(text)}
-          value={text} 
+          onChangeText={value => setText(value)}
+          value={text}
         />
-        <TouchableOpacity 
-          style={styles.actionBarButton2}
-          onPress={() => sendMe(text)}
-        >
-          <MaterialCommunityIcons
-            name="send-circle"
-            size={35}
-            color="#0072ff"
-          />
-        </TouchableOpacity>
+        {sending ? (
+          <View style={styles.actionBarButton2}>
+            <ActivityIndicator size={30} color={COLORS.teal} />
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.actionBarButton2}
+            onPress={() => sendMe(text)}>
+            <Icon name="send" size={30} color={COLORS.teal} />
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );
@@ -441,12 +444,12 @@ const ChatRoom = (props) => {
 
 export default ChatRoom;
 
-const {width, height}  = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
   },
   actionsContainer: {
     flexDirection: 'row',
@@ -463,41 +466,128 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    backgroundColor:"#fff",
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    height: 56,
+    paddingHorizontal: 16,
+    elevation: 4,
   },
-  headerText: {flexDirection:'row',fontWeight:'bold',fontSize: 15,textAlign:"left",textAlignVertical:"center",paddingLeft: 10},
-  actionBar: {width: "100%", height: 60, backgroundColor: "#fff", flexDirection: 'row', alignItems: 'center', justifyContent: 'center'},
-  actionBarButton: {flex: 0.1, margin: 5, alignContent:"center", alignItems:"center", textAlign:"center"},
+  headerText: {
+    flexDirection: 'row',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'left',
+    textAlignVertical: 'center',
+    paddingLeft: 10,
+    color: COLORS.dark,
+  },
+  actionBar: {
+    width: '100%',
+    height: 60,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionBarButton: {
+    flex: 0.1,
+    margin: 5,
+    alignContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
   actionBarButton2: {flex: 0.1, margin: 5},
-  actionBarInput: {flex: 0.7, borderWidth: 1, borderColor: "#888", margin: 5, fontSize: 13, height: 35, paddingHorizontal: 10, borderRadius: 5},
-  chatOther: {flexDirection: "row", alignSelf:"flex-start", marginLeft: 10, marginTop: 20,},
-  chatOtherUsername: {fontSize: 10, position:'absolute', left: 45, top: -11, fontSize: 11, fontWeight:'bold'},
-  chatOtherTime: {fontSize: 9,fontWeight:'400',textAlign:'left',color:'#fff'},
-  chatOtherMessage: {color: "white", fontSize: 11, textAlign: "left"},
+  actionBarInput: {
+    flex: 0.7,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+    margin: 5,
+    fontSize: 16,
+    height: 40,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
 
-  chatMe: {position: 'relative', flexDirection: "row", alignSelf:"flex-end", marginRight: 10, marginTop: 20,},
-  chatMeUsername: {fontSize: 10, position:'absolute', right: 45, top: -11, fontSize: 11, fontWeight:'bold'},
-  chatMeMessage: {color: "white", fontSize: 11, textAlign: "right"},
-  chatMeTime: {fontSize: 9,fontWeight:'400',textAlign:'right',color:'#fff'},
+  chatOther: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+    marginTop: 20,
+  },
+  chatOtherUsername: {
+    fontSize: 11,
+    position: 'absolute',
+    left: 45,
+    top: -11,
+    fontWeight: 'bold',
+  },
+  chatOtherTime: {
+    fontSize: 10,
+    fontWeight: '400',
+    textAlign: 'left',
+    color: '#fff',
+  },
+  chatOtherMessage: {color: 'white', fontSize: 16, textAlign: 'left'},
 
-  chatAvatar: {marginTop: -7, width: 40, height: 40, backgroundColor:"#fff",borderRadius: 100},
-  chatBalloon: {backgroundColor:"#0072ff", margin: 5, padding:5, borderRadius: 5, maxWidth: width * 0.5},
-  chatLoading: {position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'},
-  dormDetails: {backgroundColor:"#e1e1e1",paddingTop:15,shadowColor: "#000", shadowOffset: { width: 0, height: 7, }, shadowOpacity: 0.43, shadowRadius: 9.51, elevation: 15,},
-  dormDetailsContent: {flexDirection:'row',justifyContent:'space-evenly',flexWrap:'wrap',},
-  dormDetailsImage: {width:80,height: 80,flex:0.2,borderRadius:10},
-  dormDetailsButton: {backgroundColor:'#0d898b', margin: 15, borderRadius: 20, paddingVertical: 10},
+  chatMe: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginTop: 20,
+  },
+  chatMeUsername: {
+    fontSize: 11,
+    position: 'absolute',
+    right: 45,
+    top: -11,
+    fontWeight: 'bold',
+  },
+  chatMeMessage: {color: 'white', fontSize: 16, textAlign: 'right', padding: 5},
+  chatMeTime: {
+    fontSize: 10,
+    fontWeight: '400',
+    textAlign: 'right',
+    color: 'white',
+  },
 
+  chatAvatar: {
+    width: 40,
+    height: 40,
+    backgroundColor: COLORS.grey,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+    overflow: 'hidden',
+  },
+  chatBalloon: {
+    backgroundColor: COLORS.teal,
+    margin: 5,
+    padding: 5,
+    borderRadius: 5,
+    maxWidth: width * 0.5,
+  },
+  chatLoading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dormDetails: {
+    backgroundColor: 'white',
+    paddingTop: 15,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+  },
+  dormDetailsContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
+  },
+  dormDetailsImage: {width: 80, height: 80, flex: 0.2, borderRadius: 10},
+  dormDetailsButton: {
+    backgroundColor: '#0d898b',
+    margin: 15,
+    borderRadius: 5,
+    paddingVertical: 10,
+  },
 });

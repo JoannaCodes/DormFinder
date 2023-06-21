@@ -14,7 +14,7 @@ const GuestModeModal = ({onLogout}) => {
       />
       <Text style={styles.title}>Guest Mode</Text>
       <Text style={styles.message}>
-        You are currently in guest mode. Create an account to access UniHive's
+        You are currently in guest mode. Create an account to access StudyHive's
         features
       </Text>
       <TouchableOpacity
@@ -55,11 +55,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#0E898B',
     borderWidth: 1,
+    width: '100%',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'teal',
+    textAlign: 'center',
   },
 });
 

@@ -21,7 +21,7 @@ const ChangePassword = ({route}) => {
   const [loading, setLoading] = useState(false);
 
   function _changePassword(values, {resetForm}) {
-    Alert.alert('UniHive', 'Continue changing password?', [
+    Alert.alert('StudyHive', 'Continue changing password?', [
       {text: 'Cancel', style: 'cancel'},
       {
         text: 'Change',

@@ -1,5 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 
 import {
   Container,
@@ -15,41 +25,18 @@ import {
 } from '../components/styles/MessageStyles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL, AUTH_KEY } from '../../constants/index';
+import {API_URL, AUTH_KEY} from '../../constants/index';
+import COLORS from '../../constants/colors';
 import moment from 'moment';
 
-/*const Messages = [
-  {
-    id: '1',
-    userName: 'Jenny Doe',
-    userImg: require('../../assets/img/cat.jpg'),
-    messageTime: '4 mins ago',
-    messageText: 'PRACTICE LANGGGG',
-  },
-  {
-    id: '2',
-    userName: 'John Doe',
-    userImg: require('../../assets/img/cow.jpg'),
-    messageTime: '2 hours ago',
-    messageText: 'PRACTICE LANGGGG',
-  },
-  {
-    id: '3',
-    userName: 'Ken William',
-    userImg: require('../../assets/img/horse.jpg'),
-    messageTime: '1 hours ago',
-    messageText: 'PRACTICE LANGGGG',
-  },
-];*/
-
-const Inbox = ({ navigation }) => {
-  
+const Inbox = ({navigation}) => {
   const [myInfo, setMyInfo] = useState(null);
   const [chatRooms, setChatRooms] = useState([]);
+  const [status, setStatus] = useState('');
   const fetchData = async () => {
     const data = await AsyncStorage.getItem('user');
     const convertData = JSON.parse(data);
-    setUser(convertData)
+    setUser(convertData);
 
     let formdata = new FormData();
     formdata.append('action', 'getChatrooms');
@@ -60,13 +47,16 @@ const Inbox = ({ navigation }) => {
       headers: {
         'Auth-Key': AUTH_KEY,
       },
-      body: formdata
+      body: formdata,
     });
-    
+
     const json = await response.json();
-    if(json.code == 200) {
+    console.log(json);
+    if (json.code === 200) {
       setChatRooms(json.data);
       setMyInfo(convertData);
+    } else if (json.code !== 403) {
+      setStatus('failed');
     }
   };
 
@@ -76,21 +66,21 @@ const Inbox = ({ navigation }) => {
   const [showFlatList, setShowFlatList] = useState(true);
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
     const intervalId = setInterval(() => fetchData(), 3000);
 
     return () => {
       clearInterval(intervalId);
-      isMounted = false
-    }
-  }, [useState])
+      isMounted = false;
+    };
+  }, [useState]);
 
-  const handleSearch = (text) => {
+  const handleSearch = text => {
     fetchData();
 
     setSearchQuery(text);
-    const filtered = chatRooms.filter((data) =>
-      data.username.toLowerCase().includes(text.toLowerCase())
+    const filtered = chatRooms.filter(data =>
+      data.username.toLowerCase().includes(text.toLowerCase()),
     );
     setFilteredMessages(filtered);
     setShowFlatList(text === '' ? true : filtered.length > 0);
@@ -98,7 +88,7 @@ const Inbox = ({ navigation }) => {
 
   const handleClearSearch = () => {
     setSearchQuery('');
-    setFilteredMessages(Messages);
+    setFilteredMessages([]);
     setShowFlatList(true);
   };
 
@@ -112,32 +102,41 @@ const Inbox = ({ navigation }) => {
           onChangeText={handleSearch}
         />
         {searchQuery ? (
-          <TouchableOpacity onPress={handleClearSearch} style={styles.clearButton}>
-            <Image style={styles.clearIcon} source={require('../../assets/img/ic_clear.png')} />
+          <TouchableOpacity
+            onPress={handleClearSearch}
+            style={styles.clearButton}>
+            <Image
+              style={styles.clearIcon}
+              source={require('../../assets/img/ic_clear.png')}
+            />
           </TouchableOpacity>
         ) : (
           <View style={styles.clearButton} />
         )}
-        <Image source={require('../../assets/img/ic_search.png')} style={styles.searchIcon} />
+        <Image
+          source={require('../../assets/img/ic_search.png')}
+          style={styles.searchIcon}
+        />
       </View>
-      {showFlatList && chatRooms.length != 0 ? (
-        
+      {showFlatList && chatRooms.length !== 0 ? (
         <FlatList
           data={searchQuery ? filteredMessages : chatRooms}
-          keyExtractor={(item) => item?.id}
-          renderItem={({ item }) => (
-            <Card onPress={() => 
-              navigation.navigate('Chat Room', { 
-                navigation: navigation,
-                anotherImageUrl: item.imageUrl,
-                username: item.username,
-                unique_code: item.unique_code,
-                chatroom_code: item.chatroom_code,
-                myid: myInfo.id,myusername: myInfo.username,
-                anotherid: item?.user_id,
-                user: user
-              })
-            }>
+          keyExtractor={item => item?.id}
+          renderItem={({item}) => (
+            <Card
+              onPress={() =>
+                navigation.navigate('Chat Room', {
+                  navigation: navigation,
+                  anotherImageUrl: item.imageUrl,
+                  username: item.username,
+                  unique_code: item.unique_code,
+                  chatroom_code: item.chatroom_code,
+                  myid: myInfo.id,
+                  myusername: myInfo.username,
+                  anotherid: item?.user_id,
+                  user: user,
+                })
+              }>
               <UserInfo>
                 <UserImgWrapper>
                   <UserImg source={{uri: item.imageUrl}} />
@@ -145,7 +144,14 @@ const Inbox = ({ navigation }) => {
                 <TextSection>
                   <UserInfoText>
                     <UserName>{item.username}</UserName>
-                    <PostTime>{item.time != 0 ? moment.unix(item.time).utcOffset('+0800').format("hh:mm A") : "NEW"}</PostTime>
+                    <PostTime>
+                      {item.time !== 0
+                        ? moment
+                            .unix(item.time)
+                            .utcOffset('+0800')
+                            .format('hh:mm A')
+                        : 'NEW'}
+                    </PostTime>
                   </UserInfoText>
                   <MessageText>{item.message}</MessageText>
                 </TextSection>
@@ -154,7 +160,37 @@ const Inbox = ({ navigation }) => {
           )}
         />
       ) : (
-        <Text>No results found</Text>
+        <View>
+          {status === 'failed' ? (
+            <>
+              <Image
+                source={require('../../assets/error_upsketch.png')}
+                style={{height: 360, width: 360}}
+                resizeMode="cover"
+              />
+              <Text style={styles.title}>
+                Cannot retrieve messages at this time.
+              </Text>
+              <Text style={styles.message}>Please try again.</Text>
+              <TouchableOpacity
+                style={[styles.btnContainer, {marginTop: 20}]}
+                onPress={() => {
+                  fetchData();
+                }}>
+                <Text>Retry</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Image
+                source={require('../../assets/chatting_upsketch.png')}
+                style={{height: 360, width: 360}}
+                resizeMode="cover"
+              />
+              <Text style={styles.title}>Start Messaging</Text>
+            </>
+          )}
+        </View>
       )}
     </Container>
   );
@@ -194,5 +230,27 @@ const styles = StyleSheet.create({
   clearIcon: {
     height: 15,
     width: 15,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // flexGrow: 1,
+    elevation: 2,
+    borderRadius: 4,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    padding: 10,
   },
 });

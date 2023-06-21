@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import {BASE_URL} from '../../../constants';
 import {
@@ -7,6 +8,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import axios from 'axios';
 import DocumentPicker from 'react-native-document-picker';
@@ -65,10 +67,10 @@ export default function Verification({route, navigation}) {
             }
           })
           .catch(error => {
-            alert(error);
+            Alert.alert(error);
           });
       } catch (error) {
-        alert(error);
+        Alert.alert(error);
       }
     };
 
@@ -152,7 +154,7 @@ export default function Verification({route, navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.section}>
         <Text style={styles.heading}>
           Please upload the following documents to proceed on posting a listing
@@ -217,7 +219,7 @@ export default function Verification({route, navigation}) {
         </Text>
       )} */}
 
-      <View style={styles.stickyBtn}>
+      <View style={styles.submitBtn}>
         <TouchableOpacity
           style={[
             styles.button,
@@ -232,7 +234,7 @@ export default function Verification({route, navigation}) {
           )}
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -263,10 +265,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFFFFF',
   },
-  stickyBtn: {
-    position: 'absolute',
-    bottom: 0,
-    left: 16,
+  submitBtn: {
+    marginTop: 40,
     width: '100%',
     alignItems: 'center',
   },

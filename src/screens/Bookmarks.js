@@ -55,7 +55,7 @@ const Bookmarks = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
-        setStatus('success');
+        setStatus('failed');
 
         const dataWithoutImages = data.map(item => {
           const {images, ...rest} = item;
@@ -143,7 +143,7 @@ const Bookmarks = ({route, navigation}) => {
             </Text>
             <Text style={styles.message}>Please try again.</Text>
             <TouchableOpacity
-              style={[styles.btnContainer, {marginTop: 20, width: '40%'}]}
+              style={[styles.btnContainer, {marginTop: 20, width: '100%'}]}
               onPress={() => {
                 setLoading(true);
                 fetchData();
@@ -158,7 +158,7 @@ const Bookmarks = ({route, navigation}) => {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.title}>No Bookmarks</Text>
+            <Text style={styles.title}>Add Bookmarks</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={styles.message}>Tap "</Text>
               <Icon name="favorite" size={18} color={COLORS.red} />

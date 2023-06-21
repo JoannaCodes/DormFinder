@@ -202,7 +202,7 @@ const DormListing = ({route, navigation}) => {
             <TouchableOpacity
               style={[
                 styles.btnContainer,
-                {alignItems: 'center', marginTop: 20, width: '40%'},
+                {alignItems: 'center', marginTop: 20, width: '100%'},
               ]}
               onPress={() => {
                 setLoading(true);

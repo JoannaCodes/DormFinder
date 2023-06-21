@@ -37,6 +37,10 @@ const VerifiyPromtpModal = ({visible, onClose}) => {
               Please submit the required documents for verification to proceed
               with adding a dorm listing.
             </Text>
+            <Text style={styles.message}>
+              Please check back later to verify your status if you've submitted
+              the documents.
+            </Text>
           </View>
         </View>
       </Modal>
@@ -85,5 +89,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginHorizontal: 20,
   },
 });
