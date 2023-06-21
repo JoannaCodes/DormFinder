@@ -20,6 +20,24 @@ import COLORS from '../../constants/colors';
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
+import { API_URL, AUTH_KEY, CLIENT_ID } from '../../constants/index';
+
+import {
+  GoogleSignin,
+} from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+  scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
+  webClientId: '836752097415-ooigkh9tvt94h0t382gi8q16uicnnd85.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+  offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+  hostedDomain: 'http://studyhive.x10.mx/', // specifies a hosted domain restriction
+  forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+  accountName: '', // [Android] specifies an account name on the device that should be used
+  iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+  googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+  openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+  profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+});
 
 const Separator = ({title}) => {
   return (
@@ -37,6 +55,47 @@ export default function Login({onLogin}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+
+  const signIn = async () => {
+    GoogleSignin.configure({
+        androidClientId: CLIENT_ID,
+    });
+    GoogleSignin.hasPlayServices().then((hasPlayService) => {
+      if (hasPlayService) {
+        GoogleSignin.signIn().then( async (userInfo) => {
+          let formdata = new FormData();
+          formdata.append('action',  'checkLogin');
+          formdata.append('email',  userInfo.user.email);
+          
+          await axios.post(API_URL, formdata, {
+            headers: {
+              'Auth-Key': AUTH_KEY,
+              'Content-Type': 'multipart/form-data'
+            },
+          }).then(response => {
+            const data = response.data.data;
+            const code = response.data.code;
+            if(code === 200) {
+              onLogin(data);
+              Toast.show({
+                type: 'success',
+                text1: 'UniHive',
+                text2: `Welcome, ${data.username}.`,
+              });
+            }
+          });
+        }).catch((e) => {
+          Toast.show({
+            type: 'error',
+            text1: 'UniHive',
+            text2: `Your account doesn\'t exist!`,
+          });
+        })
+      }
+    }).catch((e) => {
+        console.log("ERROR IS: " + JSON.stringify(e));
+    })
+  };
 
   const handleLogin = async mode => {
     if (mode === 'guest') {
@@ -78,7 +137,7 @@ export default function Login({onLogin}) {
           setIsLoading(false);
         });
     } else if (mode === 'google') {
-      Alert.alert('Login with google');
+      signIn();
     } else if (mode === 'user') {
       if (validateLogin()) {
         setIsLoading(true);
