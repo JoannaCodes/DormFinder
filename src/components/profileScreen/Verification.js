@@ -228,7 +228,7 @@ export default function Verification({route, navigation}) {
           onPress={handleSubmit}
           disabled={documents.length !== 2 || isLoading}>
           {isLoading ? (
-            <ActivityIndicator size={'small'} color={'#333333'} />
+            <ActivityIndicator size={'small'} color={'#FFFFFF'} />
           ) : (
             <Text style={styles.buttonText}>Submit</Text>
           )}

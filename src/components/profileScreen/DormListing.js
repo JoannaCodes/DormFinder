@@ -39,6 +39,7 @@ const DormListing = ({route, navigation}) => {
 
   const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('success');
+  const [disable, setDisable] = useState(false);
   const [dorms, setDorms] = useState('');
 
   useEffect(() => {
@@ -76,6 +77,7 @@ const DormListing = ({route, navigation}) => {
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
+          setDisable(true);
         } else {
           setStatus('failed');
         }
@@ -150,11 +152,8 @@ const DormListing = ({route, navigation}) => {
           <Separator />
           <View style={styles.action}>
             <TouchableOpacity
-              style={[
-                styles.btnContainer,
-                status === 'failed' && styles.failedButton,
-              ]}
-              disabled={status === 'failed'}
+              style={[styles.btnContainer, disable && styles.failedButton]}
+              disabled={disable}
               onPress={() =>
                 navigation.navigate('Listing Form', {
                   dormref: item.id,
@@ -251,7 +250,8 @@ const DormListing = ({route, navigation}) => {
             }
           />
           <TouchableOpacity
-            style={styles.button}
+            disabled={disable}
+            style={[styles.button, disable && styles.failedButton]}
             onPress={() => {
               verified
                 ? navigation.navigate('Listing Form', {

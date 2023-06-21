@@ -15,10 +15,12 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 import COLORS from '../../../constants/colors';
+import ForgotPasswordModal from '../modals/ForgotPasswordModal';
 
 const ChangePassword = ({route}) => {
   const {user} = route.params;
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   function _changePassword(values, {resetForm}) {
     Alert.alert('StudyHive', 'Continue changing password?', [
@@ -40,7 +42,7 @@ const ChangePassword = ({route}) => {
               },
             })
             .then(response => {
-              const message = response.data
+              const message = response.data;
               if (message === 'success') {
                 Toast.show({
                   type: 'success',
@@ -158,6 +160,24 @@ const ChangePassword = ({route}) => {
           </>
         )}
       </Formik>
+      <TouchableOpacity
+        style={{marginTop: 40}}
+        onPress={() => {
+          setModalVisible(true);
+        }}>
+        <Text
+          style={{
+            color: COLORS.teal,
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}>
+          Forget Your Password?
+        </Text>
+      </TouchableOpacity>
+      <ForgotPasswordModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };

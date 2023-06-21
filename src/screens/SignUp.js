@@ -103,6 +103,8 @@ export default function Signup() {
                 style={{padding: 0}}
                 placeholder="Email"
                 onChangeText={text => setEmail(text)}
+                keyboardType={'email-address'}
+                autoCapitalize="none"
               />
             </View>
 

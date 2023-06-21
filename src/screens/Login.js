@@ -20,6 +20,7 @@ import COLORS from '../../constants/colors';
 import BackgroundImg from '../../assets/img/bg-transferent.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
+import ForgotPasswordModal from '../components/modals/ForgotPasswordModal';
 
 const Separator = ({title}) => {
   return (
@@ -34,6 +35,7 @@ const Separator = ({title}) => {
 export default function Login({onLogin}) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
@@ -162,6 +164,8 @@ export default function Login({onLogin}) {
                 placeholder="Username"
                 placeholderTextColor={COLORS.grey}
                 onChangeText={text => setUsername(text)}
+                keyboardType={'email-address'}
+                autoCapitalize="none"
               />
             </View>
             {/*  */}
@@ -175,6 +179,7 @@ export default function Login({onLogin}) {
                   placeholderTextColor={COLORS.grey}
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
+                  autoCapitalize="none"
                 />
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
@@ -260,7 +265,10 @@ export default function Login({onLogin}) {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                }}>
                 <Text
                   style={{
                     color: COLORS.teal,
@@ -274,6 +282,10 @@ export default function Login({onLogin}) {
           </View>
         </View>
       </View>
+      <ForgotPasswordModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
