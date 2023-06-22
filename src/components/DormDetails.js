@@ -65,7 +65,8 @@ const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
 
 //DORMS
-const fetchData = () => {
+const fetchData = async () => {
+  /*
   axios 
     .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
       .then(response => {
@@ -76,7 +77,27 @@ const fetchData = () => {
       })
       .catch(error => {
         console.error(error);
-      });
+      });*/
+  const formdata = new FormData();
+  formdata.append('action',  'get_dorm_details');
+  formdata.append('dormref',  dormref);
+  formdata.append('user_id',  userref);
+
+  await axios.post(API_URL, formdata, {
+    headers: {
+      'Auth-Key': AUTH_KEY,
+      'Content-Type': 'multipart/form-data'
+    },
+  }).then(response => {
+    const json = response.data;
+    if (json.code == 200) {
+      setDorms(json.data);
+      const dormImages = json.data.images.split(',');
+      setImages(dormImages)
+    }
+  }).catch((ex) => {
+    return false;
+  });
 };
 
 const fetchAmenities = async () => {
@@ -238,6 +259,7 @@ const handleReportListing = () => {
 
 // BOOKMARKS
 const handleFavorite = async () => {
+  /*
     try {
       const formData = new FormData();
       formData.append('dormref', dormref);
@@ -277,7 +299,28 @@ const handleFavorite = async () => {
         text1: 'StudyHive',
         text2: error.message,
       });
-    }
+    }*/
+    const formdata = new FormData();
+    formdata.append('action',  'addRemoveFavorite');
+    formdata.append('dormref',  dormref);
+    formdata.append('user_id',  userref);
+
+    await axios.post(API_URL, formdata, {
+      headers: {
+        'Auth-Key': AUTH_KEY,
+        'Content-Type': 'multipart/form-data'
+      },
+    }).then(response => {
+      const json = response.data;
+      Toast.show({
+        type: 'success',
+        text1: 'StudyHive',
+        text2: json.data,
+      });
+      fetchData();
+    }).catch((ex) => {
+      return false;
+    });
   };
   
 
@@ -303,11 +346,8 @@ return (
 <View style={style.backgroundImageContainer}>
           <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
             <View style={style.header}>
-              <TouchableOpacity style={style.headerBtn}  onPress={() => {
-                                              handleFavorite();
-                                              setPressed(!pressed)
-                                              }}>
-              <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
+              <TouchableOpacity style={style.headerBtn}  onPress={() => handleFavorite()}>
+              <Icon name="favorite" size={20}  color={dorms.myfavorite == 1 ? COLORS.red : COLORS.grey} />
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -580,11 +620,14 @@ return (
     </View>
   </View>
 
-
-  <WebView
-  source={{ uri: 'https://goo.gl/maps/DeKwqpdnh8H5bsJV9' }}
-  style={{ marginTop: 20, height: 300 }}
-/>
+  <View
+    renderToHardwareTextureAndroid={true}
+  >
+    <WebView
+      source={{ uri: 'https://goo.gl/maps/DeKwqpdnh8H5bsJV9' }}
+      style={{ marginTop: 20, height: 300 }}
+    />
+  </View>
 
 {/* Report listing*/}
 <View style={{marginTop: 13}}>
