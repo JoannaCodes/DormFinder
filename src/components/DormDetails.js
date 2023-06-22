@@ -10,7 +10,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  TouchableOpacity, 
+  TouchableOpacity,
   ToastAndroid,
   Linking,
   Share,
@@ -36,6 +36,7 @@ import axios from 'axios';
 const DormDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
   const userref = route.params.userref;
+  const mode = route.params.mode;
 
   const [user, setUser] = useState([]);
 
@@ -46,7 +47,7 @@ const DormDetails = ({navigation, route}) => {
   const [rating, setRating] = useState(0);
   const [rate, setRate] = useState(0);
   const [getAmenities, setAmenities] = useState(true)
-  
+
   useEffect(async () => {
     const data = await AsyncStorage.getItem('user');
     const convertData = JSON.parse(data);
@@ -67,7 +68,7 @@ const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
 //DORMS
 const fetchData = () => {
-  axios 
+  axios
     .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
       .then(response => {
         const data = JSON.parse(response.data);
@@ -109,13 +110,13 @@ const fetchRatings = async () => {
     .then(response => {
         const data = JSON.parse(response.data);
         if(data.length != 0) {
-          
+
           const ratings = data.map(val => {
             return val.rating;
           });
           const totalRatings = ratings.reduce((a, b) => a + b, 0) ?? 0;
           const averageRating = totalRatings / ratings.length ?? 0;
-          
+
           setRate(ratings.length ?? 0);
           setRating(averageRating ?? 0);
         }
@@ -144,10 +145,10 @@ const InteriorCard = ({item}) => {
         'Content-Type': 'multipart/form-data'
       },
     });
-    
+
     const json = response.data;
     if (json.code == 200) {
-      navigation.navigate('Chat Room', { 
+      navigation.navigate('Chat Room', {
         navigation: navigation,
         anotherImageUrl: json.data.me.imageUrl,
         username: json.data.me.username,
@@ -196,7 +197,7 @@ const InteriorCard = ({item}) => {
     } catch(ex) {
       console.log(ex)
     }
-    
+
   };
 
 
@@ -204,12 +205,12 @@ const InteriorCard = ({item}) => {
 // SHARE
 const handleShare = async () => {
   try {
-    const dormref = {dormref}; 
-    const url = `https://studyhive.com/listing/${dormref}`; 
+    const dormref = {dormref};
+    const url = `https://studyhive.com/listing/${dormref}`;
 
     const shareOptions = {
       title: 'Check out this listing!', // Title of the shared message
-      message: `Check out this listing at: ${url}`, 
+      message: `Check out this listing at: ${url}`,
     };
 
     const result = await Share.share(shareOptions);
@@ -245,7 +246,7 @@ const handleFavorite = async () => {
       formData.append('userref', userref);
 
       let response;
-  
+
       if (!pressed) {
         formData.append('tag', 'add_bookmarks');
         response = await axios.post(BASE_URL, formData, {
@@ -253,24 +254,24 @@ const handleFavorite = async () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-  
+
           response.data === 1
           ? (Toast.show({
             type: 'success',
             text1: 'StudyHive',
             text2: 'Success',
-          })) 
+          }))
           : (Toast.show({
             type: 'error',
             text1: 'StudyHive',
             text2: 'Error',
           }))
-      
-          console.log(response.data); 
-  
+
+          console.log(response.data);
+
         fetchData();
       }
-      
+
     } catch (error) {
       console.error(error);
       Toast.show({
@@ -280,7 +281,7 @@ const handleFavorite = async () => {
       });
     }
   };
-  
+
 
 // RATINGS
 const handleRatingPress = () => {
@@ -299,11 +300,12 @@ return (
   <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
     <ScrollView showsVerticalScrollIndicator={false}>
 
-  
+
 {/* House image */}
 <View style={style.backgroundImageContainer}>
           <ImageBackground style={style.backgroundImage} source={{ uri: `${DORM_UPLOADS}/${dormref}/${images[0]}` }}>
-            <View style={style.header}>
+            {mode === 'guest' ? (null) : (
+              <View style={style.header}>
               <TouchableOpacity style={style.headerBtn}  onPress={() => {
                                               handleFavorite();
                                               setPressed(!pressed)
@@ -311,6 +313,7 @@ return (
               <Icon name="favorite" size={20}  color={pressed ? COLORS.red : COLORS.grey} />
               </TouchableOpacity>
             </View>
+            )}
           </ImageBackground>
         </View>
 
@@ -499,7 +502,7 @@ return (
 {/*Description*/}
   <View style={{marginTop: 20}}>
     <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold', marginBottom: 7}}>
-      Description 
+      Description
     </Text>
     <Text style={{fontSize: 15, color: COLORS.black}}>
       {dorms.desc}
@@ -598,8 +601,9 @@ return (
 
 
 {/* Report listing*/}
-<View style={{marginTop: 13}}>
-  <TouchableOpacity                 
+{mode === 'guest' ? (null) : (
+  <View style={{marginTop: 13}}>
+  <TouchableOpacity
     onPress={() => {
     handleReportListing();
     setReportModalVisible(true);
@@ -610,11 +614,14 @@ return (
       </View>
   </TouchableOpacity>
 </View>
+)}
+
 
 
 
 {/* footer container */}
-<View style={style.footer}>
+{mode === 'guest' ? (null) : (
+  <View style={style.footer}>
   <View>
     <Text
       style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
@@ -625,7 +632,7 @@ return (
         Total Price
       </Text>
   </View>
-  {user.id !== dorms.userref ? 
+  {user.id !== dorms.userref ?
   <TouchableOpacity
     style={style.bookNowBtn}
     onPress={handleMessageNow}>
@@ -638,7 +645,8 @@ return (
     <Text style={{color: COLORS.white}}>View Chats</Text>
   </TouchableOpacity>
   }
-  </View>
+</View>
+)}
 </View>
 </ScrollView>
   <ReportForm
@@ -712,8 +720,8 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
   },
   detailsContainer: {
-    flex: 1, 
-    paddingHorizontal: 20, 
+    flex: 1,
+    paddingHorizontal: 20,
     marginTop: 15
   },
   facility: {
@@ -726,7 +734,7 @@ const style = StyleSheet.create({
     alignSelf:"center"
   },
   facility1: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     marginRight: 15,
     marginBottom: 7,
   },

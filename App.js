@@ -149,7 +149,7 @@ function RootNavigator({route}) {
         name="ExploreTab"
         component={HomeScreen}
         options={{title: 'Explore'}}
-        initialParams={{user}}
+        initialParams={{user, mode}}
       />
       <Tab.Screen
         name="BookmarksTab"
