@@ -16,7 +16,7 @@ import {
   Share,
   Modal,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
+// import { WebView } from 'react-native-webview';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../constants/colors';
@@ -29,6 +29,7 @@ import ReportForm from '../components/ReportForm';
 // import ReviewForm from '../components/ReviewForm';
 
 import ViewReviews from '../components/ViewReviews';
+import WebView from 'react-native-webview';
 
 import axios from 'axios';
 
@@ -568,10 +569,10 @@ return (
     </View>
   )}
   {dorms.min_stay !== 'N/A' && (
-    <View style={style.facility}>
+    <View style={style.facility1}>
       <Icon name="event" size={18} />
       <Text style={style.facilityText2}>Minimum Stay:</Text>
-      <Text style={style.facilityText2}>{dorms.min_stay} month/s</Text>
+      <Text style={style.facilityText2}> {dorms.min_stay} month/s</Text>
     </View>
   )}
   {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
@@ -581,10 +582,20 @@ return (
   </View>
 
 
-  <WebView
-  source={{ uri: 'https://goo.gl/maps/DeKwqpdnh8H5bsJV9' }}
-  style={{ marginTop: 20, height: 300 }}
-/>
+
+  <View
+  renderToHardwareTextureAndroid={true}>
+  <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 15, color: 'black' }}>Where you'll be</Text>
+  <View style={{ borderWidth: 1, borderColor: 'gray', borderRadius: 5, overflow: 'hidden', marginTop: 10 }}>
+    <WebView
+      source={{ uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dorms.address)}` }}
+      style={{ height: 300 }}
+    />
+  </View>
+</View>
+
+
+
 
 {/* Report listing*/}
 <View style={{marginTop: 13}}>

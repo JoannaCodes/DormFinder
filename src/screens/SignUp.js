@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ScrollView
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 // import Axios from 'axios';
@@ -142,6 +143,7 @@ export default function Signup() {
   };
 
   return (
+  <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       <StatusBar hidden={true} />
       <View style={styles.topBackgroundImgContainer}>
@@ -254,6 +256,7 @@ export default function Signup() {
         </View>
       </View>
     </View>
+  </ScrollView>
   );
 }
 
@@ -324,5 +327,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
     borderRadius: 10,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
 });

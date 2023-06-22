@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -199,6 +200,7 @@ export default function Login({onLogin}) {
   };
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       <StatusBar hidden={true} />
       <View style={styles.topBackgroundImgContainer}>
@@ -345,6 +347,7 @@ export default function Login({onLogin}) {
         onClose={() => setModalVisible(false)}
       />
     </View>
+    </ScrollView>
   );
 }
 
@@ -415,5 +418,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
     borderRadius: 10,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
 });

@@ -12,7 +12,7 @@ import React, {useState} from 'react';
 import Accordion from 'react-native-collapsible/Accordion';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../../constants/colors';
-import {TENANTSECTIONS, OWNERSECTIONS} from '../../../constants/values';
+import {GENERALGUIDESECTIONS, TENANTSECTIONS, OWNERSECTIONS} from '../../../constants/values';
 
 const Help = () => {
   const [activeSections1, setActiveSections1] = useState([]);
@@ -47,6 +47,18 @@ const Help = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
       <Text style={[styles.label1, { color: 'teal' }]}>How can we help?</Text>
+        <Text style={styles.label}>General Guide</Text>
+        <Accordion
+          align="bottom"
+          underlayColor={'none'}
+          sections={GENERALGUIDESECTIONS}
+          activeSections={activeSections1}
+          renderHeader={renderHeader}
+          renderContent={renderContent}
+          onChange={sections => setActiveSections1(sections)}
+          sectionContainerStyle={styles.accordContainer}
+        />
+        <View style={{marginVertical: 10}} />
         <Text style={styles.label}>For Tenants</Text>
         <Accordion
           align="bottom"
