@@ -403,11 +403,7 @@ const ChatRoom = props => {
               inverted
             />
           </>
-        ) : (
-          <View style={styles.chatLoading}>
-            <ActivityIndicator size={'large'} color={COLORS.teal} />
-          </View>
-        )}
+        ) : null}
       </View>
       <View style={styles.actionBar}>
         <TouchableOpacity

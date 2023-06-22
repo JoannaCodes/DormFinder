@@ -112,7 +112,7 @@ export default function Signup() {
         formData.append('username', username);
         formData.append('password', password);
 
-        await Axios.post(BASE_URL, formData, {
+        await axios.post(BASE_URL, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
