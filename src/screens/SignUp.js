@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
-// import {BASE_URL} from '../../constants/index';
+import {BASE_URL} from '../../constants/index';
 import COLORS from '../../constants/colors';
 
 import axios from 'axios';
