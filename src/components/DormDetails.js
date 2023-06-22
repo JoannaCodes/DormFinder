@@ -297,7 +297,7 @@ const handleAddressPress = () => {
 
 
 return (
-  <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+  <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white, paddingBottom: 16}}>
     <ScrollView showsVerticalScrollIndicator={false}>
 
 
