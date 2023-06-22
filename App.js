@@ -281,7 +281,7 @@ export default function App() {
       await AsyncStorage.clear().then(() => {
         setUser(null);
         setVerified(null);
-        setMode('');
+        setMode(null);
       });
     } catch (error) {
       console.log('Logout failed:', error);
@@ -320,8 +320,9 @@ export default function App() {
           'verification',
           JSON.stringify(fetchedStatus),
         ).then(() => {
-          console.log('fethched:', fetchedStatus);
-          setVerified(Boolean(fetchedStatus));
+          const status = parseInt(fetchedStatus, 10);
+          console.log('converted:', Boolean(status));
+          setVerified(Boolean(status));
         });
       });
   };
