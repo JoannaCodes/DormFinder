@@ -45,6 +45,9 @@ import Toast from 'react-native-toast-message';
 const HomeScreen = ({navigation, route}) => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
 
+  const [filteredRatings, setFilteredRatings] = useState(0);
+  const [filteredMinPrice, setFilteredMinPrice] = useState(0);
+  const [filteredMaxPrice, setFilteredMaxPrice] = useState(0);
   const [filteredAircon, setFilteredAircon] = useState(0);
   const [filteredElevator, setFilteredElevator] = useState(0);
   const [filteredBeddings, setFilteredBeddings] = useState(0);
@@ -94,6 +97,9 @@ const HomeScreen = ({navigation, route}) => {
     var k = filteredPet;
     var l = filteredVisitor;
     var m = filteredCurfew;
+    var n = filteredRatings;
+    var o = filteredMinPrice;
+    var p = filteredMaxPrice;
 
     if (selectedCategoryIndex === 0) {
       _fetchNotif();
@@ -112,6 +118,9 @@ const HomeScreen = ({navigation, route}) => {
         k,
         l,
         m,
+        n,
+        o,
+        p
       );
     } else if (selectedCategoryIndex === 1) {
       fetchDormsByCategory(
@@ -129,6 +138,9 @@ const HomeScreen = ({navigation, route}) => {
         k,
         l,
         m,
+        n,
+        o,
+        p
       );
     } else if (selectedCategoryIndex === 2) {
       fetchDormsByCategory(
@@ -146,6 +158,9 @@ const HomeScreen = ({navigation, route}) => {
         k,
         l,
         m,
+        n,
+        o,
+        p
       );
     }
   }, [
@@ -163,6 +178,9 @@ const HomeScreen = ({navigation, route}) => {
     filteredPet,
     filteredVisitor,
     filteredCurfew,
+    filteredRatings,
+    filteredMinPrice,
+    filteredMaxPrice
   ]);
 
   const _fetchNotif = async () => {
@@ -207,7 +225,7 @@ const HomeScreen = ({navigation, route}) => {
   const [dorms, setDorms] = useState([]);
   const [modal, setModal] = useState(false);
 
-  const fetchData = async (a, b, c, d, e, f, g, h, i, j, k, l, m) => {
+  const fetchData = async (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) => {
     let formdata = new FormData();
     formdata.append('action', 'popular_dorm');
 
@@ -241,6 +259,9 @@ const HomeScreen = ({navigation, route}) => {
     k,
     l,
     m,
+    n,
+    o,
+    p
   ) => {
     if (tag === 'nearest_dorm') {
       setSelectedCategoryIndex(
@@ -272,6 +293,9 @@ const HomeScreen = ({navigation, route}) => {
               formdata.append('pet', k ?? 0);
               formdata.append('visitor', l ?? 0);
               formdata.append('curfew', m ?? 0);
+              formdata.append('rating', n ?? 0);
+              formdata.append('min_price', o ?? 0);
+              formdata.append('max_price', p ?? 0);
               formdata.append('latitude', latitude);
               formdata.append('longitude', longitude);
 
@@ -340,6 +364,9 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('pet', k ?? 0);
       formdata.append('visitor', l ?? 0);
       formdata.append('curfew', m ?? 0);
+      formdata.append('rating', n ?? 0);
+      formdata.append('min_price', o ?? 0);
+      formdata.append('max_price', p ?? 0);
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -450,7 +477,25 @@ const HomeScreen = ({navigation, route}) => {
     setFilteredDorms(filtered);
   };
 
+  const onPressRatings = (rating) => {
+    setFilteredRatings(rating);
+    console.log(rating)
+  }
+
+  const onChanged = (text, s) => {
+      if(s == 0 ) {
+        setFilteredMinPrice(text.replace(/[^0-9]/g, ''));
+      } else {
+        setFilteredMaxPrice(text.replace(/[^0-9]/g, ''));
+      }
+  }
+
+  const clearFilter = () => {
+    
+  }
+  
   return (
+    
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
       <Modal
         animationType={'fade'}
@@ -496,6 +541,109 @@ const HomeScreen = ({navigation, route}) => {
                 }}>
                 Filters
               </Text>
+              <View>
+                <TouchableOpacity onPress={() => {
+                  Alert.alert('WARNING', 'Are you sure that you want to clear filter?', [
+                    {
+                      text: 'Yes',
+                      onPress: () =>  {
+                        setFilteredAircon(0);
+                        setFilteredElevator(0);
+                        setFilteredBeddings(0);
+                        setFilteredKitchen(0);
+                        setFilteredLaundry(0);
+                        setFilteredLounge(0);
+                        setFilteredParking(0);
+                        setFilteredSecurity(0);
+                        setFilteredStudyRoom(0);
+                        setFilteredWifi(0);
+                        setFilteredPet(0);
+                        setFilteredVisitor(0);
+                        setFilteredCurfew(0);
+                        setFilteredRatings(0);
+                        setFilteredMinPrice(0);
+                        setFilteredMaxPrice(0);
+                        Toast.show({
+                          type: 'success',
+                          text1: 'UniHive',
+                          text2: 'Your filter has been cleared.',
+                        });
+                      },
+                    },
+                    {
+                      text: 'NO',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                  ]);
+                }}
+                style={{
+                  backgroundColor:"#eee",
+                  paddingVertical: 5,
+                }}
+                >
+                  <Text style={{textAlign:'center',fontWeight:'bold',fontSize:10}}>
+                    Clear Filter
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    textAlign: 'left',
+                    fontWeight: 'bold',
+                    color: '#000',
+                    paddingVertical: 10,
+                  }}>
+                  Price Range
+                </Text>
+                <View style={{flexDirection:'row'}}>
+                  <TextInput
+                    style={{width: 70,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10,}}
+                    placeholder={'Min Price'}
+                    value={filteredMinPrice}
+                    onChangeText={(data) => onChanged(data, 0)}
+                    keyboardType={'numeric'}
+                    numeric
+                  />
+                  <TextInput
+                    style={{width: 70,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,}}
+                    placeholder={'Max Price'}
+                    value={filteredMaxPrice}
+                    onChangeText={(data) => onChanged(data, 1)}
+                    keyboardType={'numeric'}
+                    numeric
+                  />
+                </View>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    textAlign: 'left',
+                    fontWeight: 'bold',
+                    color: '#000',
+                    paddingVertical: 10,
+                  }}>
+                  Ratings
+                </Text>
+                <View style={{flexDirection:'row'}}>
+                <TouchableOpacity onPress={() => onPressRatings(1)}>
+                  {1 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressRatings(2)}>
+                  {2 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressRatings(3)}>
+                  {3 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressRatings(4)}>
+                  {4 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressRatings(5)}>
+                  {5 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
+                </TouchableOpacity>
+                </View>
+              </View>
               <View>
                 <Text
                   style={{
