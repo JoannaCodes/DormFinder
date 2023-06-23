@@ -608,7 +608,7 @@ return (
     </View>
   )}
   {dorms.min_stay !== 'N/A' && (
-    <View style={style.facility}>
+    <View style={style.facility1}>
       <Icon name="event" size={18} />
       <Text style={style.facilityText2}>Minimum Stay:</Text>
       <Text style={style.facilityText2}>{dorms.min_stay} month/s</Text>
@@ -621,13 +621,13 @@ return (
   </View>
 
   <View
-    renderToHardwareTextureAndroid={true}
-  >
-    <WebView
-      source={{ uri: 'https://goo.gl/maps/DeKwqpdnh8H5bsJV9' }}
-      style={{ marginTop: 20, height: 300 }}
-    />
-  </View>
+   renderToHardwareTextureAndroid={true}>
+  <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 , color: 'black'}}> Where you'll be </Text>
+  <WebView
+  source={{ uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dorms.address)}` }}
+  style={{ marginTop: 20, height: 300 }}/>
+</View>
+
 
 {/* Report listing*/}
 <View style={{marginTop: 13}}>

@@ -83,7 +83,7 @@ export default function Signup() {
             if(code === 200) {
               Toast.show({
                 type: 'success',
-                text1: 'UniHive',
+                text1: 'StudyHive',
                 text2: `Successfully registered.`,
               });
               navigation.navigate('Login');
@@ -92,7 +92,7 @@ export default function Signup() {
         }).catch((e) => {
           Toast.show({
             type: 'error',
-            text1: 'UniHive',
+            text1: 'StudyHive',
             text2: `Your account is already registered!`,
           });
         })

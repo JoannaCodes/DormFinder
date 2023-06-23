@@ -83,7 +83,7 @@ export default function Login({onLogin}) {
               onLogin(data);
               Toast.show({
                 type: 'success',
-                text1: 'UniHive',
+                text1: 'StudyHive',
                 text2: `Welcome, ${data.username}.`,
               });
             }
@@ -91,8 +91,8 @@ export default function Login({onLogin}) {
         }).catch((e) => {
           Toast.show({
             type: 'error',
-            text1: 'UniHive',
-            text2: `Your account doesn\'t exist!`,
+            text1: `Your account doesn\'t exist!`,
+            text2: `Register your Google Account in Signup section first`,
           });
         })
       }
@@ -289,7 +289,7 @@ export default function Login({onLogin}) {
                 handleLogin('google');
               }}>
               <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
+              <Text style={{fontWeight: 'bold' , fontFamily: 'Poppins-Regular'}}>Sign In With Google</Text>
               <View />
             </TouchableOpacity>
             {/*  */}

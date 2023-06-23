@@ -384,7 +384,7 @@ const HomeScreen = ({navigation, route}) => {
         setDorms([]);
         Toast.show({
           type: 'error',
-          text1: 'UniHive',
+          text1: 'StudyHive',
           text2: json.data,
         });
       }
@@ -493,10 +493,12 @@ const HomeScreen = ({navigation, route}) => {
   const clearFilter = () => {
     
   }
-  
+  TouchableOpacity
   return (
     
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
+
+
       <Modal
         animationType={'fade'}
         transparent={true}
@@ -504,7 +506,7 @@ const HomeScreen = ({navigation, route}) => {
         onRequestClose={() => {
           Toast.show({
             type: 'success',
-            text1: 'UniHive',
+            text1: 'StudyHive',
             text2: 'Modal has been closed.',
           });
           setModal(!modal);
@@ -527,67 +529,32 @@ const HomeScreen = ({navigation, route}) => {
               backgroundColor: '#fff',
               padding: 10,
               borderRadius: 10,
-              height: 300,
+              height: 500,
             }}>
+        
+        <View style={{ borderBottomColor: '#ddd', borderBottomWidth: 2 }}>
+  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 }}>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <Text
+        style={{
+          fontWeight: 'bold',
+          color: '#000',
+        }}>
+        Filters
+      </Text>
+    </View>
+    <TouchableOpacity onPress={() => setModal(false)}>
+      <Icon name="close" size={24} color="#000" />
+    </TouchableOpacity>
+  </View>
+</View>
+
+
             <ScrollView>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  color: '#000',
-                  borderBottomColor: '#ddd',
-                  borderBottomWidth: 1,
-                  paddingVertical: 10,
-                }}>
-                Filters
-              </Text>
-              <View>
-                <TouchableOpacity onPress={() => {
-                  Alert.alert('WARNING', 'Are you sure that you want to clear filter?', [
-                    {
-                      text: 'Yes',
-                      onPress: () =>  {
-                        setFilteredAircon(0);
-                        setFilteredElevator(0);
-                        setFilteredBeddings(0);
-                        setFilteredKitchen(0);
-                        setFilteredLaundry(0);
-                        setFilteredLounge(0);
-                        setFilteredParking(0);
-                        setFilteredSecurity(0);
-                        setFilteredStudyRoom(0);
-                        setFilteredWifi(0);
-                        setFilteredPet(0);
-                        setFilteredVisitor(0);
-                        setFilteredCurfew(0);
-                        setFilteredRatings(0);
-                        setFilteredMinPrice(0);
-                        setFilteredMaxPrice(0);
-                        Toast.show({
-                          type: 'success',
-                          text1: 'UniHive',
-                          text2: 'Your filter has been cleared.',
-                        });
-                      },
-                    },
-                    {
-                      text: 'NO',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel',
-                    },
-                  ]);
-                }}
-                style={{
-                  backgroundColor:"#eee",
-                  paddingVertical: 5,
-                }}
-                >
-                  <Text style={{textAlign:'center',fontWeight:'bold',fontSize:10}}>
-                    Clear Filter
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View>
+
+
+            {/* PRICE */}
+            <View style={styles.sectionContainer}>
                 <Text
                   style={{
                     textAlign: 'left',
@@ -599,16 +566,16 @@ const HomeScreen = ({navigation, route}) => {
                 </Text>
                 <View style={{flexDirection:'row'}}>
                   <TextInput
-                    style={{width: 70,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10,}}
-                    placeholder={'Min Price'}
+                    style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10}}
+                    placeholder={'Min. Price'}
                     value={filteredMinPrice}
                     onChangeText={(data) => onChanged(data, 0)}
                     keyboardType={'numeric'}
                     numeric
                   />
                   <TextInput
-                    style={{width: 70,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,}}
-                    placeholder={'Max Price'}
+                    style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,}}
+                    placeholder={'Max. Price'}
                     value={filteredMaxPrice}
                     onChangeText={(data) => onChanged(data, 1)}
                     keyboardType={'numeric'}
@@ -616,7 +583,10 @@ const HomeScreen = ({navigation, route}) => {
                   />
                 </View>
               </View>
-              <View>
+
+
+              {/* RATINGS */}
+              <View style={styles.sectionContainer}>
                 <Text
                   style={{
                     textAlign: 'left',
@@ -644,7 +614,247 @@ const HomeScreen = ({navigation, route}) => {
                 </TouchableOpacity>
                 </View>
               </View>
-              <View>
+
+
+              {/* HEI */}
+              <View style={styles.sectionContainer}>
+                <Text
+                  style={{
+                    textAlign: 'left',
+                    fontWeight: 'bold',
+                    color: '#000',
+                    paddingVertical: 10,
+                  }}>
+                  Higher Education Institution
+                </Text>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredPet}
+                    onPress={() => setFilteredPet(filteredPet === 1 ? 0 : 1)}
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                        Polytechnic University of the{'\n'}
+                         Philippines
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredPet}
+                    onPress={() => setFilteredPet(filteredPet === 1 ? 0 : 1)}
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       University of the Philippines
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredPet}
+                    onPress={() => setFilteredPet(filteredPet === 1 ? 0 : 1)}
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                        Far Eastern University
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredPet}
+                    onPress={() => setFilteredPet(filteredPet === 1 ? 0 : 1)}
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                        University of Santo Tomas
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredVisitor === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredVisitor(filteredVisitor === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                    <>
+                      National University
+                      </>
+                  }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredCurfew === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredCurfew(filteredCurfew === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       San Beda University
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredCurfew === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredCurfew(filteredCurfew === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       Centro Escolar University
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredCurfew === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredCurfew(filteredCurfew === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       Technological University of the {'\n'}Philippines
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredCurfew === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredCurfew(filteredCurfew === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       De La Salle University
+                      </>
+                    }
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <BouncyCheckbox
+                    size={15}
+                    isChecked={filteredCurfew === 1 ? true : false}
+                    onPress={() =>
+                      setFilteredCurfew(filteredCurfew === 1 ? 0 : 1)
+                    }
+                    textStyle={{
+                      marginLeft: -5,
+                      fontSize: 13,
+                      textDecorationLine: 'none',
+                      marginBottom: -10,
+                    }}
+                    fillColor={COLORS.teal}
+                    unfillColor={COLORS.white}
+                    iconStyle={{borderColor: COLORS.teal, marginBottom: -10}}
+                    text={
+                      <>
+                       Adamson University
+                      </>
+                    }
+                  />
+                </View>
+              </View>
+
+
+            {/* AMENITIES */}
+              <View style={styles.sectionContainer}>
                 <Text
                   style={{
                     textAlign: 'left',
@@ -875,7 +1085,10 @@ const HomeScreen = ({navigation, route}) => {
                   />
                 </View>
               </View>
-              <View>
+
+
+              {/* AMENITIES */}
+              <View style={styles.sectionContainer}>
                 <Text
                   style={{
                     textAlign: 'left',
@@ -921,7 +1134,7 @@ const HomeScreen = ({navigation, route}) => {
                     text="Visitor"
                   />
                 </View>
-                <View style={styles.checkboxContainer}>
+                <View style={styles.checkboxContainer1}>
                   <BouncyCheckbox
                     size={15}
                     isChecked={filteredCurfew === 1 ? true : false}
@@ -942,9 +1155,43 @@ const HomeScreen = ({navigation, route}) => {
                 </View>
               </View>
             </ScrollView>
+
+
+<View style={styles.clearAllContainer}>
+  <TouchableOpacity onPress={() => {
+                    setFilteredAircon(0);
+                    setFilteredElevator(0);
+                    setFilteredBeddings(0);
+                    setFilteredKitchen(0);
+                    setFilteredLaundry(0);
+                    setFilteredLounge(0);
+                    setFilteredParking(0);
+                    setFilteredSecurity(0);
+                    setFilteredStudyRoom(0);
+                    setFilteredWifi(0);
+                    setFilteredPet(0);
+                    setFilteredVisitor(0);
+                    setFilteredCurfew(0);
+                    setFilteredRatings(0);
+                    setFilteredMinPrice(0);
+                    setFilteredMaxPrice(0);
+                    setModal(false);
+                    Toast.show({
+                        type: 'success',
+                        text1: 'StudyHive',
+                        text2: 'Your filter has been cleared.',
+                    });
+                }}
+                >
+                  <Text style={styles.clearAllButtonText}>Clear all</Text>
+  </TouchableOpacity>
+</View>
+
           </View>
         </View>
       </Modal>
+
+      
       <StatusBar
         translucent={false}
         backgroundColor={COLORS.white}
@@ -1063,7 +1310,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   card: {
-    height: 300,
     backgroundColor: COLORS.white,
     elevation: 10,
     width: width - 40,
@@ -1083,11 +1329,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 20,
   },
+  checkboxContainer1: {
+    flexDirection: 'row',
+    marginBottom: 60,
+  },
   checkbox: {
     alignSelf: 'center',
   },
   label: {
     margin: 8,
+  },
+  clearAllContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    paddingVertical: 13,
+    borderTopColor: '#ddd',
+    borderTopWidth: 2,
+    borderRadius: 20,
+    paddingRight: 10, // Add some right padding to the container
+  },
+  clearAllButtonText: {
+    marginLeft: 15,
+    fontWeight: 'bold',
+    fontSize: 13,
+    textDecorationLine: 'underline',
+    color: 'black',
+  },
+  sectionContainer: {
+    marginLeft: 15,
   },
 });
 
