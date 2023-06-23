@@ -77,7 +77,7 @@ const HomeScreen = ({navigation, route}) => {
 
   PushNotificationConfig.configure();
 
-  const {user} = route.params;
+  const {user, mode} = route.params;
 
   useEffect(() => {
     fetchData();
@@ -427,7 +427,7 @@ const HomeScreen = ({navigation, route}) => {
       <Pressable
         activeOpacity={0.8}
         onPress={() =>
-          navigation.navigate('Dorm Details', {dormref: item.id, userref: user})
+          navigation.navigate('Dorm Details', {dormref: item.id, userref: user, mode: mode})
         }>
         <View style={styles.card}>
           <Image

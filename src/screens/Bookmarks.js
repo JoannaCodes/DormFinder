@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL, DORM_UPLOADS} from '../../constants';
+import {BASE_URL, DORM_UPLOADS, API_URL, AUTH_KEY} from '../../constants/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -34,8 +34,13 @@ const Bookmarks = ({route, navigation}) => {
   const [selectedDorm, setSelectedDorm] = useState('');
   const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
+  const [userInfo, setUserInfo] = useState([]);
 
-  useEffect(() => {
+  useEffect(async () => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+    setUserInfo(convertData);
+
     fetchData();
   }, []);
 
@@ -77,20 +82,82 @@ const Bookmarks = ({route, navigation}) => {
 
   const renderItem = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
+
+    const moveToMessage = async () => {
+      const formdata = new FormData();
+
+      formdata.append('action', 'getMessageInfos');
+      formdata.append('unique_code', item.id);
+      formdata.append('myid', user);
+      formdata.append('other_id', item.userref);
+
+      const response = await axios.post(API_URL, formdata, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const json = response.data;
+      if (json.code === 200) {
+        navigation.navigate('Chat Room', {
+          navigation: navigation,
+          anotherImageUrl: json.data.other.imageUrl,
+          username: json.data.other.username,
+          unique_code: item.id,
+          chatroom_code: json.data.chatroom_code,
+          myid: user,
+          myusername: json.data.me.username,
+          anotherid: item.userref,
+          user: userInfo,
+        });
+      }
+    };
+
+    const handleMessageNow = async () => {
+      // Handle the "Message Now" button press here
+      try {
+        const formdata = new FormData();
+        formdata.append('action', 'addChat');
+        formdata.append('unique_code', item.id);
+        formdata.append('myid', user);
+        formdata.append('other_id', item.userref);
+
+        await axios
+          .post(API_URL, formdata, {
+            headers: {
+              'Auth-Key': AUTH_KEY,
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then(response => {
+            const json = response.data;
+            if (json.code === 200) {
+              moveToMessage();
+            }
+          })
+          .catch(error => {
+            moveToMessage();
+          });
+      } catch (ex) {
+        console.log(ex);
+      }
+    };
+
     return (
       <TouchableOpacity
         activeOpacity={0.5}
         underlayColor={COLORS.grey}
         onPress={() =>
           navigation.navigate('Dorm Details', {
-            dormref: item.dormref,
+            dormref: item.id,
             userref: user,
           })
         }>
         <View style={styles.card}>
           <Image
             source={{
-              uri: `${DORM_UPLOADS}/${item.dormref}/${images[0]}`,
+              uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`,
             }}
             style={styles.cardImage}
           />
@@ -110,14 +177,14 @@ const Bookmarks = ({route, navigation}) => {
                 style={[styles.btnContainer, {marginEnd: 4}]}
                 onPress={() => {
                   setModalVisible(true);
-                  setSelectedDorm(item.dormref);
+                  setSelectedDorm(item.id);
                 }}>
                 <Icon name="star-rate" size={18} color={COLORS.teal} />
                 <Text style={{marginLeft: 10}}>Write a review</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btnContainer, {marginStart: 4}]}
-                onPress={() => navigation.navigate('Chat Room')}>
+                onPress={handleMessageNow}>
                 <Icon name="message" size={18} color={COLORS.teal} />
               </TouchableOpacity>
             </View>

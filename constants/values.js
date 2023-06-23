@@ -6,7 +6,28 @@ const HEI = [
   {label: 'NU', value: 'NU'},
 ];
 
-
+const GENERALGUIDESECTIONS = [
+  {
+    title: 'Register',
+    content:
+      "Creating an account allows you to access additional features and personalize your experience. To create an account, follow these steps:\n\n1. Tap on the 'Signup' below.\n\n2. Choose whether to sign up using your email or your Google account.\n\n3. Enter the required information as instructed and tap the 'Signup' button.\n\n4. Once you have created an account, you can go back to the login screen and sign in using your username and password.",
+  },
+  {
+    title: 'Login',
+    content:
+      "Ensure that you are using the correct credentials associated with your account to successfully log in.\n\n1. Choose your preferred login method: email, Google account, or guest mode.\n\n2. Enter the required information and click the 'Login' button.\n\n3. If you forget your password, click on the 'Forgot password' to start the password reset process.\n\n4. Once successfully logged in, you will gain access to your account and all the available features of the application.",
+  },
+  {
+    title: 'Payment Gateway',
+    content:
+      "The payment feature offers a convenient and secure way for tenants and dormitory owners to use GCash for transactions. Tenants can make fast payments, while owners can easily verify and confirm them.\n\n1. Access your profile.\n\n2. Navigate to the payment section.\n\n3. Proceed by selecting 'continue.'\n\n4. In the GCash application, enter your passcode.\n\n5. For tenants: Easily access GCash to complete the payment process.\n\nFor dorm owners: Check if the tenant made payment and confirm the transaction.",
+  },
+  {
+    title: 'Add Bookmarks',
+    content:
+      "The bookmark feature allows users to save and revisit dormitories or specific listings of interest, creating a personalized collection for future reference and comparison.\n\n1. Open the dorm listing you want to save.\n\n2. Tap on the heart icon located at the upper left corner of the image header in the Dorm Details section.\n\n3. To access your saved dorm listings, navigate to the Bookmarks tab.",
+  },
+];
 const TENANTSECTIONS = [
   {
     title: 'Message Dorm Owner',
@@ -53,4 +74,4 @@ const OWNERSECTIONS = [
   },
 ];
 
-export {HEI, TENANTSECTIONS, OWNERSECTIONS};
+export {HEI, GENERALGUIDESECTIONS, TENANTSECTIONS, OWNERSECTIONS};
