@@ -215,6 +215,14 @@ const ListingForm = ({route, navigation}) => {
             });
           }
         })
+        .catch(error => {
+          console.log(error);
+          Toast.show({
+            type: 'error',
+            text1: 'StudyHive',
+            text2: 'An error occured. Please try again.',
+          });
+        })
         .finally(() => {
           setIsLoading(false);
         });
@@ -281,6 +289,14 @@ const ListingForm = ({route, navigation}) => {
               text2: 'Dorm not updated. Please try again.',
             });
           }
+        })
+        .catch(error => {
+          console.log(error);
+          Toast.show({
+            type: 'error',
+            text1: 'StudyHive',
+            text2: 'An error occured. Please try again.',
+          });
         })
         .finally(() => {
           setIsLoading(false);

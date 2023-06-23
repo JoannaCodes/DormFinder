@@ -51,6 +51,14 @@ const ReportForm = ({ visible, onClose, userref, dormref }) => {
           });
         }
       })
+      .catch(error => {
+        console.log(error);
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: 'An error occured. Please try again.',
+        });
+      })
       .finally(() => {
         setLoading(false);
         setComment('');
