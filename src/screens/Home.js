@@ -64,6 +64,7 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredVisitor, setFilteredVisitor] = useState(0);
   const [filteredCurfew, setFilteredCurfew] = useState(0);
   const [filteredHei, setFilteredHei] = useState('');
+  const [filteredHeiIndex, setFilteredHeiIndex] = useState(0);
 
   PushNotification.createChannel(
     {
@@ -188,7 +189,8 @@ const HomeScreen = ({navigation, route}) => {
     filteredRatings,
     filteredMinPrice,
     filteredMaxPrice,
-    filteredHei
+    filteredHei,
+    filteredHeiIndex
   ]);
 
   const _fetchNotif = async () => {
@@ -518,6 +520,7 @@ const HomeScreen = ({navigation, route}) => {
     setFilteredRatings(0);
     setFilteredMinPrice(0);
     setFilteredMaxPrice(0);
+    setFilteredHeiIndex(0);
     setFilteredHei("");
     setModal(false);
   }
@@ -659,7 +662,7 @@ const HomeScreen = ({navigation, route}) => {
                 <View style={styles.checkboxContainer}>
                   <RadioGroup
                     style={{ flexDirection: 'column', marginTop: 10 }}
-                    checkedId={filteredHei ?? ''}
+                    checkedId={filteredHeiIndex ?? 0}
                     icon={{
                       normal: require('../../assets/img/square-regular.png'),
                       checked: require('../../assets/img/square-check-regular.png')
@@ -667,6 +670,7 @@ const HomeScreen = ({navigation, route}) => {
                     iconStyle={{width: 13,height:13,marginTop: 10}}
                     textStyle={{ marginLeft: 5,marginTop: 10,fontSize: 13}}
                     onChecked={(id, value) => {
+                      setFilteredHeiIndex(id);
                       setFilteredHei(value);
                     }}>
                     <RadioButton text="None" value={''} style={{display: 'none',marginTop: -10}}/>
@@ -679,7 +683,7 @@ const HomeScreen = ({navigation, route}) => {
                     <RadioButton text="Centro Escolar University" value={'CEU'} />
                     <RadioButton text="Technological University of the Philippines" value={'TUP'} />
                     <RadioButton text="De La Salle University" value={'DSLU'} />
-                    <RadioButton text="Adamson University" value={'Adu'} />
+                    <RadioButton text="Adamson University" value={'AdU'} />
                   </RadioGroup>
                 </View>
               </View>
