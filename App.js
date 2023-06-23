@@ -122,7 +122,7 @@ function RootNavigator({route}) {
                   navigation.navigate('Profile Tab');
                 }
               }}>
-              <Icon name="account-circle" size={40} color="gray" />
+              <Icon name="person" size={35} color="gray" />
             </TouchableOpacity>
           );
         },

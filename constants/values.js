@@ -1,9 +1,14 @@
 const HEI = [
-  {label: 'PUP', value: 'PUP'},
-  {label: 'UP', value: 'UP'},
-  {label: 'FEU', value: 'FEU'},
-  {label: 'UST', value: 'UST'},
-  {label: 'NU', value: 'NU'},
+  {label: 'Polytechnic University of the Philippines', value: 'PUP'},
+  {label: 'University of the Philippines Manila', value: 'UP'},
+  {label: 'Far Eastern University', value: 'FEU'},
+  {label: 'University of Santo Tomas', value: 'UST'},
+  {label: 'National University Manila', value: 'NU'},
+  {label: 'San Beda University', value: 'SBU'},
+  {label: 'Centro Escolar University', value: 'CEU'},
+  {label: 'Technological University of the Philippines', value: 'TUP'},
+  {label: 'De La Salle University', value: 'DLSU'},
+  {label: 'Adamson University', value: 'ADU'},
 ];
 
 const GENERALGUIDESECTIONS = [
