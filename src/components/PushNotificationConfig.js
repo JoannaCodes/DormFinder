@@ -9,7 +9,6 @@ export default class PushNotificationConfig {
       },
       onNotification: function (notification) {
         console.log('NOTIFICATION:', notification);
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
       },
       onAction: function (notification) {
         console.log('ACTION:', notification.action);
@@ -25,6 +24,7 @@ export default class PushNotificationConfig {
       },
       popInitialNotification: true,
       requestPermissions: Platform.OS === 'ios',
+      enableBackgroundNotificationHandler: true,
     });
   }
 }
