@@ -321,7 +321,8 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
+    color: 'black'
   },
   verificationStatus: {
     color: COLORS.teal,

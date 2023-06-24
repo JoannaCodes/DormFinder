@@ -205,16 +205,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   searchBar: {
-    flex: 1,
+    padding: 0, 
+    flex: 1, fontFamily: 'Poppins-Regular',
     height: 40,
     backgroundColor: '#ededed',
     paddingHorizontal: 40, // Adjust this value based on the icon's width
     borderRadius: 10,
+    marginLeft: 5
   },
   searchIcon: {
     position: 'absolute',
-    top: 12, // Adjust this value to vertically center the icon
-    left: 10, // Adjust this value to set the left offset of the icon
+    top: 10, // Adjust this value to vertically center the icon
+    left: 15, // Adjust this value to set the left offset of the icon
     height: 18,
     width: 18,
   },
@@ -234,8 +236,9 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 10,
+    marginTop: -30,
   },
   message: {
     textAlign: 'center',

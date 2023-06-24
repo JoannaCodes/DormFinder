@@ -454,15 +454,15 @@ const HomeScreen = ({navigation, route}) => {
                 justifyContent: 'space-between',
                 marginTop: 5,
               }}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 16, fontFamily: 'Poppins-SemiBold', color: 'black'}}>
                 {item.name}
               </Text>
               <Text
-                style={{fontWeight: 'bold', color: COLORS.teal, fontSize: 16}}>
+                style={{ fontFamily: 'Poppins-SemiBold', color: COLORS.teal, fontSize: 16}}>
                 ₱{item.price}
               </Text>
             </View>
-            <Text style={{color: COLORS.grey, fontSize: 14, marginTop: 5}}>
+            <Text style={{color: COLORS.grey, fontSize: 14, marginTop: 5, color: 'black'}}>
               {item.address}
             </Text>
             <View style={{marginTop: 10, flexDirection: 'row'}}>
@@ -568,7 +568,8 @@ const HomeScreen = ({navigation, route}) => {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Text
                     style={{
-                      fontWeight: 'bold',
+                      size: 1,
+                      fontFamily: 'Poppins-SemiBold',
                       color: '#000',
                     }}>
                     Filters
@@ -589,15 +590,15 @@ const HomeScreen = ({navigation, route}) => {
                   <Text
                     style={{
                       textAlign: 'left',
-                      fontWeight: 'bold',
                       color: '#000',
-                      paddingVertical: 10,
+                      paddingVertical: 5,
+                      fontFamily: 'Poppins-SemiBold',
                     }}>
                     Price Range
                   </Text>
                   <View style={{flexDirection:'row'}}>
                     <TextInput
-                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10}}
+                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10, fontFamily: 'Poppins-Regular',}}
                       placeholder={'Min. Price'}
                       value={filteredMinPrice}
                       onChangeText={(data) => onChanged(data, 0)}
@@ -605,7 +606,7 @@ const HomeScreen = ({navigation, route}) => {
                       numeric
                     />
                     <TextInput
-                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,}}
+                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10, fontFamily: 'Poppins-Regular',}}
                       placeholder={'Max. Price'}
                       value={filteredMaxPrice}
                       onChangeText={(data) => onChanged(data, 1)}
@@ -621,9 +622,9 @@ const HomeScreen = ({navigation, route}) => {
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontWeight: 'bold',
+                    fontFamily: 'Poppins-SemiBold',
                     color: '#000',
-                    paddingVertical: 10,
+                    paddingVertical: 5,
                   }}>
                   Ratings
                 </Text>
@@ -652,9 +653,9 @@ const HomeScreen = ({navigation, route}) => {
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontWeight: 'bold',
+                    fontFamily: 'Poppins-SemiBold',
                     color: '#000',
-                    paddingVertical: 10,
+                    paddingVertical: 5,
                   }}>
                   Higher Education Institution
                 </Text>
@@ -690,13 +691,13 @@ const HomeScreen = ({navigation, route}) => {
 
 
               {/* AMENITIES */}
-              <View style={styles.sectionContainer}>
+              <View style={styles.sectionContainer1}>
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontWeight: 'bold',
+                    fontFamily: 'Poppins-SemiBold',
                     color: '#000',
-                    paddingVertical: 10,
+                    paddingVertical: 5,
                   }}>
                   Amenities
                 </Text>
@@ -923,14 +924,14 @@ const HomeScreen = ({navigation, route}) => {
               </View>
 
 
-              {/* AMENITIES */}
+              {/* ESTABLISHMENT RULES */}
               <View style={styles.sectionContainer}>
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontWeight: 'bold',
+                    fontFamily: 'Poppins-SemiBold',
                     color: '#000',
-                    paddingVertical: 10,
+                    paddingVertical: 5,
                   }}>
                   Establishment Rules
                 </Text>
@@ -1015,8 +1016,8 @@ const HomeScreen = ({navigation, route}) => {
       />
       <View style={styles.header}>
         <View>
-          <Text style={{color: COLORS.grey}}>Location</Text>
-          <Text style={{color: COLORS.teal, fontSize: 20, fontWeight: 'bold'}}>
+          <Text style={{fontFamily: 'Poppins-Regular', marginTop: -10}}>Location</Text>
+          <Text style={{color: COLORS.teal, fontSize: 20, fontFamily: 'Poppins-SemiBold'}}>
             Manila, Philippines
           </Text>
         </View>
@@ -1028,8 +1029,9 @@ const HomeScreen = ({navigation, route}) => {
           paddingHorizontal: 20,
         }}>
         <View style={styles.searchInputContainer}>
-          <Icon name="search" color={COLORS.grey} size={25} />
+          <Icon name="search" color={COLORS.grey} size={25} style={styles.searchIcon}/>
           <TextInput
+           style={{padding: 0, flex: 1, fontFamily: 'Poppins-Regular'}}
             placeholder="Search address, city, location"
             value={searchQuery}
             onChangeText={handleSearch}
@@ -1074,13 +1076,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 6,
     borderRadius: 12,
   },
   sortBtn: {
     backgroundColor: COLORS.teal,
-    height: 50,
-    width: 50,
+    height: 45,
+    width: 45,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -1109,14 +1111,15 @@ const styles = StyleSheet.create({
   },
   categoryListText: {
     fontSize: 16,
-    fontWeight: 'bold',
     paddingBottom: 5,
     color: COLORS.grey,
+    fontFamily: 'Poppins-SemiBold',
   },
   activeCategoryListText: {
     color: COLORS.teal,
     borderBottomWidth: 1,
     paddingBottom: 5,
+    fontFamily: 'Poppins-SemiBold',
   },
   categoryListContainer: {
     flexDirection: 'row',
@@ -1139,8 +1142,8 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 10,
   },
-  facility: {flexDirection: 'row', marginRight: 15},
-  facilityText: {marginLeft: 5, color: COLORS.grey},
+  facility: {flexDirection: 'row', marginRight: 15, color: 'black'},
+  facilityText: {marginLeft: 5, color: 'black',},
   checkboxContainer: {
     flexDirection: 'row',
     marginBottom: 20,
@@ -1168,15 +1171,22 @@ const styles = StyleSheet.create({
     paddingRight: 10, // Add some right padding to the container
   },
   clearAllButtonText: {
-    marginLeft: 15,
-    fontWeight: 'bold',
+    marginLeft: 25,
     fontSize: 13,
     textDecorationLine: 'underline',
     color: 'black',
+    fontFamily: 'Poppins-SemiBold',
   },
   sectionContainer: {
     marginVertical: 5,
     marginHorizontal: 15,
+  },
+  sectionContainer1: {
+    marginVertical: -5,
+    marginHorizontal: 15,
+  },
+  searchIcon: {
+    marginRight: 6, // Adjust this value as needed
   },
 });
 

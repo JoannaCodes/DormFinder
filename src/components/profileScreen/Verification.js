@@ -156,10 +156,10 @@ export default function Verification({route, navigation}) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.heading}>
+        <Text style={styles.heading1}>
           Please upload the following documents to proceed on posting a listing
         </Text>
-        <Text style={{textAlign: 'center'}}>
+        <Text style={{textAlign: 'center', marginBottom: -20}}>
           Only PDF, DOC, and DOCX are allowed
         </Text>
       </View>
@@ -245,28 +245,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   section: {
-    marginVertical: 16,
+    marginVertical: 12,
     padding: 16,
   },
-  heading: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: 'bold',
+  heading1: {
+    fontSize: 20,
+    marginTop: -15,
     textAlign: 'center',
+    fontFamily: 'Poppins-SemiBold',
+  },
+  heading: {
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: 'Poppins-SemiBold',
   },
   button: {
     backgroundColor: '#0E898B',
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 5,
     width: '100%',
     alignItems: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
+    fontFamily: 'Poppins-SemiBold',
   },
   submitBtn: {
-    marginTop: 40,
+    marginTop: 10,
     width: '100%',
     alignItems: 'center',
   },

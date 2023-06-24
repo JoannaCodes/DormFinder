@@ -33,6 +33,31 @@ const GENERALGUIDESECTIONS = [
       "The bookmark feature allows users to save and revisit dormitories or specific listings of interest, creating a personalized collection for future reference and comparison.\n\n1. Open the dorm listing you want to save.\n\n2. Tap on the heart icon located at the upper left corner of the image header in the Dorm Details section.\n\n3. To access your saved dorm listings, navigate to the Bookmarks tab.",
   },
 ];
+
+const GENERALGUIDESECTIONS_FIL = [
+  {
+    title: 'Pagrehistro',
+    content:
+      "Ang paggawa ng account ay nagbibigay-daan upang ma-access ang mga karagdagang feature. Para gumawa ng account, sundin ang mga hakbang na ito:\n\n1. Pindutin ang 'Signup' sa ibaba.\n\n2. Piliin kung magsa-sign up gamit ang iyong email o ang iyong Google account.\n\n3. Ilagay ang kinakailangang impormasyon at i-tap ang 'Signup' na button.\n\n4. Pagkatapos gumawa ng account, maaari kang bumalik sa login screen at mag-sign in gamit ang iyong username at password.",
+  },
+  {
+    title: 'Pag-login',
+    content:
+      "Siguraduhing ginagamit mo ang mga tamang kredensyal na nauugnay sa iyong account upang makapag-log in.\n\n1. Piliin ang iyong gustong paraan sa pag-log in: email, Google account, o guest mode.\n\n2. Ilagay ang kinakailangang impormasyon at pindutin ang 'Login' button.\n\n3. Kung nakalimutan mo ang iyong password, pindutin ang 'Nakalimutan ang password' upang simulan ang proseso ng pag-reset ng password.\n\n4. Pagkatapos makapag log in ay magkakaroon ka ng access sa iyong account",
+  },
+  {
+    title: 'Pagbabayad',
+    content:
+      "Nag-aalok ang 'Payment Gateway' ng maginhawa at ligtas na paraan para sa mga nangungupahan at may-ari ng dormitoryo na gamitin ang GCash para sa mga transaksyon.\n\n1. Pindutin ang iyong profile.\n\n2. Pumunta sa seksyon ng 'Payment Gateway'.\n\n3. Magpatuloy sa pamamagitan ng pagpindot ng 'Continue.'\n\n4. Sa iyong GCash application, ilagay ang iyong passcode.\n\n5. Para sa mga nangungupahan: Madaling i-access ang GCash para makumpleto ang proseso ng pagbabayad.\n\nPara sa mga may-ari ng dorm: Suriin kung nagbayad ang tenant at kumpirmahin ang transaksyon.",
+  },
+  {
+    title: 'Pagdagdag sa Bookmark',
+    content:
+      "Makatutulong ang Bookmark upang hindi mahirapan na mahanap ang mga dormitoryo na gusto mong puntahan o makita.\n\n1. Buksan ang dorm na gusto mong i-save.\n\n2. Pindutin ang icon ng puso na matatagpuan sa kaliwang sulok ng larawan ng Dorm.\n\n3. Upang ma-access ang iyong mga naka-save na listahan ng dorm, pindutin sa ibaba ang tab ng Bookmark.",
+  },
+];
+
+
 const TENANTSECTIONS = [
   {
     title: 'Message Dorm Owner',
@@ -46,6 +71,24 @@ const TENANTSECTIONS = [
   },
   {
     title: 'Rate and Review a Listing',
+    content:
+      "Rate and review a dorm listing to share your feedback and experiences, helping others make informed decisions and improving the listing's credibility.\n\n1. Navigate to your bookmarks.\n\n2. Locate the desired dorm listing and tap the 'Write a review' button.\n\n3. Fill out the form, including your rating and written review.\n\n4. Once completed, tap the 'Submit' button.\n\nYou can view your submitted reviews by tapping the rating button in the Dorm Details section.",
+  },
+];
+
+const TENANTSECTIONS_FIL = [
+  {
+    title: 'Pakikipag-usap sa may-ari ng dorm',
+    content:
+      "Para makausap ang may-ari ng dorm, pindutin lang ang button na 'Message Now'. Dadalhin ka nito sa inyong pag-uusap para sa maayos na komunikasyon.\n\n1. Pindutin ang iyong napiling dorm para ma-access ang detalyadong impormasyon nito.\n\n2. Mag-scroll pababa sa ibabang seksyon ng page.\n\n3. Pindutin ang button na 'Message Now' para simulan ang pakikipag-usap sa may-ari ng dorm.\n\n4. Maari kang magsend ng iyong text message at magbahagi ng mga larawan mula sa iyong gallery o camera.",
+  },
+  {
+    title: 'Pagsumbong',
+    content:
+      "Kung makakita ka ng dormitoryong lumalabag sa aming mga alituntunin o naglalaman ng hindi naaangkop na nilalaman, maaari mo itong iulat para sa pagsusuri. \n\nMagsumite ng ulat\n\n1. Pindutin ang dorm na gusto mong iulat.\n\n2. Mag-scroll pababa at piliin ang opsyong 'Report this listing'.\n\n3. May lalabas na form kung saan makakapagbigay ka ng mga detalye ng iyong ulat.\n\n4. Kapag naisulat mo na ang iyong ulat, pindutin ang button na 'Submit'.\n\nNaresolba na ulat\n\nPagkatapos malutas ang ulat, makakatanggap ka ng notification na may update sa naiulat na listahan. Ang tugon ay maaaring magresulta na alisin ng admin ang dorm.",
+  },
+  {
+    title: 'Pagbigay ng ratings at komento sa dorm',
     content:
       "Rate and review a dorm listing to share your feedback and experiences, helping others make informed decisions and improving the listing's credibility.\n\n1. Navigate to your bookmarks.\n\n2. Locate the desired dorm listing and tap the 'Write a review' button.\n\n3. Fill out the form, including your rating and written review.\n\n4. Once completed, tap the 'Submit' button.\n\nYou can view your submitted reviews by tapping the rating button in the Dorm Details section.",
   },
@@ -75,8 +118,36 @@ const OWNERSECTIONS = [
   {
     title: 'View dorm listing ratings and reviews',
     content:
-      "As a dorm owner, you have access to ratings and reviews about your dorm listing's performance. These insights help you understand how your dormitory is performing and make informed decisions.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the star icon to view the reviews of your selected listing.",
+      "As a dorm owner, you have access to ratings and reviews about your dorm listing's performance. These insights help you understand how your dormitory is performing and make informed decisions.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'star' icon to view the reviews of your selected listing.",
   },
 ];
 
-export {HEI, GENERALGUIDESECTIONS, TENANTSECTIONS, OWNERSECTIONS};
+const OWNERSECTIONS_FIL = [
+  {
+    title: 'Pagpapatunay',
+    content:
+    "Magbigay ng kinakailangang dokumentasyon para sa pagpapatunay na ikaw ay nagmamay-ari ng dorm. Simulan ang pag-upload ng sarili mong dormitoryo kapag nakumpirma na.\n\nNarito kung paano mo mapapatunayan ang listahan ng iyong dormitoryo:\n\n1. Ipunin ang kinakailangang dokumento na magpapatunay na legal ang iyong dormitoryo.\n\n2. Pindutin ang iyong profile para ma-access ang seksyon ng 'Verification'.\n\n3. Kakailanganin mong i-upload ang kinakailangan na dokumento, gaya ng iyong DTI Certificate, SEC Certificate of Registration, o anumang nauugnay na sumusuportang dokumento.\n\n4. Isumite ang impormasyon para sa pagsusuri.\n\n5. Hintaying makumpleto ng mga admin ang proseso.\n\n6. Kapag na-verify na, makakatanggap ang iyong profile ng verification badge, na nagsasaad ng pagiging lehitimo nito. Maaari mo na ngayong simulan ang pag-upload ng iyong sariling dormitoryo.",
+  },
+  {
+    title: 'Mag-upload ng sariling dorm',
+    content:
+      "Mag-upload ng sariling dorm sa pamamagitan ng pagbibigay ng mga tamang detalye ng iyong dormitoryo. Mag-upload ng mga na larawan para ipakita ang iyong dormitoryo at maakit ang mga potensyal na residente.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Pindutin ang '+' button \n\n3. Ilagay ang kinakailangang impormasyon gaya ng pangalan ng dormitoryo, lokasyon, presyo at higit pa.\n\n4. Mag-upload ng mga larawan ng iyong dormitoryo upang ipakita ang mga pasilidad at hitsura nito.\n\n5. Suriin ang impormasyon at tiyaking tama.\n\n6. Isumite ang dormitoryo.",
+  },
+  {
+    title: 'Baguhin ang inupload na dorm',
+    content:
+      "Kung mayroong anumang mga pagbabago o bagong impormasyon, madali mong maa-update ang iyong kasalukuyang dormitoryo. \n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'pencil' icon para simulan ang pag-edit ng iyong napiling listahan.\n\n4. Gumawa ng anumang kinakailangang pagbabago sa mga detalye o mag-upload ng mga bagong larawan.\n\n5. Suriin ang na-update na impormasyon para matiyak na ito ay tama o kompleto.\n\n6. Isumite ang mga pagbabago upang i-update ang iyong dorm.",
+  },
+  {
+    title: 'Burahin ang inupload na dorm',
+    content:
+      "Kung nais mo na burahin ang inupload na dorm, mayroon kang opsyon na tanggalin ito. Gayunpaman, mag-ingat sa pagbura nito dahil permanente na itong mawawala.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'trash' icon para burahin ang iyong napiling dormitoryo.\n\n4. Kumpirmahin ang iyong intensyon na tanggalin ito.",
+  },
+  {
+    title: 'Tignan ang ratings at komento ng inupload na dorm',
+    content:
+      "Bilang may-ari ng dorm, mayroon kang access sa mga rating at komento tungkol sa iyong dorm. \n\n1. Hanapin at i-access ang seksyon ng 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'star' icon upang tingnan ang mga review ng iyong napiling dormitoryo.",
+  },
+];
+
+export {HEI, GENERALGUIDESECTIONS, GENERALGUIDESECTIONS_FIL, TENANTSECTIONS, TENANTSECTIONS_FIL, OWNERSECTIONS, OWNERSECTIONS_FIL};

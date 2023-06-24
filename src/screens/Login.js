@@ -185,7 +185,7 @@ export default function Login({onLogin}) {
             setIsLoading(false);
           });
       } else {
-        Alert.alert('Fill in username or password');
+        Alert.alert('Incomplete Fields', 'Please fill in all the fields.');
       }
     }
   };
@@ -213,7 +213,7 @@ export default function Login({onLogin}) {
       <View style={styles.bottomBackgroundImgContainer} />
       <View style={styles.formContainer}>
         <View style={styles.formTopContainer}>
-          <Text style={{color: 'black', fontSize: 30, fontWeight: 'bold', marginTop: 20}}>
+          <Text style={{color: 'black', fontSize: 30, marginTop: 20, fontFamily: 'Poppins-Regular'}}>
             Welcome!
           </Text>
         </View>
@@ -222,7 +222,7 @@ export default function Login({onLogin}) {
             {/*  */}
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{padding: 0}}
+                style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                 placeholder="Username"
                 onChangeText={text => setUsername(text)}
                 keyboardType={'email-address'}
@@ -235,7 +235,7 @@ export default function Login({onLogin}) {
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
-                  style={{padding: 0}}
+                  style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
@@ -263,8 +263,7 @@ export default function Login({onLogin}) {
                 <Text
                   style={{
                     color: COLORS.white,
-                    fontWeight: 'bold',
-                    fontSize: 17,
+                    fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2
                   }}>
                   Login
                 </Text>
@@ -289,7 +288,7 @@ export default function Login({onLogin}) {
                 handleLogin('google');
               }}>
               <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontWeight: 'bold' , fontFamily: 'Poppins-Regular'}}>Sign In With Google</Text>
+              <Text style={{fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>Sign In With Google</Text>
               <View />
             </TouchableOpacity>
             {/*  */}
@@ -300,7 +299,7 @@ export default function Login({onLogin}) {
                 handleLogin('guest');
               }}>
               <Text
-                style={{color: COLORS.white, fontWeight: 'bold', fontSize: 17}}>
+                style={{color: COLORS.white, fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>
                 Login as Guest
               </Text>
             </TouchableOpacity>
@@ -308,7 +307,7 @@ export default function Login({onLogin}) {
             {/*  */}
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: 'black'}}>
+                <Text style={{color: 'black', fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: -2}}>
                   Don't Have An Account?
                 </Text>
                 <TouchableOpacity
@@ -319,7 +318,7 @@ export default function Login({onLogin}) {
                     style={{
                       marginLeft: 5,
                       color: COLORS.teal,
-                      fontWeight: 'bold',
+                      fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: 4, marginTop: -1
                     }}>
                     Signup
                   </Text>
@@ -332,7 +331,8 @@ export default function Login({onLogin}) {
                 <Text
                   style={{
                     color: COLORS.teal,
-                    fontWeight: 'bold',
+                    marginTop: -10,
+                    fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: -2
                   }}>
                   Forget Your Password?
                 </Text>

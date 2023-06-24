@@ -174,13 +174,13 @@ const Bookmarks = ({route, navigation}) => {
             <Separator />
             <View style={styles.action}>
               <TouchableOpacity
-                style={[styles.btnContainer, {marginEnd: 4}]}
+                style={[styles.btnContainer1, {marginEnd: 4}]}
                 onPress={() => {
                   setModalVisible(true);
                   setSelectedDorm(item.id);
                 }}>
                 <Icon name="star-rate" size={18} color={COLORS.teal} />
-                <Text style={{marginLeft: 10}}>Write a review</Text>
+                <Text style={{marginLeft: 9, marginTop: 5, fontFamily:'Poppins-Regular', color: 'black'}}>Write a review</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btnContainer, {marginStart: 4}]}
@@ -288,12 +288,26 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: 5,
+    marginTop: -30,
   },
   message: {
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+  },
+  btnContainer1: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 1,
+    elevation: 2,
+    borderRadius: 4,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    padding: 5,
   },
   btnContainer: {
     flexDirection: 'row',
@@ -343,13 +357,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    padding: 8,
+    padding: 10,
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
+    color:'black',
+    marginLeft: 7
   },
   cardText: {
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
+    color:'black',
+    marginLeft: 7
   },
 });

@@ -12,11 +12,12 @@ import React, {useState} from 'react';
 import Accordion from 'react-native-collapsible/Accordion';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../../constants/colors';
-import {GENERALGUIDESECTIONS, TENANTSECTIONS, OWNERSECTIONS} from '../../../constants/values';
+import {GENERALGUIDESECTIONS, GENERALGUIDESECTIONS_FIL, TENANTSECTIONS, TENANTSECTIONS_FIL, OWNERSECTIONS, OWNERSECTIONS_FIL} from '../../../constants/values';
 
 const Help = () => {
   const [activeSections1, setActiveSections1] = useState([]);
   const [activeSections2, setActiveSections2] = useState([]);
+  const [isTranslated, setIsTranslated] = useState(false);
 
   function renderHeader(section, _, isActive) {
     return (
@@ -34,7 +35,7 @@ const Help = () => {
   function renderContent(section, _, isActive) {
     return (
       <View style={styles.accordBody}>
-        <Text style={{ color: 'black' , textAlign: 'justify'}}>{section.content}</Text>
+        <Text style={{ color: 'black', textAlign: 'justify' }}>{section.content}</Text>
       </View>
     );
   }
@@ -43,53 +44,72 @@ const Help = () => {
     Linking.openURL('mailto:info.studyhive@gmail.com');
   };
 
+  const toggleTranslation = () => {
+    setIsTranslated(prevState => !prevState);
+  };
+
+
+
+  const guideSections = isTranslated ? GENERALGUIDESECTIONS_FIL : GENERALGUIDESECTIONS;
+  const tenantSections = isTranslated ? TENANTSECTIONS_FIL : TENANTSECTIONS;
+  const ownerSections = isTranslated ? OWNERSECTIONS_FIL : OWNERSECTIONS;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <Text style={[styles.label1, { color: 'teal' }]}>How can we help?</Text>
+        <Text style={[styles.label1, { color: 'teal' }]}>How can we help?</Text>
+
+      {/* BUTTON */}
+        <TouchableOpacity onPress={toggleTranslation} style={styles.translateButton}>
+          <Text style={styles.translateButtonText}>
+            {isTranslated ? 'Switch to English' : 'Translate to Filipino'}
+          </Text>
+        </TouchableOpacity>
+
         <Text style={styles.label}>General Guide</Text>
         <Accordion
           align="bottom"
           underlayColor={'none'}
-          sections={GENERALGUIDESECTIONS}
+          sections={guideSections}
           activeSections={activeSections1}
           renderHeader={renderHeader}
           renderContent={renderContent}
           onChange={sections => setActiveSections1(sections)}
           sectionContainerStyle={styles.accordContainer}
         />
-        <View style={{marginVertical: 10}} />
+        <View style={{ marginVertical: 10 }} />
         <Text style={styles.label}>For Tenants</Text>
         <Accordion
           align="bottom"
           underlayColor={'none'}
-          sections={TENANTSECTIONS}
+          sections={tenantSections}
           activeSections={activeSections1}
           renderHeader={renderHeader}
           renderContent={renderContent}
           onChange={sections => setActiveSections1(sections)}
           sectionContainerStyle={styles.accordContainer}
         />
-        <View style={{marginVertical: 10}} />
+        <View style={{ marginVertical: 10 }} />
         <Text style={styles.label}>For Dorm Owners</Text>
         <Accordion
           align="bottom"
           underlayColor={'none'}
-          sections={OWNERSECTIONS}
+          sections={ownerSections}
           activeSections={activeSections2}
           renderHeader={renderHeader}
           renderContent={renderContent}
           onChange={sections => setActiveSections2(sections)}
           sectionContainerStyle={styles.accordContainer}
         />
-        <View style={{marginVertical: 10}} />
+        <View style={{ marginVertical: 5 }} />
         <View>
-          <Text style={{textAlign: 'center'}}>
+          <Text style={{ textAlign: 'center',  fontFamily: 'Poppins-Regular' }}>
             For other concerns, kindly contact us at
           </Text>
           <TouchableOpacity onPress={handleEmailPress}>
             <Text
               style={{
+                fontFamily: 'Poppins-Regular',
                 marginStart: 5,
                 textAlign: 'center',
                 color: 'teal',
@@ -106,6 +126,7 @@ const Help = () => {
 
 export default Help;
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,15 +134,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   label: {
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 7,
     color: 'black',
     fontSize: 15,
     },
   label1: {
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 15,
-    fontSize: 25,
+    fontSize: 23,
     color: 'teal',
   },
   accordContainer: {
@@ -146,5 +167,21 @@ const styles = StyleSheet.create({
   },
   textSmall: {
     fontSize: 16,
+  },
+  translateButton: {
+    backgroundColor: '#008080',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+    marginBottom: 14,
+    paddingRight: 20,
+    paddingLeft: 20,
+    marginTop: -10
+  },
+  translateButtonText: {
+    color: 'white',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 13,
   },
 });

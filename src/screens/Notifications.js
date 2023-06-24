@@ -119,7 +119,7 @@ export default function Notifications({route, navigation}) {
               style={{height: 360, width: 360}}
               resizeMode="cover"
             />
-            <Text style={styles.title}>No Notifcations</Text>
+            <Text style={styles.title}>No Notifications</Text>
           </>
         )}
       </View>
@@ -173,8 +173,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.gray,
+    fontFamily: 'Poppins-Regular',
   },
   notifsContainer: {
     padding: 10,
@@ -201,12 +202,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   notifTextDate: {
-    fontSize: 20,
+    fontSize: 13,
     fontWeight: 'bold',
     color: COLORS.dark,
   },
   notifText: {
-    fontSize: 16,
+    fontSize: 13,
+    fontFamily: 'Poppins-Regular',
   },
   emptyContainer: {
     justifyContent: 'center',
@@ -215,12 +217,13 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 'bold',
+    marginTop: -30,
     marginBottom: 10,
+    fontFamily: 'Poppins-SemiBold',
   },
   message: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 20,
   },
   btnContainer: {
     flexDirection: 'row',

@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerText: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
   },

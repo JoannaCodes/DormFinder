@@ -254,10 +254,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black'
   },
   message: {
     textAlign: 'center',
     fontSize: 16,
     marginHorizontal: 20,
+    color: 'black'
   },
 });

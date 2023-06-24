@@ -161,7 +161,7 @@ const ChangePassword = ({route}) => {
         )}
       </Formik>
       <TouchableOpacity
-        style={{marginTop: 40}}
+        style={{marginTop: 10}}
         onPress={() => {
           setModalVisible(true);
         }}>

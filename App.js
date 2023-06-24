@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, StyleSheet} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
@@ -122,7 +122,7 @@ function RootNavigator({route}) {
                   navigation.navigate('Profile Tab');
                 }
               }}>
-              <Icon name="person" size={35} color="gray" />
+              <Icon name="person" size={35} color="black" />
             </TouchableOpacity>
           );
         },
@@ -144,17 +144,21 @@ function RootNavigator({route}) {
         tabBarActiveTintColor: '#0E898B',
         tabBarInactiveTintColor: 'gray',
         headerRightContainerStyle: {paddingRight: 16},
+        tabBarLabelStyle: {
+          fontFamily: 'Poppins-Regular'
+        },
       })}>
       <Tab.Screen
         name="ExploreTab"
         component={HomeScreen}
-        options={{title: 'Explore'}}
+        options={{title: 'Explore' , headerTitleStyle: titleStyle.title}}
         initialParams={{user, mode}}
       />
       <Tab.Screen
         name="BookmarksTab"
         component={BookmarksScreen}
-        options={{title: 'Bookmarks'}}
+        options={{title: 'Bookmarks',
+        headerTitleStyle: titleStyle.title,}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -168,7 +172,7 @@ function RootNavigator({route}) {
       <Tab.Screen
         name="NotificationsTab"
         component={NotificationsScreen}
-        options={{title: 'Notifications'}}
+        options={{title: 'Notifications', headerTitleStyle: titleStyle.title,}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -182,7 +186,7 @@ function RootNavigator({route}) {
       <Tab.Screen
         name="InboxTab"
         component={InboxScreen}
-        options={{title: 'Inbox'}}
+        options={{title: 'Inbox', headerTitleStyle: titleStyle.title,}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -382,3 +386,9 @@ export default function App() {
     </>
   );
 }
+const titleStyle = StyleSheet.create({
+  title: {
+    fontFamily: 'Poppins-SemiBold',
+    marginTop: 10
+  },
+});

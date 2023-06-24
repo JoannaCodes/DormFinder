@@ -166,6 +166,7 @@ const InteriorCard = ({item}) => {
     });
     
     const json = response.data;
+    console.log(json);
     if (json.code == 200) {
       navigation.navigate('Chat Room', { 
         navigation: navigation,
@@ -371,7 +372,7 @@ return (
 
 {/* Name and rating view container */}
 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 7}}>
-  <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
+  <Text style={{fontSize: 20, fontFamily: 'Poppins-SemiBold', color: 'black'}}>
     {dorms.name}
   </Text>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -397,20 +398,20 @@ return (
 
 {/* Location text */}
 <TouchableOpacity onPress={handleAddressPress}>
-  <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline', marginTop: 7}}>{dorms.address}</Text>
+  <Text style={{fontSize: 15, color: 'gray' , textDecorationLine: 'underline', marginTop: 2, fontFamily: 'Poppins-Regular',}}>{dorms.address}</Text>
 </TouchableOpacity>
 
 
 {/* Availability */}
-<View style={{flexDirection: 'row', marginTop: 10}}>
-  <Text style={{fontSize: 16, color: 'black'}}>
+<View style={{flexDirection: 'row', marginTop: 12}}>
+  <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-Regular'}}>
   Availability: {dorms.slots} {dorms.slots > 1 ? 'slots' : 'slot'}
   </Text>
 </View>
 
 {/* Facilities container */}
-<View style={{marginTop: 8}}>
-  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+<View style={{marginTop: 12}}>
+  <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold'}}>
     Amenities
   </Text>
 </View>
@@ -517,8 +518,8 @@ return (
 
 
 {/*Nearby Schools*/}
-<View style={{marginTop: 20}}>
-  <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+<View style={{marginTop: 22}}>
+  <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold'}}>
     Nearby Schools
   </Text>
   <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -536,9 +537,9 @@ return (
 
 
 {/*Description*/}
-  <View style={{marginTop: 20}}>
-    <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold', marginBottom: 7}}>
-      Description 
+  <View style={{marginTop: 22}}>
+    <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold', marginBottom: 7}}>
+      About this dormitory
     </Text>
     <Text style={{fontSize: 15, color: COLORS.black}}>
       {dorms.desc}
@@ -547,8 +548,8 @@ return (
 
 
 {/*Establishment Rules*/}
-  <View style={{ marginTop: 20 }}>
-    <Text style={{ fontSize: 16, color: 'black', fontWeight: 'bold' }}>
+  <View style={{ marginTop: 22 }}>
+    <Text style={{ fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold' }}>
         Establishment Rules
     </Text>
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
@@ -582,7 +583,7 @@ return (
 
 {/*Payment & Duration Terms*/}
 <View style={{marginTop: 12}}>
-    <Text style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+    <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold'}}>
         Payment & Duration Terms
     </Text>
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
@@ -620,12 +621,20 @@ return (
     </View>
   </View>
 
+  <Text style={{ fontSize: 17, fontFamily: 'Poppins-SemiBold', marginTop: 15 , color: 'black'}}> Where you'll be </Text>
   <View
-   renderToHardwareTextureAndroid={true}>
-  <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 , color: 'black'}}> Where you'll be </Text>
+   renderToHardwareTextureAndroid={true} 
+   style={{
+    marginTop: 10,
+    height: 300,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    overflow: 'hidden',
+  }}>
   <WebView
   source={{ uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dorms.address)}` }}
-  style={{ marginTop: 20, height: 300 }}/>
+  style={{ marginTop: 10, height: 300}}/>
 </View>
 
 
@@ -638,7 +647,7 @@ return (
     setSelectedDorm(dormref);
     }}>
       <View>
-        <Text style={{fontSize: 15, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
+        <Text style={{fontSize: 15, color: 'black', fontFamily: 'Poppins-Regular', textDecorationLine: 'underline'}}>Report this listing</Text>
       </View>
   </TouchableOpacity>
 </View>
@@ -649,11 +658,11 @@ return (
 <View style={style.footer}>
   <View>
     <Text
-      style={{color: COLORS.teal, fontWeight: 'bold', fontSize: 18}}>
+      style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
       ₱{dorms.price}
     </Text>
       <Text
-        style={{fontSize: 12, color: COLORS.grey, fontWeight: 'bold'}}>
+        style={{fontSize: 12, color: COLORS.grey, fontFamily: 'Poppins-SemiBold',}}>
         Total Price
       </Text>
   </View>
@@ -661,7 +670,7 @@ return (
   <TouchableOpacity
     style={style.bookNowBtn}
     onPress={handleMessageNow}>
-    <Text style={{color: COLORS.white}}>Message Now</Text>
+    <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular',}}>Message Now</Text>
   </TouchableOpacity>
   :
   <TouchableOpacity

@@ -21,7 +21,7 @@ const VerifiyPromtpModal = ({visible, onClose}) => {
         <View style={styles.container}>
           <View style={styles.modal}>
             <View style={styles.header}>
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 20, fontFamily: 'Poppins-SemiBold'}}>
                 Verification
               </Text>
               <TouchableOpacity onPress={handleDismiss}>
@@ -30,11 +30,11 @@ const VerifiyPromtpModal = ({visible, onClose}) => {
             </View>
             <Image
               source={require('../../../assets/upload_document_upsketch.png')}
-              style={{height: 360, width: 360}}
+              style={{height: 320, width: 320}}
               resizeMode="cover"
             />
             <Text style={styles.title}>
-              Please submit the required documents for verification to proceed
+            Kindly provide the necessary documents for verification to proceed
               with adding a dorm listing.
             </Text>
             <Text style={styles.message}>
@@ -86,13 +86,16 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 10,
+    marginTop: -10
   },
   message: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 15,
     marginHorizontal: 20,
+    marginBottom: 10,
+    fontFamily: 'Poppins-Regular',
   },
 });

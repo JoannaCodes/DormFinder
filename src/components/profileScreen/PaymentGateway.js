@@ -38,10 +38,10 @@ export default function PaymentGateway({navigation}) {
       />
       <Text style={styles.title}>We are redirecting you to your GCash App</Text>
       <Text style={styles.text}>
-        Once payment transaction is done, send your reciept to the dorm owner
+        Once payment transaction is done, send your receipt to the dorm owner.
       </Text>
       <TouchableOpacity style={styles.button} onPress={openGCashApp}>
-        <Text style={{color: COLORS.white}}>Continue</Text>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold',}}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
@@ -55,20 +55,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
   },
   text: {
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 15,
+    fontFamily: 'Poppins-Regular',
   },
   button: {
     alignItems: 'center',
     backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
+    padding: 8,
     marginTop: 20,
   },
 });

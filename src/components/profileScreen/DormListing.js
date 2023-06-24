@@ -169,7 +169,7 @@ const DormListing = ({route, navigation}) => {
                 setReviewModalVisible(true);
                 setSelectedDorm(item.id);
               }}>
-              <Icon name="insights" size={18} color={COLORS.teal} />
+              <Icon name="star" size={18} color={COLORS.teal} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
@@ -221,7 +221,7 @@ const DormListing = ({route, navigation}) => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={styles.message}>Tap "</Text>
               <Icon name="add" size={18} color={COLORS.teal} />
-              <Text style={styles.message}>" to Add YourDorm</Text>
+              <Text style={styles.message}>" to Add Your Dorm</Text>
             </View>
           </>
         )}
@@ -295,12 +295,14 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 10,
+    marginTop: -30,
   },
   message: {
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'Poppins-Regular',
   },
   btnContainer: {
     elevation: 2,
@@ -350,6 +352,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: 'black'
   },
   action: {
     flex: 1,

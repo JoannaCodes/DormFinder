@@ -106,6 +106,16 @@ export default function Signup() {
     if (mode === 'google') {
       signUp();
     } else {
+      if (!email || !password || !username) {
+        Alert.alert('Incomplete Fields', 'Please fill in all the fields.');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
+        return;
+      }
+
       if (validateSignup()) {
         const formData = new FormData();
         formData.append('tag', 'signup_app');
@@ -119,7 +129,7 @@ export default function Signup() {
           },
         })
           .then(() => {
-            Alert.alert('User Created');
+            Alert.alert('Success!','Your account has been created');
             navigation.navigate('Login');
           })
           .catch(error => {
@@ -127,6 +137,11 @@ export default function Signup() {
           });
       }
     }
+  };
+
+  const validateEmail = email => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const validateSignup = () => {
@@ -159,10 +174,10 @@ export default function Signup() {
 
       <View style={styles.formTopContainer}>
     <View style={{ flexDirection: 'row', alignItems: 'center' , }}>
-    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 20 }}>
-        <Icon name="arrow-back-ios" size={30} color={COLORS.black} />
+    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 15 }}>
+        <Icon name="arrow-back-ios" size={30} color={'black'} />
       </TouchableOpacity>
-      <Text style={{ color: 'black', fontSize: 30, fontWeight: 'bold', marginLeft: 10, marginTop: 20 }}>
+      <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-Regular', marginLeft: 10, marginTop: 20 }}>
         Register
       </Text>
     </View>
@@ -173,7 +188,7 @@ export default function Signup() {
           <View style={styles.formBottomSubContainer}>
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{padding: 0}}
+                style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                 placeholder="Email"
                 onChangeText={text => setEmail(text)}
                 keyboardType={'email-address'}
@@ -183,7 +198,7 @@ export default function Signup() {
 
             <View style={styles.customInputContainer}>
               <TextInput
-                style={{padding: 0}}
+                style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                 placeholder="Username"
                 onChangeText={text => setUsername(text)}
               />
@@ -193,7 +208,7 @@ export default function Signup() {
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
-                  style={{padding: 0}}
+                  style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}
@@ -212,7 +227,7 @@ export default function Signup() {
               style={styles.loginButton}
               onPress={() => handleSignUp()}>
               <Text
-                style={{color: COLORS.white, fontWeight: 'bold', fontSize: 17}}>
+                style={{color: COLORS.white, fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>
                 Signup
               </Text>
             </TouchableOpacity>
@@ -231,13 +246,13 @@ export default function Signup() {
                 },
               ]}>
               <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontWeight: 'bold'}}>Continue With Google</Text>
+              <Text style={{fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>Continue With Google</Text>
               <View />
             </TouchableOpacity>
 
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: 'black'}}>
+                <Text style={{color: 'black', fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: -2, marginTop: -5,}}>
                   Already Have An Account?
                 </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -245,7 +260,7 @@ export default function Signup() {
                     style={{
                       marginLeft: 5,
                       color: COLORS.teal,
-                      fontWeight: 'bold',
+                      fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: 4, marginTop: -5
                     }}>
                     Login
                   </Text>
@@ -276,7 +291,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
   },
   topBackgroundImgContainer: {
-    flex: 1.5,
+    flex: 1.4,
     alignItems: 'flex-end',
   },
   backgroundImg: {

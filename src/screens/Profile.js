@@ -53,14 +53,14 @@ export default function Profile({user, verified, onLogout}) {
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Edit Profile')}>
             <Icon name="person" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Edit Profile</Text>
+            <Text style={{marginStart: 10 , fontFamily: 'Poppins-Regular'}}>Edit Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Change Password')}>
             <Icon name="vpn-key" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Change Password</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Change Password</Text>
           </TouchableOpacity>
         </View>
 
@@ -70,20 +70,20 @@ export default function Profile({user, verified, onLogout}) {
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Dorm Listing')}>
             <Icon name="add-business" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Dorm Listing</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Dorm Listing</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Verification')}>
             <Icon name="verified-user" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Verification</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Verification</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Payments')}>
             <Icon name="payments" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Payments</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Payments</Text>
           </TouchableOpacity>
         </View>
 
@@ -93,14 +93,14 @@ export default function Profile({user, verified, onLogout}) {
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Help')}>
             <Icon name="help" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 5}}>Help</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Help</Text>
           </TouchableOpacity>
         </View>
 
         {/* Logout section */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.button} onPress={handleLogOut}>
-            <Text style={{color: COLORS.white}}>Logout</Text>
+            <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -113,10 +113,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     flex: 1,
     justifyContent: 'flex-start',
-    padding: 8,
+    padding: 5,
   },
   section: {
-    marginVertical: 16,
+    marginVertical: 10,
     paddingHorizontal: 8,
   },
   profilebtn: {
@@ -128,14 +128,16 @@ const styles = StyleSheet.create({
     padding: 22,
   },
   label: {
-    fontWeight: 'bold',
+    marginTop: 2,
+    color: 'black',
+    fontFamily: 'Poppins-SemiBold'
   },
   button: {
     alignItems: 'center',
     backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
+    padding: 10,
   },
   failedButton: {
     opacity: 0.5,
