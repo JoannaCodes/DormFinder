@@ -1271,6 +1271,7 @@ const styles = StyleSheet.create({
   cardImage: {
     width: '100%',
     height: 150,
+    backgroundColor: COLORS.grey,
   },
   cardName: {
     fontSize: 16,
