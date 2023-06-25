@@ -35,6 +35,7 @@ import axios from 'axios';
 const DormDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
   const userref = route.params.userref;
+  const mode = route.params.mode;
 
   const [user, setUser] = useState([]);
 
@@ -587,35 +588,35 @@ return (
         Payment & Duration Terms
     </Text>
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
-  {dorms.adv_dep !== 'N/A' && (
+  {dorms.adv_dep !== '' && (
     <View style={style.facility1}>
       <Icon name="payments" size={18} />
       <Text style={style.facilityText2}>Advance Deposit:</Text>
       <Text style={style.facilityText2}>₱ {dorms.adv_dep}.00</Text>
     </View>
   )}
-  {dorms.util !== 'N/A' && (
+  {dorms.util !== '' && (
     <View style={style.facility1}>
       <Icon name="bolt" size={18} />
       <Text style={style.facilityText2}>Utility Exclusive:</Text>
       <Text style={style.facilityText2}>{dorms.util}</Text>
     </View>
   )}
-  {dorms.sec_dep !== 'N/A' && (
+  {dorms.sec_dep !== '' && (
     <View style={style.facility1}>
       <Icon name="shield" size={18} />
       <Text style={style.facilityText2}>Security Deposit:</Text>
       <Text style={style.facilityText2}>₱ {dorms.sec_dep}.00</Text>
     </View>
   )}
-  {dorms.min_stay !== 'N/A' && (
+  {dorms.min_stay !== '' && (
     <View style={style.facility1}>
       <Icon name="event" size={18} />
       <Text style={style.facilityText2}>Minimum Stay:</Text>
       <Text style={style.facilityText2}>{dorms.min_stay} month/s</Text>
     </View>
   )}
-  {dorms.adv_dep === 'N/A' && dorms.util === 'N/A' && dorms.sec_dep === 'N/A' && dorms.min_stay === 'N/A' && (
+  {dorms.adv_dep === '' && dorms.util === '' && dorms.sec_dep === '' && dorms.min_stay === '' && (
     <Text style={{ fontStyle: 'italic' , fontSize: 14}}>No Terms for Payment and Duration</Text>
   )}
     </View>
@@ -626,6 +627,7 @@ return (
    renderToHardwareTextureAndroid={true} 
    style={{
     marginTop: 10,
+    ...(mode === 'guest' && { marginBottom: 16 }),
     height: 300,
     borderWidth: 1,
     borderColor: 'gray',
@@ -639,47 +641,52 @@ return (
 
 
 {/* Report listing*/}
-<View style={{marginTop: 13}}>
-  <TouchableOpacity                 
-    onPress={() => {
-    handleReportListing();
-    setReportModalVisible(true);
-    setSelectedDorm(dormref);
-    }}>
-      <View>
-        <Text style={{fontSize: 15, color: 'black', fontFamily: 'Poppins-Regular', textDecorationLine: 'underline'}}>Report this listing</Text>
-      </View>
-  </TouchableOpacity>
-</View>
+{mode === 'guest' ? null : (
+  <View style={{marginTop: 13}}>
+    <TouchableOpacity                 
+      onPress={() => {
+      handleReportListing();
+      setReportModalVisible(true);
+      setSelectedDorm(dormref);
+      }}>
+        <View>
+          <Text style={{fontSize: 15, color: 'black', fontFamily: 'Poppins-Regular', textDecorationLine: 'underline'}}>Report this listing</Text>
+        </View>
+    </TouchableOpacity>
+  </View>
+)}
 
 
 
 {/* footer container */}
-<View style={style.footer}>
-  <View>
-    <Text
-      style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
-      ₱{dorms.price}
-    </Text>
+{mode === 'guest' ? null : (
+  <View style={style.footer}>
+    <View>
       <Text
-        style={{fontSize: 12, color: COLORS.grey, fontFamily: 'Poppins-SemiBold',}}>
-        Total Price
+        style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
+        ₱{dorms.price}
       </Text>
+        <Text
+          style={{fontSize: 12, color: COLORS.grey, fontFamily: 'Poppins-SemiBold',}}>
+          Total Price
+        </Text>
+    </View>
+    {user.id !== dorms.userref ? 
+    <TouchableOpacity
+      style={style.bookNowBtn}
+      onPress={handleMessageNow}>
+      <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular',}}>Message Now</Text>
+    </TouchableOpacity>
+    :
+    <TouchableOpacity
+      style={style.bookNowBtn}
+      onPress={() => navigation.navigate('InboxTab')}>
+      <Text style={{color: COLORS.white}}>View Chats</Text>
+    </TouchableOpacity>
+    }
   </View>
-  {user.id !== dorms.userref ? 
-  <TouchableOpacity
-    style={style.bookNowBtn}
-    onPress={handleMessageNow}>
-    <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular',}}>Message Now</Text>
-  </TouchableOpacity>
-  :
-  <TouchableOpacity
-    style={style.bookNowBtn}
-    onPress={() => navigation.navigate('InboxTab')}>
-    <Text style={{color: COLORS.white}}>View Chats</Text>
-  </TouchableOpacity>
-  }
-  </View>
+)}
+
 </View>
 </ScrollView>
   <ReportForm

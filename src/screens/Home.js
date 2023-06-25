@@ -42,6 +42,7 @@ const {width} = Dimensions.get('screen');
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Toast from 'react-native-toast-message';
 import { CheckBox, RadioButton, RadioGroup } from "react-native-radio-check"
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const HomeScreen = ({navigation, route}) => {
@@ -79,9 +80,17 @@ const HomeScreen = ({navigation, route}) => {
     created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
   );
 
-  PushNotificationConfig.configure();
+  const {user, mode} = route.params;
 
-  const {user} = route.params;
+  useFocusEffect(
+    React.useCallback(() => {
+      PushNotificationConfig.configure();
+
+      return () => {
+        // Clean up any resources if needed
+      };
+    }, []),
+  );
 
   useEffect(() => {
     fetchData();
@@ -440,7 +449,7 @@ const HomeScreen = ({navigation, route}) => {
       <Pressable
         activeOpacity={0.8}
         onPress={() =>
-          navigation.navigate('Dorm Details', {dormref: item.id, userref: user})
+          navigation.navigate('Dorm Details', {dormref: item.id, userref: user, mode: mode})
         }>
         <View style={styles.card}>
           <Image
