@@ -152,21 +152,21 @@ export default function EditProfile({user, onLogout}) {
   const validationSchema = Yup.object().shape({
     user: Yup.string()
       .required('This is required')
-      .test('is-email-or-phone', 'Invalid', function (value) {
-        // regular expressions to validate email and phone number
+      .test('is-email', 'Invalid', function (value) {
+        // regular expression to validate email address
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-        const phoneRegex = /^(09|\+639)\d{9}$/gm;
-
+  
         if (emailRegex.test(value)) {
-          return true; // input is a valid email address
-        } else if (phoneRegex.test(value)) {
-          return true; // input is a valid phone number
+          if (value.endsWith('.com')) {
+            return true; // input is a valid email address ending with ".com"
+          } else {
+            return false; // input is a valid email address but does not end with ".com"
+          }
         }
-
-        return false; // input is not a valid email or phone number
+  
+        return false; // input is not a valid email address
       }),
   });
-
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Formik
@@ -178,7 +178,7 @@ export default function EditProfile({user, onLogout}) {
           <>
             <View style={styles.section}>
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Email or Phone Number</Text>
+                <Text style={styles.label}>Email</Text>
                 <TextInput
                   style={styles.input}
                   value={
@@ -196,21 +196,27 @@ export default function EditProfile({user, onLogout}) {
               </View>
             </View>
             <TouchableOpacity
-              onPress={handleSubmit}
-              disabled={values.user.trim() === '' || values.user === handle}
-              style={[
-                styles.button,
-                {
-                  backgroundColor:
-                    values.user.trim() === '' || values.user === handle
-                      ? COLORS.grey
-                      : COLORS.teal,
+  onPress={handleSubmit}
+  disabled={
+    values.user.trim() === '' ||
+    values.user === handle ||
+    !values.user.endsWith('.com') // Disable the submit button if the input doesn't end with ".com"
+  }
+  style={[
+    styles.button,
+    {
+      backgroundColor:
+        values.user.trim() === '' ||
+        values.user === handle ||
+        !values.user.endsWith('.com') // Change button color when disabled
+          ? COLORS.grey
+          : COLORS.teal,
                 },
               ]}>
               {isLoading ? (
                 <ActivityIndicator size={'small'} color={COLORS.white} />
               ) : (
-                <Text style={{color: COLORS.white}}>Submit</Text>
+                <Text style={{color: COLORS.white , fontFamily: 'Poppins-Regular', marginTop: 3}}>Submit</Text>
               )}
             </TouchableOpacity>
             <View style={styles.section}>
@@ -224,9 +230,8 @@ export default function EditProfile({user, onLogout}) {
                     alignItems: 'center',
                   },
                 ]}>
-                <Text style={{flex: 1, flexShrink: 1}}>
-                  All of your account data, including your listings, will be
-                  gone if you delete your account.
+                <Text style={{flex: 1, flexShrink: 1, fontFamily: 'Poppins-Regular', fontSize: 13}}>
+                Deleting your account will result in the permanent loss of all your data, including listings.
                 </Text>
                 <TouchableOpacity
                   style={styles.deletebtn}
@@ -257,7 +262,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 5,
   },
   inputContainer: {
@@ -269,6 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: COLORS.white,
     elevation: 2,
+    fontFamily: 'Poppins-Regular',
   },
   inputError: {
     borderColor: COLORS.red,
@@ -281,12 +287,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0E898B',
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
+    padding: 8,
   },
   deletebtn: {
     borderWidth: 1,
     borderColor: COLORS.red,
-    padding: 10,
+    padding: 8,
     marginStart: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -294,6 +300,6 @@ const styles = StyleSheet.create({
   },
   deletebtnlbl: {
     color: COLORS.red,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
   },
 });

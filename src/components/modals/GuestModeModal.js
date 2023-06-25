@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontFamily: 'Poppins-SemiBold',
   },
   message: {
     textAlign: 'center',
-    fontSize: 16,
-    marginHorizontal: 20,
+    fontSize: 15,
+    marginHorizontal: 15,
+    fontFamily: 'Poppins-Regular',
   },
   button: {
     marginTop: 20,
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontFamily: 'Poppins-SemiBold',
     color: 'teal',
     textAlign: 'center',
   },

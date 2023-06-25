@@ -515,11 +515,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 45,
     top: -11,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
   },
   chatOtherTime: {
     fontSize: 10,
-    fontWeight: '400',
+    fontFamily: 'Poppins-SemiBold',
     textAlign: 'left',
     color: '#fff',
   },

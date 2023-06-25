@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     bottom: 16,
     right: 16,
     backgroundColor: COLORS.teal,
-    borderRadius: 20,
+    borderRadius: 30,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',

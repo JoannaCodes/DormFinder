@@ -70,7 +70,7 @@ const ForgotPasswordModal = ({visible, onClose}) => {
               <TouchableOpacity
                 onPress={handleDismiss}
                 style={styles.closeButton}>
-                <Icon name="close" size={30} color="#FF0000" />
+                <Icon name="close" size={27} color="#FF0000" />
               </TouchableOpacity>
             </View>
             <TextInput
@@ -94,7 +94,7 @@ const ForgotPasswordModal = ({visible, onClose}) => {
               {loading ? (
                 <ActivityIndicator size={'small'} color={'#FFFFFF'} />
               ) : (
-                <Text style={{color: '#FFFFFF'}}>Submit</Text>
+                <Text style={{color: '#FFFFFF', fontFamily: 'Poppins-Regular', marginTop: 3}}>Submit</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -127,8 +127,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerText: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 23,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: -10,
     color: 'black',
   },
   input: {
@@ -137,6 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     elevation: 4,
+    fontFamily: 'Poppins-Regular',
   },
   characterCount: {
     alignSelf: 'flex-end',
@@ -148,12 +150,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0E898B',
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
+    padding: 8,
     marginTop: 16,
   },
   closeButton: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 3,
+    right: 1,
   },
 });

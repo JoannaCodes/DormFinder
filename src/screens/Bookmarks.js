@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'Poppins-SemiBold',
     marginBottom: 5,
     marginTop: -30,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   cardTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: 'Poppins-SemiBold',
     color:'black',
     marginLeft: 7

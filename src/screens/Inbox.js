@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   message: {
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'Poppins-Regular',
   },
   btnContainer: {
     flexDirection: 'row',

@@ -235,7 +235,7 @@ export default function Login({onLogin}) {
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TextInput
-                  style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
+                  style={{ flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={text => setPassword(text)}

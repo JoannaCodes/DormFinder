@@ -154,7 +154,7 @@ const ChangePassword = ({route}) => {
               {loading ? (
                 <ActivityIndicator size={'small'} color={COLORS.white} />
               ) : (
-                <Text style={{color: COLORS.white}}>Save</Text>
+                <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold', marginTop: 5}}>Save</Text>
               )}
             </TouchableOpacity>
           </>
@@ -168,7 +168,7 @@ const ChangePassword = ({route}) => {
         <Text
           style={{
             color: COLORS.teal,
-            fontWeight: 'bold',
+            fontFamily: 'Poppins-SemiBold',
             textAlign: 'center',
           }}>
           Forget Your Password?
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 5,
   },
   inputContainer: {
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: COLORS.white,
     elevation: 2,
+    fontFamily: 'Poppins-Regular'
   },
   inputError: {
     borderColor: COLORS.red,
@@ -222,6 +223,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.teal,
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
+    padding: 5,
   },
 });

@@ -41,7 +41,7 @@ const GENERALGUIDESECTIONS_FIL = [
       "Ang paggawa ng account ay nagbibigay-daan upang ma-access ang mga karagdagang feature. Para gumawa ng account, sundin ang mga hakbang na ito:\n\n1. Pindutin ang 'Signup' sa ibaba.\n\n2. Piliin kung magsa-sign up gamit ang iyong email o ang iyong Google account.\n\n3. Ilagay ang kinakailangang impormasyon at i-tap ang 'Signup' na button.\n\n4. Pagkatapos gumawa ng account, maaari kang bumalik sa login screen at mag-sign in gamit ang iyong username at password.",
   },
   {
-    title: 'Pag-login',
+    title: 'Paglogin',
     content:
       "Siguraduhing ginagamit mo ang mga tamang kredensyal na nauugnay sa iyong account upang makapag-log in.\n\n1. Piliin ang iyong gustong paraan sa pag-log in: email, Google account, o guest mode.\n\n2. Ilagay ang kinakailangang impormasyon at pindutin ang 'Login' button.\n\n3. Kung nakalimutan mo ang iyong password, pindutin ang 'Nakalimutan ang password' upang simulan ang proseso ng pag-reset ng password.\n\n4. Pagkatapos makapag log in ay magkakaroon ka ng access sa iyong account",
   },
@@ -129,7 +129,7 @@ const OWNERSECTIONS_FIL = [
     "Magbigay ng kinakailangang dokumentasyon para sa pagpapatunay na ikaw ay nagmamay-ari ng dorm. Simulan ang pag-upload ng sarili mong dormitoryo kapag nakumpirma na.\n\nNarito kung paano mo mapapatunayan ang listahan ng iyong dormitoryo:\n\n1. Ipunin ang kinakailangang dokumento na magpapatunay na legal ang iyong dormitoryo.\n\n2. Pindutin ang iyong profile para ma-access ang seksyon ng 'Verification'.\n\n3. Kakailanganin mong i-upload ang kinakailangan na dokumento, gaya ng iyong DTI Certificate, SEC Certificate of Registration, o anumang nauugnay na sumusuportang dokumento.\n\n4. Isumite ang impormasyon para sa pagsusuri.\n\n5. Hintaying makumpleto ng mga admin ang proseso.\n\n6. Kapag na-verify na, makakatanggap ang iyong profile ng verification badge, na nagsasaad ng pagiging lehitimo nito. Maaari mo na ngayong simulan ang pag-upload ng iyong sariling dormitoryo.",
   },
   {
-    title: 'Mag-upload ng sariling dorm',
+    title: 'Pag-upload ng sariling dorm',
     content:
       "Mag-upload ng sariling dorm sa pamamagitan ng pagbibigay ng mga tamang detalye ng iyong dormitoryo. Mag-upload ng mga na larawan para ipakita ang iyong dormitoryo at maakit ang mga potensyal na residente.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Pindutin ang '+' button \n\n3. Ilagay ang kinakailangang impormasyon gaya ng pangalan ng dormitoryo, lokasyon, presyo at higit pa.\n\n4. Mag-upload ng mga larawan ng iyong dormitoryo upang ipakita ang mga pasilidad at hitsura nito.\n\n5. Suriin ang impormasyon at tiyaking tama.\n\n6. Isumite ang dormitoryo.",
   },
@@ -144,7 +144,7 @@ const OWNERSECTIONS_FIL = [
       "Kung nais mo na burahin ang inupload na dorm, mayroon kang opsyon na tanggalin ito. Gayunpaman, mag-ingat sa pagbura nito dahil permanente na itong mawawala.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'trash' icon para burahin ang iyong napiling dormitoryo.\n\n4. Kumpirmahin ang iyong intensyon na tanggalin ito.",
   },
   {
-    title: 'Tignan ang ratings at komento ng inupload na dorm',
+    title: 'Tingnan ang ratings at komento ng \ninupload na dorm',
     content:
       "Bilang may-ari ng dorm, mayroon kang access sa mga rating at komento tungkol sa iyong dorm. \n\n1. Hanapin at i-access ang seksyon ng 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'star' icon upang tingnan ang mga review ng iyong napiling dormitoryo.",
   },

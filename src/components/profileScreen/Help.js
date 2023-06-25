@@ -170,12 +170,12 @@ const styles = StyleSheet.create({
   },
   translateButton: {
     backgroundColor: '#008080',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingVertical: 6,
     borderRadius: 10,
     alignSelf: 'flex-start',
-    marginBottom: 14,
+    marginBottom: 10,
     paddingRight: 20,
+    paddingTop: 10,
     paddingLeft: 20,
     marginTop: -10
   },

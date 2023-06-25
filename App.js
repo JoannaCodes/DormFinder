@@ -172,7 +172,7 @@ function RootNavigator({route}) {
       <Tab.Screen
         name="NotificationsTab"
         component={NotificationsScreen}
-        options={{title: 'Notifications', headerTitleStyle: titleStyle.title,}}
+        options={{title: 'Notifications', headerTitleStyle: titleStyle.title}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -186,7 +186,7 @@ function RootNavigator({route}) {
       <Tab.Screen
         name="InboxTab"
         component={InboxScreen}
-        options={{title: 'Inbox', headerTitleStyle: titleStyle.title,}}
+        options={{title: 'Inbox', headerTitleStyle: titleStyle.title}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -209,43 +209,66 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen
         name="Home"
         component={RootNavigator}
-        options={{headerShown: false}}
+        options={{headerShown: false , headerTitleStyle: titleStyle.title1}}
         initialParams={{user, mode}}
       />
       <AppStack.Screen
         name="Change Password"
         component={ChangePasswordComponent}
         initialParams={{user}}
+        options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen
         name="Dorm Listing"
         component={DormListingComponent}
         initialParams={{user, verified}}
+        options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen
         name="Verification"
         component={VerificationComponent}
         initialParams={{user}}
+        options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen name="Guest Modal" options={{headerShown: false}}>
         {() => <GuestModeModal onLogout={onLogout} />}
       </AppStack.Screen>
-      <AppStack.Screen name="Profile Tab" options={{title: 'Profile'}}>
+      <AppStack.Screen name="Profile Tab" options={{title: 'Profile' , headerTitleStyle: titleStyle.title1}}>
         {() => (
           <ProfileScreen user={user} verified={verified} onLogout={onLogout} />
         )}
       </AppStack.Screen>
-      <AppStack.Screen name="Edit Profile">
+      <AppStack.Screen 
+      name="Edit Profile"
+      options={{headerTitleStyle: titleStyle.title1}}>
         {() => <EditProfileComponent user={user} onLogout={onLogout} />}
       </AppStack.Screen>
       <AppStack.Screen 
         name="Chat Room" component={ChatRoomComponent}
-        options={{headerShown: false}}
+        options={{headerShown: false , headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen name="Payments" component={PaymentGatewayComponent} />
-      <AppStack.Screen name="Dorm Details" component={DormDetailsComponent} />
-      <AppStack.Screen name="Listing Form" component={ListingFormComponent} />
-      <AppStack.Screen name="Help" component={HelpComponent} />
+      <AppStack.Screen 
+        name="Payments" 
+        component={PaymentGatewayComponent}
+        options={{headerTitleStyle: titleStyle.title1 }}
+        
+      />
+      <AppStack.Screen 
+        name="Dorm Details" 
+        component={DormDetailsComponent}
+        options={{headerTitleStyle: titleStyle.title1}}
+      />
+      <AppStack.Screen 
+        name="Listing Form" 
+        component={ListingFormComponent}
+        options={{headerTitleStyle: titleStyle.title1}}
+      />
+      <AppStack.Screen 
+        name="Help" 
+        component={HelpComponent}
+        options={{headerTitleStyle: titleStyle.title1, }}
+        
+      />
     </AppStack.Navigator>
   );
 }
@@ -391,4 +414,8 @@ const titleStyle = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
     marginTop: 10
   },
+  title1: {
+    fontFamily: 'Poppins-SemiBold',
+  },
+  
 });
