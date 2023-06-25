@@ -350,9 +350,9 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 5,
-    color: 'black'
+    color: 'black',
+    fontFamily: 'Poppins-SemiBold'
   },
   action: {
     flex: 1,
@@ -364,4 +364,5 @@ const styles = StyleSheet.create({
   failedButton: {
     opacity: 0.5,
   },
+  
 });

@@ -443,51 +443,101 @@ const HomeScreen = ({navigation, route}) => {
     );
   };
 
-  const Card = ({item}) => {
+
+  const Card = ({ item }) => {
     const images = item.images ? item.images.split(',') : [];
+    const isAvailable = item.slots > 0;
+  
     return (
       <Pressable
         activeOpacity={0.8}
         onPress={() =>
-          navigation.navigate('Dorm Details', {dormref: item.id, userref: user, mode: mode})
-        }>
-        <View style={styles.card}>
-          <Image
-            source={{uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`}}
-            style={styles.cardImage}
-          />
-          <View style={{marginTop: 10}}>
+          navigation.navigate('Dorm Details', {
+            dormref: item.id,
+            userref: user,
+            mode: mode,
+          })
+        }
+      >
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: isAvailable ? '#F5F5F5' : '#E8E8E8',
+              opacity: isAvailable ? 1 : 0.5,
+            },
+          ]}
+        >
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: `${DORM_UPLOADS}/${item.id}/${images[0]}` }}
+              style={[
+                styles.cardImage,
+                { opacity: isAvailable ? 1 : 0.8 },
+              ]}
+            />
+            {!isAvailable && (
+              <View style={styles.unavailableOverlay}>
+                <Text style={styles.unavailableText}>Unavailable</Text>
+              </View>
+            )}
+          </View>
+          <View style={{ marginTop: 10 }}>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 5,
-              }}>
-              <Text style={{fontSize: 16, fontFamily: 'Poppins-SemiBold', color: 'black'}}>
+              }}
+            >
+              <Text
+                style={[
+                  styles.cardName,
+                  { color: isAvailable ? 'black' : COLORS.grey },
+                ]}
+              >
                 {item.name}
               </Text>
               <Text
-                style={{ fontFamily: 'Poppins-SemiBold', color: COLORS.teal, fontSize: 16}}>
+                style={[
+                  styles.cardPrice,
+                  { color: isAvailable ? COLORS.teal : COLORS.grey },
+                ]}
+              >
                 ₱{item.price}
               </Text>
             </View>
-            <Text style={{color: COLORS.grey, fontSize: 14, marginTop: 5, color: 'black'}}>
+            <Text
+              style={[
+                styles.cardAddress,
+                { color: isAvailable ? 'black' : COLORS.grey },
+              ]}
+            >
               {item.address}
             </Text>
-            <View style={{marginTop: 10, flexDirection: 'row'}}>
-            <View style={styles.facility}>
+            <View style={{ marginTop: 10, flexDirection: 'row' }}>
+              <View style={styles.facility}>
                 <Icon name="hotel" size={18} />
-                <Text style=
-                  {styles.facilityText}>
-                    Availability: {item.slots} {item.slots > 1 ? 'slots' : 'slot'}
+                <Text
+                  style={[
+                    styles.facilityText,
+                    { color: isAvailable ? 'black' : COLORS.grey },
+                  ]}
+                >
+                  Availability:{' '}
+                  {isAvailable
+                    ? `${item.slots} ${item.slots > 1 ? 'slots' : 'slot'}`
+                    : 'unavailable'}
                 </Text>
-          </View>
+              </View>
             </View>
           </View>
         </View>
       </Pressable>
     );
   };
+
+
 
   const filter = () => {};
 
@@ -1139,7 +1189,16 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: COLORS.white,
-    elevation: 10,
+    elevation: 5,
+    width: width - 40,
+    marginRight: 20,
+    padding: 15,
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  card1: {
+    backgroundColor: COLORS.white,
+    elevation: 5, // Add elevation to create shadow
     width: width - 40,
     marginRight: 20,
     padding: 15,
@@ -1196,6 +1255,36 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 6, // Adjust this value as needed
+  },
+  unavailableOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  unavailableText: {
+    fontSize: 25,
+    fontFamily: 'Poppins-SemiBold',
+    color: 'black',
+  },
+  cardImage: {
+    width: '100%',
+    height: 150,
+  },
+  cardName: {
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    color: 'black',
+  },
+  cardPrice: {
+    fontFamily: 'Poppins-SemiBold',
+    color: COLORS.teal,
+    fontSize: 16,
+  },
+  cardAddress: {
+    color: COLORS.grey,
+    fontSize: 14,
+    marginTop: 5
   },
 });
 

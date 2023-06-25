@@ -405,10 +405,11 @@ return (
 
 {/* Availability */}
 <View style={{flexDirection: 'row', marginTop: 12}}>
-  <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-Regular'}}>
-  Availability: {dorms.slots} {dorms.slots > 1 ? 'slots' : 'slot'}
+  <Text style={{fontSize: 17, fontFamily: 'Poppins-Regular' , color: 'black'}}>
+    Availability: {dorms.slots > 0 ? `${dorms.slots} ${dorms.slots > 1 ? 'slots' : 'slot'}` : <Text style={{color: 'red'}}>unavailable</Text>}
   </Text>
 </View>
+
 
 {/* Facilities container */}
 <View style={{marginTop: 12}}>
