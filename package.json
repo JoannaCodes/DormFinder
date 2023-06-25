@@ -30,6 +30,7 @@
     "react-native": "0.70.6",
     "react-native-app-link": "^1.0.1",
     "react-native-asset": "^2.1.1",
+    "react-native-background-task": "^0.2.1",
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-collapsible": "^1.6.1",
     "react-native-document-picker": "^8.2.0",
