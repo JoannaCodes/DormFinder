@@ -56,7 +56,11 @@ const Bookmarks = ({route, navigation}) => {
 
   const fetchData = async () => {
     await axios
-      .get(`${URL}?tag=get_bookmarks&userref=${user}`)
+      .get(`${URL}?tag=get_bookmarks&userref=${user}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        },
+      })
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);

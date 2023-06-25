@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, AUTH_KEY} from '../../constants';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -35,7 +35,11 @@ const ViewReviews = ({visible, onClose, dormref}) => {
 
   const fetchReviews = async () => {
     await axios
-      .get(`${URL}?tag=get_reviews&dormref=${dormref}`)
+      .get(`${URL}?tag=get_reviews&dormref=${dormref}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        }
+      })
       .then(response => {
         const data = JSON.parse(response.data);
         const ratings = data.map(val => {

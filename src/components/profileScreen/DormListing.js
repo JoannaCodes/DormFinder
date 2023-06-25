@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL, DORM_UPLOADS} from '../../../constants';
+import {BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -59,7 +59,12 @@ const DormListing = ({route, navigation}) => {
   const fetchData = async () => {
     setLoading(true);
     await axios
-      .get(`${URL}?tag=get_dorms&userref=${user}`)
+      .get(`${URL}?tag=get_dorms&userref=${user}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
@@ -105,6 +110,7 @@ const DormListing = ({route, navigation}) => {
             await axios
               .post(BASE_URL, formData, {
                 headers: {
+                  'Auth-Key': AUTH_KEY,
                   'Content-Type': 'multipart/form-data',
                 },
               })
@@ -138,7 +144,16 @@ const DormListing = ({route, navigation}) => {
   const renderItem = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        underlayColor={COLORS.grey}
+        onPress={() =>
+          navigation.navigate('Dorm Details', {
+            dormref: item.id,
+            userref: user,
+          })
+        }
+        style={styles.card}>
         <Image
           source={{
             uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`,
@@ -180,7 +195,7 @@ const DormListing = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -352,7 +367,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: 'black'
+    color: 'black',
   },
   action: {
     flex: 1,

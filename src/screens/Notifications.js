@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, AUTH_KEY} from '../../constants';
 import COLORS from '../../constants/colors';
 
 export default function Notifications({route, navigation}) {
@@ -54,7 +54,11 @@ export default function Notifications({route, navigation}) {
       let URL = BASE_URL;
 
       axios
-        .get(URL + '?tag=getnotificationspast' + '&userref=' + user)
+        .get(URL + '?tag=getnotificationspast' + '&userref=' + user, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+          },
+        })
         .then(res => {
           var output = JSON.parse(res.data);
           setNotifContainer(output);

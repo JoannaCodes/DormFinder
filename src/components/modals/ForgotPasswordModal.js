@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../../constants';
+import {BASE_URL, AUTH_KEY} from '../../../constants';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
@@ -28,6 +28,7 @@ const ForgotPasswordModal = ({visible, onClose}) => {
     await axios
       .post(BASE_URL, formData, {
         headers: {
+          'Auth-Key': AUTH_KEY,
           'Content-Type': 'multipart/form-data',
         },
       })

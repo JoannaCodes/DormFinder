@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../../constants';
+import {BASE_URL, AUTH_KEY} from '../../../constants';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -42,7 +42,11 @@ export default function EditProfile({user, onLogout}) {
   const fetchAccount = async () => {
     setIsLoading(true);
     axios
-      .get(`${URL}?tag=get_account&userref=${user}`)
+      .get(`${URL}?tag=get_account&userref=${user}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        },
+      })
       .then(response => {
         const data = JSON.parse(response.data);
         const {identifier, ...profile} = data;
@@ -75,6 +79,7 @@ export default function EditProfile({user, onLogout}) {
           await axios
             .post(BASE_URL, formData, {
               headers: {
+                'Auth-Key': AUTH_KEY,
                 'Content-Type': 'multipart/form-data',
               },
             })
@@ -121,6 +126,7 @@ export default function EditProfile({user, onLogout}) {
             await axios
               .post(BASE_URL, formData, {
                 headers: {
+                  'Auth-Key': AUTH_KEY,
                   'Content-Type': 'multipart/form-data',
                 },
               })

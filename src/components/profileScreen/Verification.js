@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import {BASE_URL} from '../../../constants';
+import {BASE_URL, AUTH_KEY} from '../../../constants';
 import {
   View,
   Text,
@@ -31,7 +31,9 @@ export default function Verification({route, navigation}) {
         let URL = BASE_URL;
         axios
           .get(URL + '?tag=check_ifsubmitted' + '&user_id=' + user, {
-            headers: {'Cache-Control': 'no-cache'},
+            headers: {
+              'Auth-Key': AUTH_KEY,
+              'Cache-Control': 'no-cache'},
           })
           .then(res => {
             console.log(res.data);
@@ -133,6 +135,7 @@ export default function Verification({route, navigation}) {
 
     const response = axios.post(BASE_URL, formData, {
       headers: {
+        'Auth-Key': AUTH_KEY,
         'Content-Type': 'multipart/form-data',
       },
     });

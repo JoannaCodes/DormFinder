@@ -125,7 +125,8 @@ export default function Signup() {
 
         await axios.post(BASE_URL, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Auth-Key': AUTH_KEY,
+            'Content-Type': 'multipart/form-data'
           },
         })
           .then(() => {

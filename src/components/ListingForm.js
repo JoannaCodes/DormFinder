@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, AUTH_KEY} from '../../constants';
 import {HEI} from '../../constants/values';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
@@ -110,7 +110,11 @@ const ListingForm = ({route, navigation}) => {
 
   const fetchDormDetails = async () => {
     await axios
-      .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`)
+      .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        }
+      })
       .then(response => {
         const data = JSON.parse(response.data);
         const fetchedHei = data.hei.split(',');
@@ -195,6 +199,7 @@ const ListingForm = ({route, navigation}) => {
       await axios
         .post(BASE_URL, formData, {
           headers: {
+            'Auth-Key': AUTH_KEY,
             'Content-Type': 'multipart/form-data',
           },
         })
@@ -270,6 +275,7 @@ const ListingForm = ({route, navigation}) => {
       await axios
         .post(BASE_URL, formData, {
           headers: {
+            'Auth-Key': AUTH_KEY,
             'Content-Type': 'multipart/form-data',
           },
         })

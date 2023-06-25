@@ -1150,6 +1150,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 180,
     borderRadius: 10,
+    backgroundColor: COLORS.grey,
   },
   facility: {flexDirection: 'row', marginRight: 15, color: 'black'},
   facilityText: {marginLeft: 5, color: 'black',},

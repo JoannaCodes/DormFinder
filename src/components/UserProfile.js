@@ -10,7 +10,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, AUTH_KEY} from '../../constants';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -42,7 +42,11 @@ const UserProfile = ({uid}) => {
 
   const fetchAccount = async () => {
     await axios
-      .get(`${URL}?tag=get_account&userref=${uid}`)
+      .get(`${URL}?tag=get_account&userref=${uid}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        }
+      })
       .then(async response => {
         const data = JSON.parse(response.data);
         const {id, identifier, password, ...profile} = data;
@@ -84,6 +88,7 @@ const UserProfile = ({uid}) => {
       axios
         .post(BASE_URL, formData, {
           headers: {
+            'Auth-Key': AUTH_KEY,
             'Content-Type': 'multipart/form-data',
           },
         })

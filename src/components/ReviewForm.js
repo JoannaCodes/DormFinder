@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {BASE_URL} from '../../constants';
+import {BASE_URL, AUTH_KEY} from '../../constants';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, {useState} from 'react';
@@ -37,6 +37,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
     await axios
       .post(BASE_URL, formData, {
         headers: {
+          'Auth-Key': AUTH_KEY,
           'Content-Type': 'multipart/form-data',
         },
       })
