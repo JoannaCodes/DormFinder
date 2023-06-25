@@ -171,8 +171,8 @@ const InteriorCard = ({item}) => {
     if (json.code == 200) {
       navigation.navigate('Chat Room', { 
         navigation: navigation,
-        anotherImageUrl: json.data.me.imageUrl,
-        username: json.data.me.username,
+        anotherImageUrl: json.data.other.imageUrl,
+        username: json.data.other.username,
         unique_code: dorms.dormref,
         chatroom_code: json.data.chatroom_code,
         myid: user.id,
