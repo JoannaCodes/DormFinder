@@ -12,7 +12,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
+  Modal,
 } from 'react-native';
 import {BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +43,7 @@ const DormListing = ({route, navigation}) => {
   const [status, setStatus] = useState('success');
   const [disable, setDisable] = useState(false);
   const [dorms, setDorms] = useState('');
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -68,7 +71,7 @@ const DormListing = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
-        setStatus('success');
+        console.log(data);
 
         // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
@@ -79,6 +82,7 @@ const DormListing = ({route, navigation}) => {
         AsyncStorage.setItem('dormListing', JSON.stringify(dataWithoutImages));
       })
       .catch(async error => {
+        console.error('Error occurred during the Axios request:', error);
         const storedDorms = await AsyncStorage.getItem('dormListing');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
@@ -143,6 +147,32 @@ const DormListing = ({route, navigation}) => {
 
   const renderItem = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
+
+    const handleEditOption = () => {
+      navigation.navigate('Listing Form', {
+        dormref: item.id,
+        userref: user,
+        editmode: true,
+      });
+      setShowMenu(false);
+    };
+
+    const handleSeeReviewsOption = () => {
+      setReviewModalVisible(true);
+      setSelectedDorm(item.id);
+      setShowMenu(false);
+    };
+
+    const handleHideOption = () => {
+      console.log(`Hide option selected for id: ${item.id}`);
+      setShowMenu(false);
+    };
+
+    const handleDeleteOption = () => {
+      _deleteDorm(item.id);
+      setShowMenu(false);
+    };
+
     return (
       <TouchableOpacity
         activeOpacity={0.5}
@@ -160,40 +190,66 @@ const DormListing = ({route, navigation}) => {
           }}
           style={styles.image}
         />
+        <TouchableOpacity
+          style={styles.menuButton}
+          onPress={() => setShowMenu(true)}>
+          <Icon name="more-vert" size={18} color={COLORS.teal} />
+        </TouchableOpacity>
         <View style={styles.cardBody}>
           <Text style={styles.cardTitle} numberOfLines={1} ellipsizeMode="tail">
             {item.name}
           </Text>
-          <Separator />
-          <View style={styles.action}>
-            <TouchableOpacity
-              style={[styles.btnContainer, disable && styles.failedButton]}
-              disabled={disable}
-              onPress={() =>
-                navigation.navigate('Listing Form', {
-                  dormref: item.id,
-                  userref: user,
-                  editmode: true,
-                })
-              }>
-              <Icon name="mode-edit" size={18} color={COLORS.teal} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnContainer}
-              onPress={() => {
-                setReviewModalVisible(true);
-                setSelectedDorm(item.id);
-              }}>
-              <Icon name="star" size={18} color={COLORS.teal} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnContainer}
-              onPress={() => {
-                _deleteDorm(item.id);
-              }}>
-              <Icon name="delete" size={18} color={COLORS.teal} />
-            </TouchableOpacity>
-          </View>
+          <Modal
+            visible={showMenu}
+            animationType="fade"
+            transparent={true}
+            onRequestClose={() => setShowMenu(false)}>
+            <TouchableWithoutFeedback onPress={() => setShowMenu(false)}>
+              <View style={styles.overlay} />
+            </TouchableWithoutFeedback>
+            <View style={styles.menuContainer}>
+              <TouchableOpacity
+                style={[styles.menuItem, disable && styles.failedButton]}
+                disabled={disable}
+                onPress={() => {
+                  // Handle edit option
+                  handleEditOption();
+                }}>
+                <Icon name="mode-edit" size={18} color={COLORS.teal} />
+                <Text style={styles.menuItemText}>Edit</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  // Handle see reviews option
+                  handleSeeReviewsOption();
+                }}>
+                <Icon name="star" size={18} color={COLORS.teal} />
+                <Text style={styles.menuItemText}>See Reviews</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  // Handle hide option
+                  handleHideOption();
+                }}>
+                <Icon name="visibility-off" size={18} color={COLORS.teal} />
+                <Text style={styles.menuItemText}>Hide</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  // Handle delete option
+                  handleDeleteOption();
+                }}>
+                <Icon name="delete" size={18} color={COLORS.teal} />
+                <Text style={styles.menuItemText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
       </TouchableOpacity>
     );
@@ -303,6 +359,9 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: COLORS.white,
   },
+  overlay: {
+    flex: 1,
+  },
   emptyContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -353,6 +412,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 4,
     overflow: 'hidden',
+    position: 'relative',
   },
   image: {
     width: '100%',
@@ -369,15 +429,33 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Poppins-SemiBold',
   },
-  action: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 8,
-  },
   failedButton: {
     opacity: 0.5,
   },
-  
+  menuButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 8,
+    backgroundColor: COLORS.white,
+    borderRadius: 100,
+  },
+  menuContainer: {
+    position: 'absolute',
+    top: 73,
+    right: 16,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    elevation: 4,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  menuItemText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
 });

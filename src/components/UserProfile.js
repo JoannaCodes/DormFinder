@@ -45,7 +45,7 @@ const UserProfile = ({uid}) => {
       .get(`${URL}?tag=get_account&userref=${uid}`, {
         headers: {
           'Auth-Key': AUTH_KEY,
-        }
+        },
       })
       .then(async response => {
         const data = JSON.parse(response.data);
@@ -58,6 +58,7 @@ const UserProfile = ({uid}) => {
         await AsyncStorage.setItem('user-profile', JSON.stringify(rest));
       })
       .catch(async error => {
+        console.error('Error occurred during the Axios request:', error);
         const storedUser = await AsyncStorage.getItem('user-profile');
         if (storedUser) {
           setUser(JSON.parse(storedUser));
@@ -78,12 +79,15 @@ const UserProfile = ({uid}) => {
       const formData = new FormData();
       formData.append('tag', 'update_profile');
       formData.append('userref', uid);
-      formData.append('image', {
-        uri: imageData[0].uri,
-        name: imageData[0].fileName,
-        type: imageData[0].type,
-      });
       formData.append('username', username);
+
+      if (image !== user.imageUrl) {
+        formData.append('image', {
+          uri: imageData[0].uri,
+          name: imageData[0].fileName,
+          type: imageData[0].type,
+        });
+      }
 
       axios
         .post(BASE_URL, formData, {
@@ -109,6 +113,9 @@ const UserProfile = ({uid}) => {
                 'Cannot update profile. Please check you network and try again',
             });
           }
+        })
+        .catch(error => {
+          console.error('Error occurred during the Axios request:', error);
         })
         .finally(() => {
           setLoading(false);
@@ -212,7 +219,7 @@ const UserProfile = ({uid}) => {
                     onPress={() => {
                       pickImage();
                     }}>
-                    <Icon name="camera-alt" size={18} color={COLORS.white}/>
+                    <Icon name="camera-alt" size={18} color={COLORS.white} />
                   </TouchableHighlight>
                 </>
               ) : (
@@ -327,7 +334,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontFamily: 'Poppins-SemiBold',
-    color: 'black'
+    color: 'black',
   },
   verificationStatus: {
     color: COLORS.teal,

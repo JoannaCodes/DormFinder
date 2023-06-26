@@ -53,10 +53,11 @@ export default function EditProfile({user, onLogout}) {
         setHandle(identifier);
       })
       .catch(error => {
+        console.error('Error occurred during the Axios request:', error);
         Toast.show({
           type: 'error',
           text1: 'StudyHive',
-          text2: 'Cannot retrieve account details. Please try again.',
+          text2: 'Cannot retrieve account details',
         });
       })
       .finally(() => {
@@ -100,6 +101,9 @@ export default function EditProfile({user, onLogout}) {
                   text2: 'Unable to update account. Please Try Again.',
                 });
               }
+            })
+            .catch(error => {
+              console.error('Error occurred during the Axios request:', error);
             })
             .finally(() => {
               setIsLoading(false);
@@ -148,6 +152,9 @@ export default function EditProfile({user, onLogout}) {
                     text2: 'Unable to delete account. Please Try Again.',
                   });
                 }
+              })
+              .catch(error => {
+                console.error('Error occurred during the Axios request:', error);
               });
           },
         },

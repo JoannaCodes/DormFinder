@@ -145,10 +145,11 @@ export default function Verification({route, navigation}) {
         Alert.alert('StudyHive', res.data);
       })
       .catch(error => {
+        console.error('Error occurred during the Axios request:', error);
         Toast.show({
           type: 'error',
           text1: 'StudyHive',
-          text2: 'An error occured. Please try again.',
+          text2: 'An error occured',
         });
       })
       .finally(() => {

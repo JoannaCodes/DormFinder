@@ -65,7 +65,7 @@ export default function Notifications({route, navigation}) {
           AsyncStorage.setItem('notifications', JSON.stringify(output));
         });
     } catch (error) {
-      Alert.alert(error);
+      console.error('Error occurred during the Axios request:', error);
       const storedNotifs = await AsyncStorage.getItem('notifications');
       if (storedNotifs) {
         setNotifContainer(JSON.parse(storedNotifs));

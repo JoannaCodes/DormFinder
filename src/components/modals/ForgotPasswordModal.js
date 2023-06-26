@@ -49,6 +49,9 @@ const ForgotPasswordModal = ({visible, onClose}) => {
           });
         }
       })
+      .catch(error => {
+        console.error('Error occurred during the Axios request:', error);
+      })
       .finally(() => {
         setLoading(false);
         setEmail('');

@@ -18,6 +18,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import COLORS from '../../constants/colors';
+import Toast from 'react-native-toast-message';
 
 import ReviewForm from '../components/ReviewForm';
 
@@ -88,32 +89,41 @@ const Bookmarks = ({route, navigation}) => {
     const images = item.images ? item.images.split(',') : [];
 
     const moveToMessage = async () => {
-      const formdata = new FormData();
+      try {
+        const formdata = new FormData();
 
-      formdata.append('action', 'getMessageInfos');
-      formdata.append('unique_code', item.id);
-      formdata.append('myid', user);
-      formdata.append('other_id', item.userref);
+        formdata.append('action', 'getMessageInfos');
+        formdata.append('unique_code', item.id);
+        formdata.append('myid', user);
+        formdata.append('other_id', item.userref);
 
-      const response = await axios.post(API_URL, formdata, {
-        headers: {
-          'Auth-Key': AUTH_KEY,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+        const response = await axios.post(API_URL, formdata, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
 
-      const json = response.data;
-      if (json.code === 200) {
-        navigation.navigate('Chat Room', {
-          navigation: navigation,
-          anotherImageUrl: json.data.other.imageUrl,
-          username: json.data.other.username,
-          unique_code: item.id,
-          chatroom_code: json.data.chatroom_code,
-          myid: user,
-          myusername: json.data.me.username,
-          anotherid: item.userref,
-          user: userInfo,
+        const json = response.data;
+        if (json.code === 200) {
+          navigation.navigate('Chat Room', {
+            navigation: navigation,
+            anotherImageUrl: json.data.other.imageUrl,
+            username: json.data.other.username,
+            unique_code: item.id,
+            chatroom_code: json.data.chatroom_code,
+            myid: user,
+            myusername: json.data.me.username,
+            anotherid: item.userref,
+            user: userInfo,
+          });
+        }
+      } catch (error) {
+        console.error('Error occurred during the Axios request:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: error,
         });
       }
     };
@@ -143,8 +153,13 @@ const Bookmarks = ({route, navigation}) => {
           .catch(error => {
             moveToMessage();
           });
-      } catch (ex) {
-        console.log(ex);
+      } catch (error) {
+        console.error('Error occurred during the Axios request:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: 'An error occured',
+        });
       }
     };
 
@@ -184,7 +199,15 @@ const Bookmarks = ({route, navigation}) => {
                   setSelectedDorm(item.id);
                 }}>
                 <Icon name="star-rate" size={18} color={COLORS.teal} />
-                <Text style={{marginLeft: 9, marginTop: 5, fontFamily:'Poppins-Regular', color: 'black'}}>Write a review</Text>
+                <Text
+                  style={{
+                    marginLeft: 9,
+                    marginTop: 5,
+                    fontFamily: 'Poppins-Regular',
+                    color: 'black',
+                  }}>
+                  Write a review
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btnContainer, {marginStart: 4}]}
@@ -366,12 +389,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 22,
     fontFamily: 'Poppins-SemiBold',
-    color:'black',
-    marginLeft: 7
+    color: 'black',
+    marginLeft: 7,
   },
   cardText: {
     fontFamily: 'Poppins-SemiBold',
-    color:'black',
-    marginLeft: 7
+    color: 'black',
+    marginLeft: 7,
   },
 });

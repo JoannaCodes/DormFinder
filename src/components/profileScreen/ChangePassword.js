@@ -65,6 +65,9 @@ const ChangePassword = ({route}) => {
                 });
               }
             })
+            .catch(error => {
+              console.error('Error occurred during the Axios request:', error);
+            })
             .finally(() => {
               setLoading(false);
             });

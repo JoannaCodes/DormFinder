@@ -53,6 +53,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
         setStatus('Success');
       })
       .catch(async error => {
+        console.error('Error occurred during the Axios request:', error);
         setStatus('Failed');
       })
       .finally(() => {
