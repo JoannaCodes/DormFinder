@@ -43,9 +43,9 @@ const ViewReviews = ({visible, onClose, dormref}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         const ratings = data.map(val => {
-          return parseInt(val.rating);
+          return parseInt(val.rating, 10);
         });
-        
+
         const totalRatings = ratings.reduce((a, b) => a + b, 0);
         const averageRating = totalRatings / ratings.length;
 
