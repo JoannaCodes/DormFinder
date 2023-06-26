@@ -274,7 +274,7 @@ const UserProfile = ({uid}) => {
             ) : (
               <>
                 <Text style={styles.name}>{user.username}</Text>
-                {user.is_verified === 1 ? (
+                {user.is_verified === '1' ? (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text style={styles.verificationStatus}>Verified</Text>
                     <Icon name="verified" size={18} color={COLORS.grey} />
