@@ -44,6 +44,7 @@ const DormListing = ({route, navigation}) => {
   const [disable, setDisable] = useState(false);
   const [dorms, setDorms] = useState('');
   const [showMenu, setShowMenu] = useState(false);
+  const [showMenuID, setShowMenuID] = useState(null);
 
   // useEffect(() => {
   //   fetchData();
@@ -194,10 +195,10 @@ const DormListing = ({route, navigation}) => {
 
   const renderItem = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
-
-    const handleEditOption = () => {
+    
+    const handleEditOption = (dormref) => {
       navigation.navigate('Listing Form', {
-        dormref: item.id,
+        dormref: dormref,
         userref: user,
         editmode: true,
       });
@@ -234,62 +235,65 @@ const DormListing = ({route, navigation}) => {
         />
         <TouchableOpacity
           style={styles.menuButton}
-          onPress={() => setShowMenu(true)}>
-          <Icon name="more-vert" size={18} color={COLORS.teal} />
+          onPress={() => {
+            setShowMenu(true);
+            setShowMenuID(item.id);
+          }}>
+          <Icon name="more-vert" size={18} color={COLORS.dark} />
         </TouchableOpacity>
         <View style={styles.cardBody}>
           <Text style={styles.cardTitle} numberOfLines={1} ellipsizeMode="tail">
             {item.name}
           </Text>
           <Modal
-            visible={showMenu}
-            animationType="fade"
+            visible={showMenu == true && showMenuID == item.id}
+            animationType="slide"
             transparent={true}
             onRequestClose={() => setShowMenu(false)}>
             <TouchableWithoutFeedback onPress={() => setShowMenu(false)}>
               <View style={styles.overlay} />
             </TouchableWithoutFeedback>
-            <View style={styles.menuContainer}>
-              <TouchableOpacity
-                style={[styles.menuItem, disable && styles.failedButton]}
-                disabled={disable}
-                onPress={() => {
-                  // Handle edit option
-                  handleEditOption();
-                }}>
-                <Icon name="mode-edit" size={18} color={COLORS.teal} />
-                <Text style={styles.menuItemText}>Edit</Text>
-              </TouchableOpacity>
-              <Separator />
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  // Handle see reviews option
-                  handleSeeReviewsOption();
-                }}>
-                <Icon name="star" size={18} color={COLORS.teal} />
-                <Text style={styles.menuItemText}>See Reviews</Text>
-              </TouchableOpacity>
-              <Separator />
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  // Handle hide option
-                  handleHideOption(item.id);
-                }}>
-                <Icon name={item.hide == 0 ? 'visibility-off' : 'visibility'} size={18} color={COLORS.teal} />
-                <Text style={styles.menuItemText}>{item.hide == 0 ? "Hide" : "Show"}</Text>
-              </TouchableOpacity>
-              <Separator />
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  // Handle delete option
-                  handleDeleteOption();
-                }}>
-                <Icon name="delete" size={18} color={COLORS.teal} />
-                <Text style={styles.menuItemText}>Delete</Text>
-              </TouchableOpacity>
+            <View style={styles.modalContainer}>
+              <View style={styles.menuContainer}>
+                <TouchableOpacity
+                  style={[styles.menuItem, disable && styles.failedButton]}
+                  disabled={disable}
+                  onPress={() => {
+                    // Handle edit option
+                    handleEditOption(item.id);
+                  }}>
+                  <Text style={styles.menuItemText}>Edit</Text>
+                </TouchableOpacity>
+                <Separator />
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    // Handle see reviews option
+                    handleSeeReviewsOption();
+                  }}>
+                  <Text style={styles.menuItemText}>See Reviews</Text>
+                </TouchableOpacity>
+                <Separator />
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    // Handle hide option
+                    handleHideOption(item.id);
+                  }}>
+                  <Text style={styles.menuItemText}>
+                    {item.hide == 0 ? 'Hide' : 'Show'}
+                  </Text>
+                </TouchableOpacity>
+                <Separator />
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    // Handle delete option
+                    handleDeleteOption();
+                  }}>
+                  <Text style={styles.menuItemText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </Modal>
         </View>
@@ -480,23 +484,27 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: COLORS.white,
     borderRadius: 100,
+    elevation: 4,
+  },
+  modalContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '100%',
+    padding: 16,
   },
   menuContainer: {
-    position: 'absolute',
-    top: 73,
-    right: 16,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    elevation: 4,
+    width: '100%',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    elevation: 15,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    justifyContent: 'center',
+    paddingVertical: 16,
   },
   menuItemText: {
-    marginLeft: 18,
     fontSize: 16,
   },
 });
