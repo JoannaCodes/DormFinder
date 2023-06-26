@@ -126,25 +126,25 @@ const fetchAmenities = async () => {
 //REVIEWS AND TOTAL
 const fetchRatings = async () => {
   await axios
-    .get(`${BASE_URL}?tag=get_reviews&dormref=${dormref}`,{
+    .get(`${BASE_URL}?tag=get_reviews&dormref=${dormref}`, {
       headers: {
         'Auth-Key': AUTH_KEY,
       },
     })
     .then(response => {
-        const data = JSON.parse(response.data);
-        if(data.length != 0) {
-          
-          const ratings = data.map(val => {
-            return val.rating;
-          });
-          const totalRatings = ratings.reduce((a, b) => a + b, 0) ?? 0;
-          const averageRating = totalRatings / ratings.length ?? 0;
-          
-          setRate(ratings.length ?? 0);
-          setRating(averageRating ?? 0);
-        }
-      });
+      const data = JSON.parse(response.data);
+      if (data.length != 0) {
+        const ratings = data.map(val => {
+          return parseInt(val.rating);
+        });
+        
+        const totalRatings = ratings.reduce((a, b) => a + b, 0) ?? 0;
+        const averageRating = totalRatings / ratings.length ?? 0;
+
+        setRate(ratings.length ?? 0);
+        setRating(averageRating ?? 0);
+      }
+    });
 };
 
 
@@ -396,7 +396,7 @@ return (
           setModalVisible(true);
           // console.log(item.dormref);
         }}>
-        <Text style={{fontSize: 13, marginLeft: 5}}>{rate} ratings</Text>
+        <Text style={{fontSize: 13, marginLeft: 5}}>{rate} reviews</Text>
       </TouchableOpacity>
     </View>
 </View>
