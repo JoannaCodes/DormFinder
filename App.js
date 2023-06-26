@@ -43,7 +43,7 @@ import SplashScreen from './src/screens/SplashScreen';
 
 import {LogBox} from 'react-native';
 import {useEffect} from 'react';
-import {BASE_URL} from './constants/index';
+import {BASE_URL, AUTH_KEY} from './constants/index';
 import axios from 'axios';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
@@ -339,7 +339,11 @@ export default function App() {
 
   const fetchVerification = uid => {
     axios
-      .get(`${BASE_URL}?tag=get_verification_status&userref=${uid}`)
+      .get(`${BASE_URL}?tag=get_verification_status&userref=${uid}`, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        },
+      })
       .then(async response => {
         const data = JSON.parse(response.data);
         const fetchedStatus = data.is_verified;

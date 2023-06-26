@@ -45,9 +45,9 @@ const DormListing = ({route, navigation}) => {
   const [dorms, setDorms] = useState('');
   const [showMenu, setShowMenu] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -71,7 +71,6 @@ const DormListing = ({route, navigation}) => {
       .then(response => {
         const data = JSON.parse(response.data);
         setDorms(data);
-        console.log(data);
 
         // Exclude image URLs from the data
         const dataWithoutImages = data.map(item => {
@@ -355,7 +354,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 8,
     backgroundColor: COLORS.white,
   },
