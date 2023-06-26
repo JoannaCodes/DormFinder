@@ -142,7 +142,7 @@ const fetchRatings = async () => {
         const averageRating = totalRatings / ratings.length ?? 0;
 
         setRate(ratings.length ?? 0);
-        setRating(averageRating ?? 0);
+        setRating(Math.floor(averageRating) ?? 0);
       }
     });
 };

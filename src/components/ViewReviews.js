@@ -50,7 +50,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
         const averageRating = totalRatings / ratings.length;
 
         setReviews(data);
-        setRating(averageRating);
+        setRating(Math.floor(averageRating));
         setStatus('Success');
       })
       .catch(async error => {
