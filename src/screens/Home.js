@@ -82,15 +82,7 @@ const HomeScreen = ({navigation, route}) => {
 
   const {user, mode} = route.params;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      PushNotificationConfig.configure();
-
-      return () => {
-        // Clean up any resources if needed
-      };
-    }, []),
-  );
+  PushNotificationConfig.configure();
 
   useEffect(() => {
     fetchData();
