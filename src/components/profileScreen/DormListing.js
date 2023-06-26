@@ -16,7 +16,7 @@ import {
   View,
   Modal,
 } from 'react-native';
-import {BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../../constants';
+import {BASE_URL, DORM_UPLOADS, AUTH_KEY, API_URL} from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -144,6 +144,54 @@ const DormListing = ({route, navigation}) => {
     );
   };
 
+  const handleHideOption = dormref => {
+    Alert.alert(
+      'Dorm Finder',
+      'Are you sure you want to hide this dorm listing? This action cannot be undone.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'OK',
+          style: 'default',
+          onPress: async () => {
+            const formData = new FormData();
+            formData.append('action', 'addRemoveHide');
+            formData.append('user_id', user);
+            formData.append('dormref', dormref);
+
+            const response = await fetch(API_URL, {
+              method: 'POST',
+              headers: {
+                'Auth-Key': AUTH_KEY,
+              },
+              body: formData,
+            });
+
+            const json = await response.json();
+            if(json.code == 200) {
+              Toast.show({
+                type: 'success',
+                text1: 'StudyHive',
+                text2: 'Successfully!',
+              });
+              setShowMenu(false);
+              setLoading(true);
+              fetchData();
+            } else {
+              Toast.show({
+                type: 'success',
+                text1: 'StudyHive',
+                text2: 'Unable to hide listing. Please try again.',
+              });
+              setShowMenu(false);
+              fetchData();
+            }
+          },
+        },
+      ],
+    );
+  };
+
   const renderItem = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
 
@@ -159,11 +207,6 @@ const DormListing = ({route, navigation}) => {
     const handleSeeReviewsOption = () => {
       setReviewModalVisible(true);
       setSelectedDorm(item.id);
-      setShowMenu(false);
-    };
-
-    const handleHideOption = () => {
-      console.log(`Hide option selected for id: ${item.id}`);
       setShowMenu(false);
     };
 
@@ -232,10 +275,10 @@ const DormListing = ({route, navigation}) => {
                 style={styles.menuItem}
                 onPress={() => {
                   // Handle hide option
-                  handleHideOption();
+                  handleHideOption(item.id);
                 }}>
-                <Icon name="visibility-off" size={18} color={COLORS.teal} />
-                <Text style={styles.menuItemText}>Hide</Text>
+                <Icon name={item.hide == 0 ? 'visibility-off' : 'visibility'} size={18} color={COLORS.teal} />
+                <Text style={styles.menuItemText}>{item.hide == 0 ? "Hide" : "Show"}</Text>
               </TouchableOpacity>
               <Separator />
               <TouchableOpacity
