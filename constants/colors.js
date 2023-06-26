@@ -10,6 +10,8 @@ const COLORS = {
   red: '#ff4444',
   teal: '#0E898B',
   tranparent: 'rgba(0,0,0,0)',
+  teal: 'teal',
+  black: 'black',
 };
 
 export default COLORS;

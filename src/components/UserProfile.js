@@ -277,7 +277,7 @@ const UserProfile = ({uid}) => {
                 {user.is_verified === '1' ? (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text style={styles.verificationStatus}>Verified</Text>
-                    <Icon name="verified" size={18} color={COLORS.grey} />
+                    <Icon name="verified" size={18} color={COLORS.teal} />
                   </View>
                 ) : null}
               </>
@@ -337,9 +337,11 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   verificationStatus: {
-    color: COLORS.teal,
+    color: 'gray',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
+    marginRight: 5,
+    marginTop: 3
   },
   input: {
     width: '100%',
