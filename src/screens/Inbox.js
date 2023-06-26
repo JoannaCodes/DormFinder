@@ -141,10 +141,12 @@ const Inbox = ({navigation}) => {
                 <UserImgWrapper>
                   <UserImg source={{uri: item.imageUrl}} />
                 </UserImgWrapper>
-                <TextSection>
+                <TextSection >
                   <UserInfoText>
-                    <UserName>{item.username}</UserName>
-                    <PostTime>
+                    <UserName style={{ fontFamily: 'Poppins-Regular'}}>
+                      {item.username}
+                    </UserName>
+                    <PostTime style={{ fontFamily: 'Poppins-Regular' }}>
                       {item.time !== 0
                         ? moment
                             .unix(item.time)
@@ -153,7 +155,9 @@ const Inbox = ({navigation}) => {
                         : 'NEW'}
                     </PostTime>
                   </UserInfoText>
-                  <MessageText>{item.message}</MessageText>
+                  <MessageText style={{ fontFamily: 'Poppins-Regular'}}>
+                    {item.message}
+                  </MessageText>
                 </TextSection>
               </UserInfo>
             </Card>

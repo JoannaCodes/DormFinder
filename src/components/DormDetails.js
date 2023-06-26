@@ -406,7 +406,7 @@ return (
 {/* Availability */}
 <View style={{flexDirection: 'row', marginTop: 12}}>
   <Text style={{fontSize: 17, fontFamily: 'Poppins-Regular' , color: 'black'}}>
-    Availability: {dorms.slots > 0 ? `${dorms.slots} ${dorms.slots > 1 ? 'slots' : 'slot'}` : <Text style={{color: 'red'}}>unavailable</Text>}
+    Availability: {dorms.slots > 0 ? `${dorms.slots} ${dorms.slots > 1 ? 'slots' : 'slot'}` : <Text style={{color: 'gray'}}>unavailable</Text>}
   </Text>
 </View>
 

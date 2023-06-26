@@ -363,11 +363,11 @@ const ChatRoom = props => {
             />
             <View style={{flex: 0.7}}>
               <Text
-                style={{fontWeight: 'bold', fontSize: 18, color: COLORS.dark}}>
+                style={{fontFamily: 'Poppins-SemiBold', fontSize: 18, color: COLORS.dark}}>
                 {getDorm?.name}
               </Text>
-              <Text style={{fontSize: 12}}>{getDorm?.address}</Text>
-              <Text style={{fontWeight: 'bold'}}>₱{getDorm?.price}</Text>
+              <Text style={{fontSize: 12, fontFamily: 'Poppins-Regular'}}>{getDorm?.address}</Text>
+              <Text style={{fontFamily: 'Poppins-SemiBold'}}>₱{getDorm?.price}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -379,7 +379,7 @@ const ChatRoom = props => {
               });
             }}>
             <Text
-              style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}>
+              style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
               View Dorm Details
             </Text>
           </TouchableOpacity>
@@ -394,8 +394,8 @@ const ChatRoom = props => {
               ListFooterComponent={() => (
                 <TouchableOpacity
                   onPress={() => previouslyChats()}
-                  style={{backgroundColor: '#ddd', paddingVertical: 10}}>
-                  <Text style={{fontSize: 10, textAlign: 'center'}}>
+                  style={{backgroundColor: '#ddd', paddingVertical: 5}}>
+                  <Text style={{fontSize: 10, textAlign: 'center', fontFamily: 'Poppins-Regular', marginTop: 2}}>
                     See More
                   </Text>
                 </TouchableOpacity>
@@ -470,8 +470,9 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flexDirection: 'row',
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: 16,
+    marginTop: 3,
     textAlign: 'left',
     textAlignVertical: 'center',
     paddingLeft: 10,
@@ -523,7 +524,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#fff',
   },
-  chatOtherMessage: {color: 'white', fontSize: 16, textAlign: 'left'},
+  chatOtherMessage: {
+    color: 'white', 
+    fontSize: 16, textAlign: 
+    'left'},
 
   chatMe: {
     position: 'relative',
@@ -537,14 +541,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 45,
     top: -11,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold'
   },
-  chatMeMessage: {color: 'white', fontSize: 16, textAlign: 'right', padding: 5},
+  chatMeMessage: {
+    color: 'white', 
+    fontSize: 16, 
+    textAlign: 'right', 
+    padding: 2,
+    fontFamily: 'Poppins-Regular'
+  },
   chatMeTime: {
     fontSize: 10,
-    fontWeight: '400',
+    fontFamily: 'Poppins-Regular',
     textAlign: 'right',
     color: 'white',
+    marginBottom: -4,
   },
 
   chatAvatar: {
@@ -584,6 +595,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#0d898b',
     margin: 15,
     borderRadius: 5,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
 });

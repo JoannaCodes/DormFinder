@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   menuItemText: {
-    marginLeft: 10,
+    marginLeft: 18,
     fontSize: 16,
   },
 });

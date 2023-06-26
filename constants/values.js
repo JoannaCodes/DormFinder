@@ -106,19 +106,24 @@ const OWNERSECTIONS = [
       "Create a dorm listing by providing accurate details of your dormitory. Upload attractive images to showcase your dormitory and attract potential residents.\n\n1. Navigate to the 'Dorm Listing' inside your profile.\n\n2. Tap the + button \n\n3. Enter the required information such as the dormitory name, location, amenities, pricing and more.\n\n4. Upload images of your dormitory to showcase its facilities and appearance.\n\n5. Review the information and make sure it is accurate and up-to-date.\n\n6. Submit the listing.",
   },
   {
-    title: 'Update dorm listing',
+    title: 'Edit dorm listing',
     content:
-      "If there are any changes or new information about your dormitory, you can easily update your existing listing. It is a good practice to keep your listing up to date to provide accurate information to potential residents.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the pencil icon to start editing your selected listing.\n\n4. Make any required modifications to the details or upload new images to showcase any updates or enhancements made to your dormitory.\n\n5. Review the updated information to ensure its accuracy and completeness.\n\n6. Save or submit the changes to update your dorm listing.",
-  },
-  {
-    title: 'Delete dorm listing',
-    content:
-      "If you no longer want to list your dormitory or if it becomes unavailable, you have the option to delete your listing. However, exercise caution when deleting a listing as it will permanently remove it from the application.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the trash icon to delete your selected listing.\n\n4. Confirm your intention to delete the listing when prompted.",
+      "If there are any changes or new information about your dormitory, you can easily update your existing listing. It is a good practice to keep your listing up to date to provide accurate information to potential residents.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'three dots' icon and choose 'Edit' to start editing your selected listing.\n\n4. Make any required modifications to the details or upload new images to showcase any updates or enhancements made to your dormitory.\n\n5. Review the updated information to ensure its accuracy and completeness.\n\n6. Save or submit the changes to update your dorm listing.",
   },
   {
     title: 'View dorm listing ratings and reviews',
     content:
-      "As a dorm owner, you have access to ratings and reviews about your dorm listing's performance. These insights help you understand how your dormitory is performing and make informed decisions.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'star' icon to view the reviews of your selected listing.",
+      "As a dorm owner, you have access to ratings and reviews about your dorm listing's performance. These insights help you understand how your dormitory is performing and make informed decisions.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'three dots' icon and choose 'See Reviews' to view the reviews of your selected listing.",
+  },
+  {
+    title: 'Hide dorm listing',
+    content:
+      "Hiding a listing as an owner is important for reasons such as maintenance, renovation, privacy, security, or limited availability.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'three dots' icon and choose 'Hide' to hide the selected listing.",
+  },
+  {
+    title: 'Delete dorm listing',
+    content:
+      "If you no longer want to list your dormitory or if it becomes unavailable, you have the option to delete your listing. However, exercise caution when deleting a listing as it will permanently remove it from the application.\n\n1. Locate and access the 'Dorm Listing' section inside your profile.\n\n2. Find your existing dormitory listings inside.\n\n3. Tap the 'three dots' icon and choose 'Delete' to remove your selected listing.\n\n4. Confirm your intention to delete the listing when prompted.",
   },
 ];
 
@@ -136,17 +141,22 @@ const OWNERSECTIONS_FIL = [
   {
     title: 'Baguhin ang inupload na dorm',
     content:
-      "Kung mayroong anumang mga pagbabago o bagong impormasyon, madali mong maa-update ang iyong kasalukuyang dormitoryo. \n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'pencil' icon para simulan ang pag-edit ng iyong napiling listahan.\n\n4. Gumawa ng anumang kinakailangang pagbabago sa mga detalye o mag-upload ng mga bagong larawan.\n\n5. Suriin ang na-update na impormasyon para matiyak na ito ay tama o kompleto.\n\n6. Isumite ang mga pagbabago upang i-update ang iyong dorm.",
-  },
-  {
-    title: 'Burahin ang inupload na dorm',
-    content:
-      "Kung nais mo na burahin ang inupload na dorm, mayroon kang opsyon na tanggalin ito. Gayunpaman, mag-ingat sa pagbura nito dahil permanente na itong mawawala.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'trash' icon para burahin ang iyong napiling dormitoryo.\n\n4. Kumpirmahin ang iyong intensyon na tanggalin ito.",
+      "Kung mayroong anumang mga pagbabago o bagong impormasyon, madali mong maa-update ang iyong kasalukuyang dormitoryo. \n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'three dots' icon at piliin ang 'Edit' para simulan ang pag-edit ng iyong napiling listahan.\n\n4. Gumawa ng anumang kinakailangang pagbabago sa mga detalye o mag-upload ng mga bagong larawan.\n\n5. Suriin ang na-update na impormasyon para matiyak na ito ay tama o kompleto.\n\n6. Isumite ang mga pagbabago upang i-update ang iyong dorm.",
   },
   {
     title: 'Tingnan ang ratings at komento ng \ninupload na dorm',
     content:
-      "Bilang may-ari ng dorm, mayroon kang access sa mga rating at komento tungkol sa iyong dorm. \n\n1. Hanapin at i-access ang seksyon ng 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'star' icon upang tingnan ang mga review ng iyong napiling dormitoryo.",
+      "Bilang may-ari ng dorm, mayroon kang access sa mga rating at komento tungkol sa iyong dorm. \n\n1. Hanapin at i-access ang seksyon ng 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'three dots' icon at piliin ang 'See Reviews' upang tingnan ang mga review ng iyong napiling dormitoryo.",
+  },
+  {
+    title: 'Pagtago ng inupload na dorm',
+    content:
+      "Ang pagtatago ng dormitoryo  ay mahalaga para sa mga kadahilanan tulad ng pagsasaayos ng lugar, seguridad, o limitadong bakante. \n\n1. Hanapin at i-access ang seksyon ng 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'three dots' icon at piliin ang 'Hide' upang itago ang napiling dormitoryo.",
+  },
+  {
+    title: 'Burahin ang inupload na dorm',
+    content:
+      "Kung nais mo na burahin ang inupload na dorm, mayroon kang opsyon na tanggalin ito. Gayunpaman, mag-ingat sa pagbura nito dahil permanente na itong mawawala.\n\n1. Hanapin at pindutin ang 'Dorm Listing' sa loob ng iyong profile.\n\n2. Hanapin ang iyong mga kasalukuyang dormitoryo sa loob.\n\n3. Pindutin ang 'three dots' icon at piliin ang 'Delete' para burahin ang iyong napiling dormitoryo.\n\n4. Kumpirmahin ang iyong intensyon na tanggalin ito.",
   },
 ];
 
