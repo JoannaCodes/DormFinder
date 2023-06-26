@@ -30,7 +30,7 @@ const Separator = ({title}) => {
   return (
     <View style={styles.separator}>
       <View style={styles.line} />
-      <Text style={{marginHorizontal: 5}}>{title}</Text>
+      <Text style={[styles.label, {marginHorizontal: 5}]}>{title}</Text>
       <View style={styles.line} />
     </View>
   );
@@ -113,7 +113,7 @@ const ListingForm = ({route, navigation}) => {
       .get(`${BASE_URL}?tag=get_dorm_details&dormref=${dormref}`, {
         headers: {
           'Auth-Key': AUTH_KEY,
-        }
+        },
       })
       .then(response => {
         const data = JSON.parse(response.data);
@@ -138,22 +138,23 @@ const ListingForm = ({route, navigation}) => {
 
         // Set checkboxes
         setRules({
-          pets: Boolean(data.pets),
-          visitors: Boolean(data.visitors),
-          curfew: Boolean(data.curfew),
+          pets: Boolean(parseInt(data.pets, 10)),
+          visitors: Boolean(parseInt(data.visitors, 10)),
+          curfew: Boolean(parseInt(data.curfew, 10)),
         });
 
+        // Set Amenities
         setAmenities({
-          aircon: Boolean(data.aircon),
-          elevator: Boolean(data.elevator),
-          beddings: Boolean(data.beddings),
-          kitchen: Boolean(data.kitchen),
-          laundry: Boolean(data.laundry),
-          lounge: Boolean(data.lounge),
-          parking: Boolean(data.parking),
-          security: Boolean(data.security),
-          study_room: Boolean(data.study_room),
-          wifi: Boolean(data.wifi),
+          aircon: Boolean(parseInt(data.aircon, 10)),
+          elevator: Boolean(parseInt(data.elevator, 10)),
+          beddings: Boolean(parseInt(data.beddings, 10)),
+          kitchen: Boolean(parseInt(data.kitchen, 10)),
+          laundry: Boolean(parseInt(data.laundry, 10)),
+          lounge: Boolean(parseInt(data.lounge, 10)),
+          parking: Boolean(parseInt(data.parking, 10)),
+          security: Boolean(parseInt(data.security, 10)),
+          study_room: Boolean(parseInt(data.study_room, 10)),
+          wifi: Boolean(parseInt(data.wifi, 10)),
         });
       });
   };
@@ -440,13 +441,13 @@ const ListingForm = ({route, navigation}) => {
               Uploaded images will overwrite existing images. Leave blank if no
               changes.
             </Text>
-            <Text style={{color: COLORS.grey}}>Tap the image to remove it</Text>
+            <Text style={styles.emptyTitle}>Tap the image to remove it</Text>
           </>
         ) : (
           <>
             <Icon name="image" size={30} color={COLORS.grey} />
             <Text style={styles.emptyTitle}>Upload dorm images</Text>
-            <Text style={{color: COLORS.grey}}>Tap the image to remove it</Text>
+            <Text style={styles.emptyTitle}>Tap the image to remove it</Text>
           </>
         )}
       </View>
@@ -486,7 +487,9 @@ const ListingForm = ({route, navigation}) => {
         </SafeAreaView>
         <View style={{marginTop: 16}}>
           <TouchableOpacity style={styles.button} onPress={pickImage}>
-            <Text style={{color: COLORS.white}}>Upload Images</Text>
+            <Text style={[styles.label, {color: COLORS.white}]}>
+              Upload Images
+            </Text>
           </TouchableOpacity>
         </View>
         {/* Name */}
@@ -533,7 +536,11 @@ const ListingForm = ({route, navigation}) => {
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={COLORS.white} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
+            <Text
+              style={[
+                styles.label,
+                {fontSize: 12, marginStart: 5, color: COLORS.white},
+              ]}>
               Example: 303 Recto Ave, Binondo, Manila
             </Text>
           </View>
@@ -564,12 +571,12 @@ const ListingForm = ({route, navigation}) => {
           mode="BADGE"
           listMode="SCROLLVIEW"
           placeholder="Select Nearby HEIs"
-          placeholderStyle={{color: '#CCCCCC'}}
+          placeholderStyle={[styles.label, {color: COLORS.grey}]}
           zIndex={3000}
           zIndexInverse={1000}
           badgeColors={[COLORS.teal]}
           badgeDotColors={[COLORS.white]}
-          badgeTextStyle={{color: COLORS.white}}
+          badgeTextStyle={[styles.label, {color: COLORS.white}]}
           style={[styles.dropdown, errors.hei && styles.error]}
           containerStyle={{marginVertical: 8}}
           dropDownContainerStyle={{
@@ -579,6 +586,7 @@ const ListingForm = ({route, navigation}) => {
             marginTop: 5,
             elevation: 2,
           }}
+          textStyle={[styles.label, {color: COLORS.darkgrey}]}
           open={heiOpen}
           value={selectedHei}
           items={hei}
@@ -599,7 +607,7 @@ const ListingForm = ({route, navigation}) => {
                 text={item.label}
                 onPress={() => handleAmenitiesToggle(item.name)}
                 style={{paddingVertical: 2.5}}
-                textStyle={{textDecorationLine: 'none'}}
+                textStyle={[styles.label, {textDecorationLine: 'none'}]}
                 fillColor={COLORS.teal}
                 unfillColor={COLORS.white}
                 iconStyle={{borderColor: COLORS.teal}}
@@ -615,7 +623,7 @@ const ListingForm = ({route, navigation}) => {
                 text={item.label}
                 onPress={() => handleAmenitiesToggle(item.name)}
                 style={{paddingVertical: 2.5}}
-                textStyle={{textDecorationLine: 'none'}}
+                textStyle={[styles.label, {textDecorationLine: 'none'}]}
                 fillColor={COLORS.teal}
                 unfillColor={COLORS.white}
                 iconStyle={{borderColor: COLORS.teal}}
@@ -630,7 +638,7 @@ const ListingForm = ({route, navigation}) => {
             disableBuiltInState
             isChecked={rules.pets}
             onPress={() => handleRulesToggle('pets')}
-            textStyle={{textDecorationLine: 'none'}}
+            textStyle={[styles.label, {textDecorationLine: 'none'}]}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
             iconStyle={{borderColor: COLORS.teal}}
@@ -640,7 +648,7 @@ const ListingForm = ({route, navigation}) => {
             disableBuiltInState
             isChecked={rules.visitors}
             onPress={() => handleRulesToggle('visitors')}
-            textStyle={{textDecorationLine: 'none'}}
+            textStyle={[styles.label, {textDecorationLine: 'none'}]}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
             iconStyle={{borderColor: COLORS.teal}}
@@ -650,7 +658,7 @@ const ListingForm = ({route, navigation}) => {
             disableBuiltInState
             isChecked={rules.curfew}
             onPress={() => handleRulesToggle('curfew')}
-            textStyle={{textDecorationLine: 'none'}}
+            textStyle={[styles.label, {textDecorationLine: 'none'}]}
             fillColor={COLORS.teal}
             unfillColor={COLORS.white}
             iconStyle={{borderColor: COLORS.teal}}
@@ -668,7 +676,11 @@ const ListingForm = ({route, navigation}) => {
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={COLORS.white} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
+            <Text
+              style={[
+                styles.label,
+                {fontSize: 12, marginStart: 5, color: COLORS.white},
+              ]}>
               Leave it blank if not applicable
             </Text>
           </View>
@@ -682,7 +694,11 @@ const ListingForm = ({route, navigation}) => {
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={COLORS.white} size={16} />
-            <Text style={{fontSize: 12, marginStart: 5, color: COLORS.white}}>
+            <Text
+              style={[
+                styles.label,
+                {fontSize: 12, marginStart: 5, color: COLORS.white},
+              ]}>
               Enter the duration in 'months' for the minimum stay.
             </Text>
           </View>
@@ -750,7 +766,7 @@ const ListingForm = ({route, navigation}) => {
             {isLoading ? (
               <ActivityIndicator size={'small'} color={COLORS.white} />
             ) : (
-              <Text style={{color: COLORS.white}}>Submit</Text>
+              <Text style={[styles.label, {color: COLORS.white}]}>Submit</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -797,9 +813,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontWeight: 'bold',
     color: COLORS.grey,
     textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
   },
   cardContainer: {
     backgroundColor: COLORS.white,
@@ -820,8 +836,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontFamily: 'Poppins-Regular',
   },
   inputContainer: {
     flexDirection: 'column',
@@ -834,6 +849,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: COLORS.white,
     elevation: 2,
+    fontFamily: 'Poppins-Regular',
   },
   error: {
     borderColor: 'red',
