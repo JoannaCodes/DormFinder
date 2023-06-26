@@ -17,6 +17,7 @@ import {GENERALGUIDESECTIONS, GENERALGUIDESECTIONS_FIL, TENANTSECTIONS, TENANTSE
 const Help = () => {
   const [activeSections1, setActiveSections1] = useState([]);
   const [activeSections2, setActiveSections2] = useState([]);
+  const [activeSections3, setActiveSections3] = useState([]);
   const [isTranslated, setIsTranslated] = useState(false);
 
   function renderHeader(section, _, isActive) {
@@ -83,10 +84,10 @@ const Help = () => {
           align="bottom"
           underlayColor={'none'}
           sections={tenantSections}
-          activeSections={activeSections1}
+          activeSections={activeSections2}
           renderHeader={renderHeader}
           renderContent={renderContent}
-          onChange={sections => setActiveSections1(sections)}
+          onChange={sections => setActiveSections2(sections)}
           sectionContainerStyle={styles.accordContainer}
         />
         <View style={{ marginVertical: 10 }} />
@@ -95,10 +96,10 @@ const Help = () => {
           align="bottom"
           underlayColor={'none'}
           sections={ownerSections}
-          activeSections={activeSections2}
+          activeSections={activeSections3}
           renderHeader={renderHeader}
           renderContent={renderContent}
-          onChange={sections => setActiveSections2(sections)}
+          onChange={sections => setActiveSections3(sections)}
           sectionContainerStyle={styles.accordContainer}
         />
         <View style={{ marginVertical: 5 }} />
