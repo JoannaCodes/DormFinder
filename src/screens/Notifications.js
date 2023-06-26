@@ -34,9 +34,9 @@ export default function Notifications({route, navigation}) {
   // const [showMoreState, setShowMoreState] = useState(false);
   // const [colorLabel, setColorLabel] = useState('#7B9A35');
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   useFocusEffect(
     React.useCallback(() => {

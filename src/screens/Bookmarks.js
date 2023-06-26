@@ -37,16 +37,19 @@ const Bookmarks = ({route, navigation}) => {
   const [dorms, setDorms] = useState('');
   const [userInfo, setUserInfo] = useState([]);
 
-  useEffect(async () => {
-    const data = await AsyncStorage.getItem('user');
-    const convertData = JSON.parse(data);
-    setUserInfo(convertData);
+  // useEffect(async () => {
+  //   const data = await AsyncStorage.getItem('user');
+  //   const convertData = JSON.parse(data);
+  //   setUserInfo(convertData);
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   useFocusEffect(
-    React.useCallback(() => {
+    React.useCallback(async () => {
+      const data = await AsyncStorage.getItem('user');
+      const convertData = JSON.parse(data);
+      setUserInfo(convertData);
       fetchData();
 
       return () => {
