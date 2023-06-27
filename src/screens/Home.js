@@ -298,7 +298,7 @@ const HomeScreen = ({navigation, route}) => {
                   var unix = javascript_date.getTime() / 1000;
                   PushNotification.localNotificationSchedule({
                     id: output[key].unix_time,
-                    title: 'DormFinder',
+                    title: 'StudyHive',
                     message: output[key].ndesc,
                     channelId: 'channel-id',
                     date: new Date(unix * 1000),
