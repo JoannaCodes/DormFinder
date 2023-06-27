@@ -19,6 +19,8 @@ import {
   Linking,
   PermissionsAndroid,
   LogBox,
+  AppState,
+  BackHandler
 } from 'react-native';
 
 LogBox.ignoreLogs(['Warning: ...']);
@@ -86,6 +88,88 @@ const HomeScreen = ({navigation, route}) => {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === 'background') {
+        // App is transitioning to the background
+
+        // Execute your background task here
+        performBackgroundTask();
+      }
+      if (nextAppState === 'active') {
+        // App is transitioning to the background
+
+        // Execute your background task here
+        performBackgroundTask();
+      }
+      if (nextAppState === 'inactive') {
+        // App is transitioning to the background
+
+        // Execute your background task here
+        performBackgroundTask();
+      }
+    };
+
+    const performBackgroundTask = async () => {
+      try {
+        // Your Axios request
+        // const response = await axios.get('https://api.example.com/data');
+           try {
+            let URL = BASE_URL;
+            axios
+              .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
+              .then(res => {
+                var output = JSON.parse(res.data);
+                try {
+                  if (output.length !== 0) {
+                    for (var key in output) {
+                      let test = output[key].scheduled;
+                      if (test !== '' || test !== null) {
+                        var javascript_date = new Date(Date.parse(test));
+                        var unix = javascript_date.getTime() / 1000;
+                        PushNotification.localNotificationSchedule({
+                          id: output[key].unix_time,
+                          title: 'DormFinder',
+                          message: output[key].ndesc,
+                          channelId: 'channel-id',
+                          date: new Date(unix * 1000),
+                          allowWhileIdle: true,
+                        });
+                      }
+                    }
+                  }
+                } catch (error) {
+                  console.log('error:' + error);
+                }
+              })
+              .catch(error => {
+                console.log('error:' + error);
+              });
+          } catch (error) {
+            console.log('error:' + error);
+          }
+
+        // Process the response or perform any other operations
+        // console.log(response.data);
+      } catch (error) {
+        // Handle any errors
+        console.error(error);
+      }
+    };
+
+    // Add an app state change listener
+    AppState.addEventListener('change', handleAppStateChange);
+
+    // Handle Android's back button press when the app is in the background
+    const handleBackButtonPressAndroid = () => {
+      // Prevent the app from being closed when back button is pressed in the background
+      return true;
+    };
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonPressAndroid);
+
+ 
   }, []);
 
   useEffect(() => {
