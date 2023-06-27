@@ -319,7 +319,7 @@ export default function App() {
     try {
       await AsyncStorage.getItem('user').then(data => {
         if (data) {
-          console.log('async logged user:', data);
+          // console.log('async logged user:', data);
           const asyncUser = JSON.parse(data);
           setUser(asyncUser.id);
           setMode(asyncUser.mode);
@@ -352,7 +352,7 @@ export default function App() {
           JSON.stringify(fetchedStatus),
         ).then(() => {
           const status = parseInt(fetchedStatus, 10);
-          console.log('converted:', Boolean(status));
+          // console.log('converted:', Boolean(status));
           setVerified(Boolean(status));
         });
       });

@@ -282,7 +282,11 @@ const HomeScreen = ({navigation, route}) => {
     try {
       let URL = BASE_URL;
       axios
-        .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
+        .get(URL + '?tag=fetch_saved_notif&user_ref=' + user, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+          },
+        })
         .then(res => {
           var output = JSON.parse(res.data);
           try {

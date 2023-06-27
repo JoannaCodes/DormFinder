@@ -9,8 +9,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {goToAppSettings, openInStore} from 'react-native-app-link';
+import {GooglePay} from 'react-native-google-pay';
 
 import COLORS from '../../../constants/colors';
+
+const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
+const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({navigation}) {
   const openGCashApp = () => {
@@ -41,7 +45,54 @@ export default function PaymentGateway({navigation}) {
         Once payment transaction is done, send your receipt to the dorm owner.
       </Text>
       <TouchableOpacity style={styles.button} onPress={openGCashApp}>
-        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold',}}>Continue</Text>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
+          Continue with Gcash
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          const requestData = {
+            cardPaymentMethod: {
+              tokenizationSpecification: {
+                type: 'PAYMENT_GATEWAY',
+                gateway: 'example',
+                gatewayMerchantId: 'BCR2DN4TZDILX3ZX',
+              },
+              allowedCardNetworks,
+              allowedCardAuthMethods,
+            },
+            transaction: {
+              totalPrice: '2500',
+              totalPriceStatus: 'FINAL',
+              currencyCode: 'PHP',
+            },
+            merchantName: 'PeekABook Online Consultation',
+          };
+
+          // Set the environment before the payment request
+          GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+
+          // Check if Google Pay is available
+          GooglePay.isReadyToPay(
+            allowedCardNetworks,
+            allowedCardAuthMethods,
+          ).then(ready => {
+            if (ready) {
+              // Request payment token
+              GooglePay.requestPayment(requestData)
+                .then(async token => {
+                  Alert.alert('Success');
+                })
+                .catch(error => {
+                  Alert.alert('Transaction Cancel');
+                });
+            }
+          });
+        }}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
+          Continue with Google Pay
+        </Text>
       </TouchableOpacity>
     </View>
   );
