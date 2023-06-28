@@ -2,6 +2,7 @@
 import React from 'react';
 import {
   View,
+  ScrollView,
   Text,
   StyleSheet,
   Alert,
@@ -12,11 +13,32 @@ import {goToAppSettings, openInStore} from 'react-native-app-link';
 import {GooglePay} from 'react-native-google-pay';
 
 import COLORS from '../../../constants/colors';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import {BASE_URL, AUTH_KEY} from '../../../constants';
+
+const Separator = ({title}) => {
+  return (
+    <View style={styles.separator}>
+      <View style={styles.line} />
+      <Text
+        style={{
+          marginHorizontal: 5,
+          color: 'gray',
+          fontFamily: 'Poppins-SemiBold',
+        }}>
+        {title}
+      </Text>
+      <View style={styles.line} />
+    </View>
+  );
+};
 
 const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
-export default function PaymentGateway({navigation}) {
+export default function PaymentGateway({route, navigation}) {
+  const {payor, merchant, price} = route.params;
   const openGCashApp = () => {
     openInStore({
       appName: 'GCash',
@@ -34,21 +56,24 @@ export default function PaymentGateway({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image
         source={require('../../../assets/payment_upsketch.png')}
         style={{height: 360, width: 360}}
         resizeMode="cover"
       />
-      <Text style={styles.title}>We are redirecting you to your GCash App</Text>
-      <Text style={styles.text}>
-        Once payment transaction is done, send your receipt to the dorm owner.
-      </Text>
-      <TouchableOpacity style={styles.button} onPress={openGCashApp}>
-        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
-          Continue with Gcash
-        </Text>
-      </TouchableOpacity>
+      <View
+        style={{
+          borderStyle: 'dashed',
+          borderRadius: 20,
+          borderWidth: 1,
+          padding: 16,
+          marginBottom: 20,
+        }}>
+        <Text style={styles.heading}>Payment Details</Text>
+        <Text style={styles.text}>Receiver: {merchant}</Text>
+        <Text style={styles.text}>Amount: ₱{price}</Text>
+      </View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -57,13 +82,13 @@ export default function PaymentGateway({navigation}) {
               tokenizationSpecification: {
                 type: 'PAYMENT_GATEWAY',
                 gateway: 'example',
-                gatewayMerchantId: 'BCR2DN4TZDILX3ZX',
+                gatewayMerchantId: merchant,
               },
               allowedCardNetworks,
               allowedCardAuthMethods,
             },
             transaction: {
-              totalPrice: '2500',
+              totalPrice: price.toString(),
               totalPriceStatus: 'FINAL',
               currencyCode: 'PHP',
             },
@@ -82,10 +107,62 @@ export default function PaymentGateway({navigation}) {
               // Request payment token
               GooglePay.requestPayment(requestData)
                 .then(async token => {
-                  Alert.alert('Success');
+                  const formData = new FormData();
+                  formData.append('tag', 'payment');
+                  formData.append('token', token);
+                  formData.append('payorId', payor); // sender
+                  formData.append(
+                    'merchantId',
+                    requestData.cardPaymentMethod.tokenizationSpecification
+                      .gatewayMerchantId, // reciever
+                  );
+                  formData.append('amount', requestData.transaction.totalPrice);
+
+                  console.log(formData);
+
+                  await axios
+                    .post(BASE_URL, formData, {
+                      headers: {
+                        'Auth-Key': AUTH_KEY,
+                        'Content-Type': 'multipart/form-data',
+                      },
+                    })
+                    .then(response => {
+                      const message = response.data;
+
+                      if (message === 'success') {
+                        Toast.show({
+                          type: 'success',
+                          text1: 'StudyHive',
+                          text2: 'Payment Sucessful',
+                        });
+                      } else {
+                        Toast.show({
+                          type: 'error',
+                          text1: 'StudyHive',
+                          text2:
+                            'Payment did not push through. Please try again.',
+                        });
+                      }
+                    })
+                    .catch(error => {
+                      console.error(
+                        'Error occurred during the Axios request:',
+                        error,
+                      );
+                      Toast.show({
+                        type: 'error',
+                        text1: 'StudyHive',
+                        text2: 'An error occured',
+                      });
+                    });
                 })
                 .catch(error => {
-                  Alert.alert('Transaction Cancel');
+                  Toast.show({
+                    type: 'error',
+                    text1: 'StudyHive',
+                    text2: 'Transaction Cancelled',
+                  });
                 });
             }
           });
@@ -94,7 +171,13 @@ export default function PaymentGateway({navigation}) {
           Continue with Google Pay
         </Text>
       </TouchableOpacity>
-    </View>
+      <Separator title={'Or'} />
+      <TouchableOpacity style={styles.button} onPress={openGCashApp}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
+          Continue with Gcash
+        </Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
@@ -104,10 +187,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  title: {
-    fontSize: 24,
-    fontFamily: 'Poppins-SemiBold',
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'gray',
+  },
+  heading: {
+    fontSize: 20,
+    marginBottom: 10,
     textAlign: 'center',
+    fontFamily: 'Poppins-SemiBold',
   },
   text: {
     fontSize: 16,
@@ -121,6 +215,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     elevation: 4,
     padding: 8,
-    marginTop: 20,
   },
 });
