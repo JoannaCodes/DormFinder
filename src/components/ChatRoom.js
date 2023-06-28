@@ -375,7 +375,7 @@ const ChatRoom = props => {
             onPress={() => {
               props.route.params.navigation.navigate('Dorm Details', {
                 dormref: props.route.params.unique_code,
-                userref: props.route.params.user,
+                userref: props.route.params.user.id,
               });
             }}>
             <Text
