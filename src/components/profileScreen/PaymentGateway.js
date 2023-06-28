@@ -136,7 +136,7 @@ export default function PaymentGateway({route, navigation}) {
               totalPriceStatus: 'FINAL',
               currencyCode: 'PHP',
             },
-            merchantName: 'PeekABook Online Consultation',
+            merchantName: merchant,
           };
 
           // Set the environment before the payment request
