@@ -97,7 +97,7 @@ export default function PaymentGateway({route, navigation}) {
       <View style={styles.transaction}>
         <Text style={styles.title}>{item.token}</Text>
         <View style={styles.rowContainer}>
-          <Text style={styles.amount}>{item.price}</Text>
+          <Text style={styles.amount}>₱{item.price}</Text>
           <Text style={styles.date}>{item.timestamp}</Text>
         </View>
       </View>
