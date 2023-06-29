@@ -134,12 +134,18 @@ export default function Signup() {
             'Content-Type': 'multipart/form-data'
           },
         })
-          .then(() => {
-            Alert.alert('Success!','Your account has been created');
-            navigation.navigate('Login');
+          .then(response => {
+            const message = response.data;
+            console.log(message);
+            if (message === 1) {
+              Alert.alert('Account created!','Your account has been created.');
+              navigation.navigate('Login');
+            } else if (message === 0) {
+              Alert.alert('Unable to create account!','Username/Email is already taken. Please choose a different username/email.');
+            }
           })
           .catch(error => {
-            Alert.alert('User Not Created');
+            Alert.alert('Error occurred during the request:', 'Please try again.');
           });
       }
     }
