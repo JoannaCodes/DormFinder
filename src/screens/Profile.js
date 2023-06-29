@@ -81,7 +81,7 @@ export default function Profile({user, verified, onLogout}) {
           <TouchableOpacity
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Payment Transactions')}>
-            <Icon name="verified-user" size={20} color={COLORS.darkgrey} />
+            <Icon name="payments" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Payment Transactions</Text>
           </TouchableOpacity>
         </View>

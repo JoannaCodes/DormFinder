@@ -58,11 +58,13 @@ export default function PaymentGateway({route, navigation}) {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Image
         source={require('../../../assets/payment_upsketch.png')}
-        style={{height: 360, width: 360}}
+        style={{height: 270, width: 270}}
         resizeMode="cover"
       />
+      </View>
       <View
         style={{
           borderStyle: 'dashed',
@@ -198,9 +200,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 5,
     textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
+    color: 'black'
   },
   text: {
     fontSize: 16,
