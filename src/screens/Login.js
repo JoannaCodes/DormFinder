@@ -225,7 +225,7 @@ export default function Login({onLogin}) {
             <View style={styles.customInputContainer}>
               <TextInput
                 style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
-                placeholder="Username"
+                placeholder="Email or Username"
                 onChangeText={text => setUsername(text)}
                 keyboardType={'email-address'}
                 autoCapitalize="none"

@@ -36,6 +36,7 @@ import DormListingComponent from './src/components/profileScreen/DormListing';
 import ListingFormComponent from './src/components/ListingForm';
 import GuestModeModal from './src/components/modals/GuestModeModal';
 import HelpComponent from './src/components/profileScreen/Help';
+import PaymentTransactionComponent from './src/components/profileScreen/PaymentTransactions'; 
 
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
@@ -230,6 +231,12 @@ function RootApp({user, mode, verified, onLogout}) {
         initialParams={{user}}
         options={{headerTitleStyle: titleStyle.title1}}
       />
+      <AppStack.Screen 
+        name="Payment Transactions" 
+        component={PaymentTransactionComponent}
+        initialParams={{user}}
+        options={{headerTitleStyle: titleStyle.title1}}
+      />
       <AppStack.Screen name="Guest Modal" options={{headerShown: false}}>
         {() => <GuestModeModal onLogout={onLogout} />}
       </AppStack.Screen>
@@ -250,8 +257,7 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen 
         name="Payments" 
         component={PaymentGatewayComponent}
-        options={{headerTitleStyle: titleStyle.title1 }}
-        
+        options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen 
         name="Dorm Details" 
@@ -266,8 +272,7 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen 
         name="Help" 
         component={HelpComponent}
-        options={{headerTitleStyle: titleStyle.title1, }}
-        
+        options={{headerTitleStyle: titleStyle.title1}}
       />
     </AppStack.Navigator>
   );
@@ -319,7 +324,7 @@ export default function App() {
     try {
       await AsyncStorage.getItem('user').then(data => {
         if (data) {
-          console.log('async logged user:', data);
+          // console.log('async logged user:', data);
           const asyncUser = JSON.parse(data);
           setUser(asyncUser.id);
           setMode(asyncUser.mode);
@@ -352,7 +357,7 @@ export default function App() {
           JSON.stringify(fetchedStatus),
         ).then(() => {
           const status = parseInt(fetchedStatus, 10);
-          console.log('converted:', Boolean(status));
+          // console.log('converted:', Boolean(status));
           setVerified(Boolean(status));
         });
       });
