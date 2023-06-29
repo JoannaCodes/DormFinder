@@ -639,9 +639,9 @@ return (
     borderRadius: 5,
     overflow: 'hidden',
   }}>
-  <WebView
+<WebView
   userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-  source={{html: `<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1, user-scalable=yes"><iframe width="100%" height="100%%" src="https://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=${dorms.new_address}&aq=0&oq=199+ch&ie=UTF8&hq=&hnear=${dorms.new_address}&t=m&z=17&output=embed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`}}
+  source={{html: `<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes"><iframe width="100%" height="100%" src="https://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=${dorms.new_address}&aq=0&oq=199+ch&ie=UTF8&hq=&hnear=${dorms.new_address}&t=m&z=17&output=embed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`}}
   style={{ marginTop: 10, height: 300}}/>
 </View>
 
@@ -656,7 +656,7 @@ return (
       setSelectedDorm(dormref);
       }}>
         <View>
-          <Text style={{fontSize: 15, color: 'black', fontFamily: 'Poppins-Regular', textDecorationLine: 'underline'}}>Report this listing</Text>
+          <Text style={{fontSize: 15, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
         </View>
     </TouchableOpacity>
   </View>
@@ -670,7 +670,7 @@ return (
     <View>
       <Text
         style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
-        ₱{dorms.price}
+        ₱ {dorms.price}
       </Text>
         <Text
           style={{fontSize: 12, color: COLORS.grey, fontFamily: 'Poppins-SemiBold',}}>

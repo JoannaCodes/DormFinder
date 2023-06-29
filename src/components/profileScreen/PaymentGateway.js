@@ -116,7 +116,7 @@ export default function PaymentGateway({route, navigation}) {
         }}>
         <Text style={styles.heading}>Payment Details</Text>
         <Text style={styles.text}>Receiver: {merchant}</Text>
-        <Text style={styles.text}>Amount: ₱{price}</Text>
+        <Text style={styles.text}>Amount: ₱ {price}</Text>
       </View>
       <TouchableOpacity
         style={styles.button}

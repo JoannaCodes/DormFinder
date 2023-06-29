@@ -584,7 +584,7 @@ const HomeScreen = ({navigation, route}) => {
                   { color: isAvailable ? COLORS.teal : COLORS.grey },
                 ]}
               >
-                ₱{item.price}
+                ₱ {item.price}
               </Text>
             </View>
             <Text

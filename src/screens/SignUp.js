@@ -116,6 +116,11 @@ export default function Signup() {
         return;
       }
 
+      if (password.length < 8) {
+        Alert.alert('Error', 'Password should be at least 8 characters long.');
+        return;
+      }
+
       if (validateSignup()) {
         const formData = new FormData();
         formData.append('tag', 'signup_app');
@@ -208,12 +213,18 @@ export default function Signup() {
             <View style={styles.customInputContainer}>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TextInput
-                  style={{flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
-                  placeholder="Password"
-                  secureTextEntry={!isPasswordVisible}
-                  onChangeText={text => setPassword(text)}
-                />
+                  <TextInput
+                    style={{ flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2 }}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    onChangeText={text => setPassword(text)}
+                    onSubmitEditing={() => {
+                      if (password.length < 8) {
+                        Alert.alert('Error', 'Password should be at least 8 characters long.');
+                      }
+                    }}
+                  />
+
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Icon

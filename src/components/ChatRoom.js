@@ -262,7 +262,7 @@ const ChatRoom = props => {
         .catch(ex => {
           return false;
         });
-    }, 5000);
+    }, 1000);
 
     return () => {
       clearInterval(intervalId);
