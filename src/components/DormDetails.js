@@ -597,7 +597,7 @@ return (
     <View style={style.facility1}>
       <Icon name="payments" size={18} />
       <Text style={style.facilityText2}>Advance Deposit:</Text>
-      <Text style={style.facilityText2}>₱ {dorms.adv_dep}.00</Text>
+      <Text style={style.facilityText2}>₱{dorms.adv_dep}.00</Text>
     </View>
   )}
   {dorms.util !== '' && (
@@ -611,7 +611,7 @@ return (
     <View style={style.facility1}>
       <Icon name="shield" size={18} />
       <Text style={style.facilityText2}>Security Deposit:</Text>
-      <Text style={style.facilityText2}>₱ {dorms.sec_dep}.00</Text>
+      <Text style={style.facilityText2}>₱{dorms.sec_dep}.00</Text>
     </View>
   )}
   {dorms.min_stay !== '' && (

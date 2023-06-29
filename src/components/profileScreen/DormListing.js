@@ -506,6 +506,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
+    color: 'black',
     fontFamily: 'Poppins-Regular',
   },
 });

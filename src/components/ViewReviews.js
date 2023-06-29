@@ -132,7 +132,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
       <View style={styles.container}>
         <View style={styles.modal}>
           <View style={styles.header}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            <Text style={{fontSize: 20, fontFamily: 'Poppins-SemiBold', color:'black'}}>
               Rating and Reviews
             </Text>
             <TouchableOpacity onPress={handleDismiss}>
@@ -157,7 +157,7 @@ const ViewReviews = ({visible, onClose, dormref}) => {
                   </Text>
                 ))}
             </View>
-            <Text>Total rating</Text>
+            <Text style = {{fontFamily: 'Poppins-Regular', marginTop:5 , color: 'black'}}>Total ratings</Text>
           </View>
           <SafeAreaView style={styles.reviews}>
             {isLoading ? (
@@ -254,13 +254,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 16,
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'black'
   },
   message: {
     textAlign: 'center',
