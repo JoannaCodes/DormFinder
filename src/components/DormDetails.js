@@ -561,7 +561,7 @@ return (
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
     <View style={style.facility1}>
           <Icon name="pets" size={18} />
-          {dorms.pets === 0 ? (
+          {dorms.pets == 0 ? (
             <Text style={style.facilityText2}>Pets are not allowed</Text>
           ) : (
             <Text style={style.facilityText2}>Pets are allowed</Text>
@@ -569,7 +569,7 @@ return (
         </View>
         <View style={style.facility1}>
           <Icon name="group" size={18} />
-          {dorms.visitors === 0 ? (
+          {dorms.visitors == 0 ? (
             <Text style={style.facilityText2}>Visitors are not allowed</Text>
           ) : (
             <Text style={style.facilityText2}>Visitors are allowed</Text>
@@ -577,7 +577,7 @@ return (
         </View>
         <View style={style.facility1}>
           <Icon name="schedule" size={18} />
-          {dorms.curfew === 0 ? (
+          {dorms.curfew == 0 ? (
             <Text style={style.facilityText2}>No observance of curfew</Text>
           ) : (
             <Text style={style.facilityText2}>Observance of curfew</Text>
