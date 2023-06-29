@@ -391,6 +391,7 @@ const ChatRoom = props => {
                   payor: props.route.params.myid,
                   merchantid: getDorm?.userref,
                   merchant: props.route.params.username,
+                  dorm: getDorm?.name,
                   price: getDorm?.price,
                 });
               }}>

@@ -38,7 +38,7 @@ const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({route, navigation}) {
-  const {payor, merchant, merchantid, price} = route.params;
+  const {payor, merchant, merchantid, dorm, price} = route.params;
 
   const openGCashApp = () => {
     openInStore({
@@ -111,12 +111,14 @@ export default function PaymentGateway({route, navigation}) {
                   const formData = new FormData();
                   formData.append('tag', 'payment');
                   formData.append('token', token);
+                  // formData.append('merchantName', requestData.merchantName);
                   formData.append('payor', payor); // sender
                   formData.append(
                     'merchant',
                     requestData.cardPaymentMethod.tokenizationSpecification
                       .gatewayMerchantId, // reciever
                   );
+                  formData.append('dorm', dorm);
                   formData.append('amount', requestData.transaction.totalPrice);
 
                   await axios

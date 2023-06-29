@@ -23,16 +23,6 @@ export default function Notifications({route, navigation}) {
   const [notifContainer, setNotifContainer] = useState('');
   const [status, setStatus] = useState('success');
   const [isLoading, setLoading] = useState(true);
-  // const [longContainer, setLongContainer] = useState('');
-  // const [downloadedID, setDownloadedID] = useState('');
-
-  // const [todayState, setTodayState] = useState('none');
-  // const [recentState, setRecentState] = useState('none');
-  // const [longState, setLongState] = useState('none');
-
-  // const [showMoreLabel, setShowMoreLabel] = useState('Show More');
-  // const [showMoreState, setShowMoreState] = useState(false);
-  // const [colorLabel, setColorLabel] = useState('#7B9A35');
 
   // useEffect(() => {
   //   fetchData();

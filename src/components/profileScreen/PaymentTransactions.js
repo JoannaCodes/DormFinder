@@ -55,6 +55,7 @@ export default function PaymentGateway({route, navigation}) {
     return (
       <View style={styles.transaction}>
         <Text style={styles.title}>{item.token}</Text>
+        <Text style={styles.title}>{item.dorm}</Text>
         <View style={styles.rowContainer}>
           <Text style={styles.amount}>₱ {item.price}</Text>
           <Text style={styles.date}>{item.timestamp}</Text>
@@ -94,9 +95,6 @@ export default function PaymentGateway({route, navigation}) {
             );
           }}
           renderItem={renderItem}
-          ItemSeparatorComponent={() => {
-            return <View style={{backgroundColor: COLORS.grey, height: 1}} />;
-          }}
         />
       )}
     </View>
