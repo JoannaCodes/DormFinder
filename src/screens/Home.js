@@ -119,7 +119,11 @@ const HomeScreen = ({navigation, route}) => {
            try {
             let URL = BASE_URL;
             axios
-              .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
+              .get(URL + '?tag=fetch_saved_notif&user_ref=' + user, {
+                headers: {
+                  'Auth-Key': AUTH_KEY,
+                },
+              })
               .then(res => {
                 var output = JSON.parse(res.data);
                 try {
@@ -131,7 +135,7 @@ const HomeScreen = ({navigation, route}) => {
                         var unix = javascript_date.getTime() / 1000;
                         PushNotification.localNotificationSchedule({
                           id: output[key].unix_time,
-                          title: 'DormFinder',
+                          title: 'StudyHive',
                           message: output[key].ndesc,
                           channelId: 'channel-id',
                           date: new Date(unix * 1000),
