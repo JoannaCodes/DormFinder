@@ -20,6 +20,7 @@ import COLORS from '../../constants/colors';
 
 import BackgroundImg from '../../assets/img/bg1.png';
 import Google from '../../assets/img/google-logo.png';
+import Facebook from '../../assets/img/facebook-logo.png';
 import {BASE_URL} from '../../constants/index';
 import ForgotPasswordModal from '../components/modals/ForgotPasswordModal';
 import { API_URL, AUTH_KEY, CLIENT_ID } from '../../constants/index';
@@ -271,28 +272,66 @@ export default function Login({onLogin}) {
                 </Text>
               )}
             </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={{
+                  alignSelf: 'flex-end', 
+                  marginTop: 10, 
+                  marginBottom: -7,
+                }}>
+                <Text
+                  style={{
+                    color: '#454545',
+                    marginTop: -10,
+                    fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: -2
+                  }}>
+                  Forgot Password?
+                </Text>
+              </TouchableOpacity>
             {/*  */}
             {/*  */}
             <Separator title={'Or'} />
             {/*  */}
             {/*  */}
+
+            
+          <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
             <TouchableOpacity
               style={[
-                styles.loginButton,
+                styles.squareButton,
                 {
                   backgroundColor: COLORS.white,
-                  flexDirection: 'row',
-                  padding: 12,
-                  justifyContent: 'space-around',
+                  flex: 1,
+                  marginRight: 10,
+                  marginLeft: 3,
                 },
               ]}
               onPress={() => {
                 handleLogin('google');
-              }}>
-              <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>Sign In With Google</Text>
-              <View />
+              }}
+            >
+              <Image source={Google} style={styles.squareButtonIcon} />
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.squareButton,
+                {
+                  backgroundColor: COLORS.white,
+                  flex: 1,
+                  marginRight: 5,
+                },
+              ]}
+              onPress={() => {
+                handleLogin('facebook');
+              }}
+            >
+              <Image source={Facebook} style={styles.squareButtonIconFb} />
+            </TouchableOpacity>
+          </View>
+
             {/*  */}
             {/*  */}
             <TouchableOpacity
@@ -302,7 +341,7 @@ export default function Login({onLogin}) {
               }}>
               <Text
                 style={{color: COLORS.white, fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>
-                Login as Guest
+                Continue as Guest
               </Text>
             </TouchableOpacity>
             {/*  */}
@@ -326,19 +365,6 @@ export default function Login({onLogin}) {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true);
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.teal,
-                    marginTop: -10,
-                    fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: -2
-                  }}>
-                  Forget Your Password?
-                </Text>
-              </TouchableOpacity>
             </View>
             {/*  */}
           </View>
@@ -424,4 +450,26 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  squareButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginHorizontal: 10,
+    elevation: 3,
+  },
+  squareButtonIcon: {
+    height: 25,
+    width: 25,
+  },
+  squareButtonIconFb: {
+    height: 30,
+    width: 30,
+  },
+    
 });

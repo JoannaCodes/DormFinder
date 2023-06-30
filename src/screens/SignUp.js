@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
+import Facebook from '../../assets/img/facebook-logo.png';
 import {BASE_URL} from '../../constants/index';
 import COLORS from '../../constants/colors';
 
@@ -252,21 +253,40 @@ export default function Signup() {
 
             <Separator title={'Or'} />
 
+            <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
             <TouchableOpacity
-              onPress={() => handleSignUp('google')}
               style={[
-                styles.loginButton,
+                styles.squareButton,
                 {
                   backgroundColor: COLORS.white,
-                  flexDirection: 'row',
-                  padding: 12,
-                  justifyContent: 'space-around',
+                  flex: 1,
+                  marginRight: 10,
+                  marginLeft: 3,
                 },
-              ]}>
-              <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>Continue With Google</Text>
-              <View />
+              ]}
+              onPress={() => {
+                handleLogin('google');
+              }}
+            >
+              <Image source={Google} style={styles.squareButtonIcon} />
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.squareButton,
+                {
+                  backgroundColor: COLORS.white,
+                  flex: 1,
+                  marginRight: 5,
+                },
+              ]}
+              onPress={() => {
+                handleLogin('facebook');
+              }}
+            >
+              <Image source={Facebook} style={styles.squareButtonIconFb} />
+            </TouchableOpacity>
+          </View>
 
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
@@ -363,5 +383,26 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  squareButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginHorizontal: 10,
+    elevation: 3,
+  },
+  squareButtonIcon: {
+    height: 25,
+    width: 25,
+  },
+  squareButtonIconFb: {
+    height: 30,
+    width: 30,
   },
 });
