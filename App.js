@@ -38,6 +38,9 @@ import GuestModeModal from './src/components/modals/GuestModeModal';
 import HelpComponent from './src/components/profileScreen/Help';
 import PaymentTransactionComponent from './src/components/profileScreen/PaymentTransactions'; 
 
+//
+import TermsAndPrivacyComponent from './src/components/profileScreen/TermsAndPrivacy';
+
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import SplashScreen from './src/screens/SplashScreen';
@@ -272,6 +275,11 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen 
         name="Help" 
         component={HelpComponent}
+        options={{headerTitleStyle: titleStyle.title1}}
+      />
+      <AppStack.Screen 
+        name="Terms and Privacy Policy" 
+        component={TermsAndPrivacyComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
     </AppStack.Navigator>

@@ -94,7 +94,14 @@ export default function Profile({user, verified, onLogout}) {
             <Icon name="help" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Help</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => navigation.navigate('Terms and Privacy Policy')}>
+            <Icon name="privacy-tip" size={20} color={COLORS.darkgrey} />
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Terms and Privacy Policy</Text>
+          </TouchableOpacity>
         </View>
+
 
         {/* Logout section */}
         <View style={styles.section}>

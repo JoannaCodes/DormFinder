@@ -469,12 +469,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   squareButtonIcon: {
-    height: 25,
-    width: 25,
+    height: 27,
+    width: 26,
   },
   squareButtonIconFb: {
-    height: 30,
-    width: 30,
+    height: 32,
+    width: 32,
   },
     
 });
