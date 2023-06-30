@@ -20,8 +20,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import COLORS from '../../constants/colors';
 import Toast from 'react-native-toast-message';
 
-import ReviewForm from '../components/ReviewForm';
-
 const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={COLORS.grey} />;
 };
@@ -31,8 +29,7 @@ const Bookmarks = ({route, navigation}) => {
   let URL = BASE_URL;
 
   const [isLoading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDorm, setSelectedDorm] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
   const [status, setStatus] = useState('success');
   const [dorms, setDorms] = useState('');
   const [userInfo, setUserInfo] = useState([]);
@@ -42,17 +39,19 @@ const Bookmarks = ({route, navigation}) => {
     const convertData = JSON.parse(data);
     setUserInfo(convertData);
 
-    fetchData();
+    setIsMounted(true);
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchData();
+      if (isMounted) {
+        fetchData();
+      }
 
       return () => {
         // Clean up any resources if needed
       };
-    }, []),
+    }, [isMounted]),
   );
 
   const fetchData = async () => {
@@ -192,28 +191,35 @@ const Bookmarks = ({route, navigation}) => {
             </View>
             <Separator />
             <View style={styles.action}>
-              <TouchableOpacity
-                style={[styles.btnContainer1, {marginEnd: 4}]}
-                onPress={() => {
-                  setModalVisible(true);
-                  setSelectedDorm(item.id);
-                }}>
-                <Icon name="star-rate" size={18} color={COLORS.teal} />
-                <Text
-                  style={{
-                    marginLeft: 9,
-                    marginTop: 5,
-                    fontFamily: 'Poppins-Regular',
-                    color: 'black',
-                  }}>
-                  Write a review
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.btnContainer, {marginStart: 4}]}
-                onPress={handleMessageNow}>
-                <Icon name="message" size={18} color={COLORS.teal} />
-              </TouchableOpacity>
+              {user !== item.userref ? (
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={handleMessageNow}>
+                  <Icon name="message" size={18} color={COLORS.teal} />
+                  <Text
+                    style={{
+                      color: 'black',
+                      marginStart: 5,
+                      fontFamily: 'Poppins-Regular',
+                    }}>
+                    Message Now
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={() => navigation.navigate('InboxTab')}>
+                  <Icon name="message" size={18} color={COLORS.teal} />
+                  <Text
+                    style={{
+                      color: 'black',
+                      marginStart: 5,
+                      fontFamily: 'Poppins-Regular',
+                    }}>
+                    View Chats
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
@@ -290,12 +296,6 @@ const Bookmarks = ({route, navigation}) => {
           }
         />
       )}
-      <ReviewForm
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        userref={user}
-        dormref={selectedDorm}
-      />
     </SafeAreaView>
   );
 };
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: 'Poppins-SemiBold',
     marginBottom: 5,
     marginTop: -30,
@@ -323,18 +323,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontFamily: 'Poppins-Regular',
-  },
-  btnContainer1: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexGrow: 1,
-    elevation: 2,
-    borderRadius: 4,
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    borderColor: COLORS.teal,
-    padding: 5,
   },
   btnContainer: {
     flexDirection: 'row',

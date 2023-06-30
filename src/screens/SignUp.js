@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
+import Facebook from '../../assets/img/facebook-logo.png';
 import {BASE_URL} from '../../constants/index';
 import COLORS from '../../constants/colors';
 
@@ -116,6 +117,11 @@ export default function Signup() {
         return;
       }
 
+      if (password.length < 8) {
+        Alert.alert('Error', 'Password should be at least 8 characters long.');
+        return;
+      }
+
       if (validateSignup()) {
         const formData = new FormData();
         formData.append('tag', 'signup_app');
@@ -129,12 +135,18 @@ export default function Signup() {
             'Content-Type': 'multipart/form-data'
           },
         })
-          .then(() => {
-            Alert.alert('Success!','Your account has been created');
-            navigation.navigate('Login');
+          .then(response => {
+            const message = response.data;
+            console.log(message);
+            if (message === 1) {
+              Alert.alert('Account created!','Your account has been created.');
+              navigation.navigate('Login');
+            } else if (message === 0) {
+              Alert.alert('Unable to create account!','Username/Email is already taken. Please choose a different username/email.');
+            }
           })
           .catch(error => {
-            Alert.alert('User Not Created');
+            Alert.alert('Error occurred during the request:', 'Please try again.');
           });
       }
     }
@@ -208,12 +220,18 @@ export default function Signup() {
             <View style={styles.customInputContainer}>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TextInput
-                  style={{flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
-                  placeholder="Password"
-                  secureTextEntry={!isPasswordVisible}
-                  onChangeText={text => setPassword(text)}
-                />
+                  <TextInput
+                    style={{ flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2 }}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    onChangeText={text => setPassword(text)}
+                    onSubmitEditing={() => {
+                      if (password.length < 8) {
+                        Alert.alert('Error', 'Password should be at least 8 characters long.');
+                      }
+                    }}
+                  />
+
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Icon
@@ -235,21 +253,40 @@ export default function Signup() {
 
             <Separator title={'Or'} />
 
+            <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
             <TouchableOpacity
-              onPress={() => handleSignUp('google')}
               style={[
-                styles.loginButton,
+                styles.squareButton,
                 {
                   backgroundColor: COLORS.white,
-                  flexDirection: 'row',
-                  padding: 12,
-                  justifyContent: 'space-around',
+                  flex: 1,
+                  marginRight: 10,
+                  marginLeft: 3,
                 },
-              ]}>
-              <Image source={Google} style={{height: 20, width: 20}} />
-              <Text style={{fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>Continue With Google</Text>
-              <View />
+              ]}
+              onPress={() => {
+                handleLogin('google');
+              }}
+            >
+              <Image source={Google} style={styles.squareButtonIcon} />
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.squareButton,
+                {
+                  backgroundColor: COLORS.white,
+                  flex: 1,
+                  marginRight: 5,
+                },
+              ]}
+              onPress={() => {
+                handleLogin('facebook');
+              }}
+            >
+              <Image source={Facebook} style={styles.squareButtonIconFb} />
+            </TouchableOpacity>
+          </View>
 
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
@@ -346,5 +383,26 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  squareButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginHorizontal: 10,
+    elevation: 3,
+  },
+  squareButtonIcon: {
+    height: 25,
+    width: 25,
+  },
+  squareButtonIconFb: {
+    height: 30,
+    width: 30,
   },
 });

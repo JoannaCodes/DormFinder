@@ -78,12 +78,11 @@ export default function Profile({user, verified, onLogout}) {
             <Icon name="verified-user" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Verification</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.profilebtn}
-            onPress={() => navigation.navigate('Payments')}>
+            onPress={() => navigation.navigate('Payment Transactions')}>
             <Icon name="payments" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Payments</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Transaction History</Text>
           </TouchableOpacity>
         </View>
 

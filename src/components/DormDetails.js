@@ -561,7 +561,7 @@ return (
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
     <View style={style.facility1}>
           <Icon name="pets" size={18} />
-          {dorms.pets === 0 ? (
+          {dorms.pets == 0 ? (
             <Text style={style.facilityText2}>Pets are not allowed</Text>
           ) : (
             <Text style={style.facilityText2}>Pets are allowed</Text>
@@ -569,7 +569,7 @@ return (
         </View>
         <View style={style.facility1}>
           <Icon name="group" size={18} />
-          {dorms.visitors === 0 ? (
+          {dorms.visitors == 0 ? (
             <Text style={style.facilityText2}>Visitors are not allowed</Text>
           ) : (
             <Text style={style.facilityText2}>Visitors are allowed</Text>
@@ -577,7 +577,7 @@ return (
         </View>
         <View style={style.facility1}>
           <Icon name="schedule" size={18} />
-          {dorms.curfew === 0 ? (
+          {dorms.curfew == 0 ? (
             <Text style={style.facilityText2}>No observance of curfew</Text>
           ) : (
             <Text style={style.facilityText2}>Observance of curfew</Text>
@@ -597,7 +597,7 @@ return (
     <View style={style.facility1}>
       <Icon name="payments" size={18} />
       <Text style={style.facilityText2}>Advance Deposit:</Text>
-      <Text style={style.facilityText2}>₱ {dorms.adv_dep}.00</Text>
+      <Text style={style.facilityText2}>₱{dorms.adv_dep}.00</Text>
     </View>
   )}
   {dorms.util !== '' && (
@@ -611,7 +611,7 @@ return (
     <View style={style.facility1}>
       <Icon name="shield" size={18} />
       <Text style={style.facilityText2}>Security Deposit:</Text>
-      <Text style={style.facilityText2}>₱ {dorms.sec_dep}.00</Text>
+      <Text style={style.facilityText2}>₱{dorms.sec_dep}.00</Text>
     </View>
   )}
   {dorms.min_stay !== '' && (
@@ -639,8 +639,9 @@ return (
     borderRadius: 5,
     overflow: 'hidden',
   }}>
-  <WebView
-  source={{ uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dorms.address)}` }}
+<WebView
+  userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+  source={{html: `<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes"><iframe width="100%" height="100%" src="https://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=${dorms.new_address}&aq=0&oq=199+ch&ie=UTF8&hq=&hnear=${dorms.new_address}&t=m&z=17&output=embed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`}}
   style={{ marginTop: 10, height: 300}}/>
 </View>
 
@@ -655,7 +656,7 @@ return (
       setSelectedDorm(dormref);
       }}>
         <View>
-          <Text style={{fontSize: 15, color: 'black', fontFamily: 'Poppins-Regular', textDecorationLine: 'underline'}}>Report this listing</Text>
+          <Text style={{fontSize: 15, color: 'black', textDecorationLine: 'underline'}}>Report this listing</Text>
         </View>
     </TouchableOpacity>
   </View>
@@ -669,7 +670,7 @@ return (
     <View>
       <Text
         style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
-        ₱{dorms.price}
+        ₱ {dorms.price}
       </Text>
         <Text
           style={{fontSize: 12, color: COLORS.grey, fontFamily: 'Poppins-SemiBold',}}>
@@ -686,7 +687,7 @@ return (
     <TouchableOpacity
       style={style.bookNowBtn}
       onPress={() => navigation.navigate('InboxTab')}>
-      <Text style={{color: COLORS.white}}>View Chats</Text>
+      <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular'}}>View Chats</Text>
     </TouchableOpacity>
     }
   </View>

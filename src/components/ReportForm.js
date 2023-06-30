@@ -108,7 +108,7 @@ const ReportForm = ({ visible, onClose, userref, dormref }) => {
               {loading ? (
                 <ActivityIndicator size={'small'} color={'#FFFFFF'} />
               ) : (
-                <Text style={{ color: '#FFFFFF' }}>Report</Text>
+                <Text style={{ color: '#FFFFFF' , fontFamily: 'Poppins-SemiBold' }}>Report</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     color: 'black',
   },
   input: {
@@ -160,8 +160,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0E898B',
     borderRadius: 5,
     elevation: 4,
-    padding: 11,
-    marginTop: 16,
+    paddingBottom: 5,
+    padding: 8,
+    marginTop: 10,
+    marginBottom: 8,
   },
   closeButton: {
     position: 'absolute',

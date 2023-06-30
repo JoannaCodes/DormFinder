@@ -262,7 +262,7 @@ const ChatRoom = props => {
         .catch(ex => {
           return false;
         });
-    }, 5000);
+    }, 1000);
 
     return () => {
       clearInterval(intervalId);
@@ -302,7 +302,7 @@ const ChatRoom = props => {
               {moment
                 .unix(item.time)
                 .utcOffset('+0800')
-                .format('MM/DD/YYYY         hh:mm A')}
+                .format('MM/DD/YYYY hh:mm A')}
             </Text>
           </View>
         </View>
@@ -323,7 +323,7 @@ const ChatRoom = props => {
               {moment
                 .unix(item.time)
                 .utcOffset('+0800')
-                .format('MM/DD/YYYY         hh:mm A')}
+                .format('MM/DD/YYYY hh:mm A')}
             </Text>
           </View>
           <ImageBackground
@@ -370,19 +370,37 @@ const ChatRoom = props => {
               <Text style={{fontFamily: 'Poppins-SemiBold'}}>₱{getDorm?.price}</Text>
             </View>
           </View>
-          <TouchableOpacity
-            style={styles.dormDetailsButton}
-            onPress={() => {
-              props.route.params.navigation.navigate('Dorm Details', {
-                dormref: props.route.params.unique_code,
-                userref: props.route.params.user,
-              });
-            }}>
-            <Text
-              style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-              View Dorm Details
-            </Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <TouchableOpacity
+              style={[styles.dormDetailsButton, {flex: 1, marginRight: 5}]}
+              onPress={() => {
+                props.route.params.navigation.navigate('Dorm Details', {
+                  dormref: props.route.params.unique_code,
+                  userref: props.route.params.myid,
+                });
+              }}>
+              <Text
+                style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+                View Dorm Details
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
+              onPress={() => {
+                props.route.params.navigation.navigate('Payments', {
+                  userref: props.route.params.myid,
+                  ownerref: getDorm?.userref,
+                  ownername: props.route.params.username,
+                  dormref: props.route.params.unique_code,
+                  price: getDorm?.price,
+                });
+              }}>
+              <Text
+                style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+                Pay Rent
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         {messages.length !== 0 ? (
           <>
