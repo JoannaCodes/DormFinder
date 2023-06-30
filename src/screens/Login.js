@@ -75,7 +75,7 @@ export default function Login({onLogin}) {
           let formdata = new FormData();
           formdata.append('action',  'checkLogin');
           formdata.append('email',  userInfo.user.email);
-          formData.append('fcm', token);
+          formdata.append('fcm', token);
           
           await axios.post(API_URL, formdata, {
             headers: {
