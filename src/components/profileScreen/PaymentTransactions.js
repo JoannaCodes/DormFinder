@@ -62,6 +62,8 @@ export default function PaymentGateway({route, navigation}) {
   };
 
   const renderItem = ({item}) => {
+    const images = item.images ? item.images.split(',') : [];
+
     return (
       <View
         style={{
@@ -72,7 +74,7 @@ export default function PaymentGateway({route, navigation}) {
         <View style={styles.card}>
           <Image
             source={{
-              uri: `${DORM_UPLOADS}/${item.dormref}/${item.images}`,
+              uri: `${DORM_UPLOADS}/${item.dormref}/${images[0]}`,
             }}
             style={styles.cardImage}
           />
