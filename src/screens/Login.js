@@ -71,9 +71,11 @@ export default function Login({onLogin}) {
     GoogleSignin.hasPlayServices().then((hasPlayService) => {
       if (hasPlayService) {
         GoogleSignin.signIn().then( async (userInfo) => {
+          const token = await messaging().getToken();
           let formdata = new FormData();
           formdata.append('action',  'checkLogin');
           formdata.append('email',  userInfo.user.email);
+          formData.append('fcm', token);
           
           await axios.post(API_URL, formdata, {
             headers: {
