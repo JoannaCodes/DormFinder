@@ -10,12 +10,13 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import COLORS from '../../../constants/colors';
 import axios from 'axios';
-import {BASE_URL, AUTH_KEY} from '../../../constants';
+import {BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ReviewForm from '../../components/ReviewForm';
@@ -42,10 +43,12 @@ export default function PaymentGateway({route, navigation}) {
       .then(response => {
         const data = JSON.parse(response.data);
         setHistory(data);
+        console.log(data);
 
         AsyncStorage.setItem('transactions', JSON.stringify(data));
       })
       .catch(async error => {
+        console.log(error);
         const storedTransactions = await AsyncStorage.getItem('transactions');
         if (storedTransactions) {
           setHistory(JSON.parse(storedTransactions));
@@ -59,17 +62,30 @@ export default function PaymentGateway({route, navigation}) {
   };
 
   const renderItem = ({item}) => {
-    console.log(item);
-    console.log(typeof item.has_reviewed);
     return (
-      <View style={styles.transaction}>
-        <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
-          {item.token}
-        </Text>
-        <Text style={styles.title}>{item.ownername}</Text>
-        <View style={styles.rowContainer}>
-          <Text style={styles.amount}>₱ {item.amount}</Text>
-          <Text style={styles.date}>{item.timestamp}</Text>
+      <View
+        style={{
+          paddingVertical: 12,
+          borderBottomWidth: 1,
+          borderBottomColor: COLORS.grey,
+        }}>
+        <View style={styles.card}>
+          <Image
+            source={{
+              uri: `${DORM_UPLOADS}/${item.dormref}/${item.images}`,
+            }}
+            style={styles.cardImage}
+          />
+          <View style={styles.transaction}>
+            <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
+              {item.token}
+            </Text>
+            <View style={styles.rowContainer}>
+              <Text style={styles.amount}>₱ {item.amount}</Text>
+              <Text style={styles.amount}>{item.ownername}</Text>
+            </View>
+            <Text style={styles.date}>{item.timestamp}</Text>
+          </View>
         </View>
         {item.has_reviewed == '1' ? null : (
           <TouchableOpacity
@@ -83,6 +99,8 @@ export default function PaymentGateway({route, navigation}) {
               style={{
                 marginStart: 5,
                 fontFamily: 'Poppins-Regular',
+                includeFontPadding: false,
+                textAlignVertical: 'center',
                 color: 'black',
               }}>
               Write a review
@@ -153,6 +171,19 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexGrow: 1,
   },
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  cardImage: {
+    flex: 2,
+    height: 100,
+    resizeMode: 'cover',
+    backgroundColor: COLORS.grey,
+    borderRadius: 5,
+  },
   btnContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -178,11 +209,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   transaction: {
-    flex: 1,
+    flex: 4,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
   title: {
     fontSize: 16,
