@@ -82,7 +82,7 @@ export default function Profile({user, verified, onLogout}) {
             style={styles.profilebtn}
             onPress={() => navigation.navigate('Payment Transactions')}>
             <Icon name="payments" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Payment Transactions</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Transaction History</Text>
           </TouchableOpacity>
         </View>
 

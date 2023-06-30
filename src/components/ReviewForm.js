@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 import COLORS from '../../constants/colors';
 
-const ReviewForm = ({visible, onClose, userref, dormref}) => {
+const ReviewForm = ({visible, onClose, onSubmit, userref, dormref}) => {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const starRatingOptions = [1, 2, 3, 4, 5];
@@ -71,6 +71,7 @@ const ReviewForm = ({visible, onClose, userref, dormref}) => {
         setComment('');
         setStarRating(1);
         onClose();
+        onSubmit();
       });
   }
 

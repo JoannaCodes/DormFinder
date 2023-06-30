@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
@@ -7,6 +8,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -15,11 +18,15 @@ import axios from 'axios';
 import {BASE_URL, AUTH_KEY} from '../../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import ReviewForm from '../../components/ReviewForm';
+
 export default function PaymentGateway({route, navigation}) {
   const {user} = route.params;
   const [history, setHistory] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [status, setStatus] = useState('success');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDorm, setSelectedDorm] = useState('');
 
   useEffect(async () => {
     fetchData();
@@ -52,14 +59,36 @@ export default function PaymentGateway({route, navigation}) {
   };
 
   const renderItem = ({item}) => {
+    console.log(item);
+    console.log(typeof item.has_reviewed);
     return (
       <View style={styles.transaction}>
-        <Text style={styles.title}>{item.token}</Text>
-        <Text style={styles.title}>{item.dorm}</Text>
+        <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
+          {item.token}
+        </Text>
+        <Text style={styles.title}>{item.ownername}</Text>
         <View style={styles.rowContainer}>
-          <Text style={styles.amount}>₱ {item.price}</Text>
+          <Text style={styles.amount}>₱ {item.amount}</Text>
           <Text style={styles.date}>{item.timestamp}</Text>
         </View>
+        {item.has_reviewed == '1' ? null : (
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => {
+              setModalVisible(true);
+              setSelectedDorm(item.dormref);
+            }}>
+            <Icon name="star-rate" size={18} color={COLORS.teal} />
+            <Text
+              style={{
+                marginStart: 5,
+                fontFamily: 'Poppins-Regular',
+                color: 'black',
+              }}>
+              Write a review
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -95,8 +124,22 @@ export default function PaymentGateway({route, navigation}) {
             );
           }}
           renderItem={renderItem}
+          refreshControl={
+            <RefreshControl
+              //refresh control used for the Pull to Refresh
+              refreshing={isLoading}
+              onRefresh={fetchData}
+            />
+          }
         />
       )}
+      <ReviewForm
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        userref={user}
+        dormref={selectedDorm}
+        onSubmit={fetchData}
+      />
     </View>
   );
 }
@@ -109,6 +152,19 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flexGrow: 1,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 1,
+    elevation: 2,
+    borderRadius: 4,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    padding: 5,
+    marginVertical: 5,
   },
   text: {
     fontSize: 16,

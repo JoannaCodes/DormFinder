@@ -687,7 +687,7 @@ return (
     <TouchableOpacity
       style={style.bookNowBtn}
       onPress={() => navigation.navigate('InboxTab')}>
-      <Text style={{color: COLORS.white}}>View Chats</Text>
+      <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular'}}>View Chats</Text>
     </TouchableOpacity>
     }
   </View>

@@ -388,10 +388,10 @@ const ChatRoom = props => {
               style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
               onPress={() => {
                 props.route.params.navigation.navigate('Payments', {
-                  payor: props.route.params.myid,
-                  merchantid: getDorm?.userref,
-                  merchant: props.route.params.username,
-                  dorm: getDorm?.name,
+                  userref: props.route.params.myid,
+                  ownerref: getDorm?.userref,
+                  ownername: props.route.params.username,
+                  dormref: props.route.params.unique_code,
                   price: getDorm?.price,
                 });
               }}>

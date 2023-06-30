@@ -38,7 +38,7 @@ const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({route, navigation}) {
-  const {payor, merchant, merchantid, dorm, price} = route.params;
+  const {userref, ownerref, ownername, dormref, price} = route.params;
 
   const openGCashApp = () => {
     openInStore({
@@ -74,7 +74,7 @@ export default function PaymentGateway({route, navigation}) {
           marginBottom: 20,
         }}>
         <Text style={styles.heading}>Payment Details</Text>
-        <Text style={styles.text}>Receiver: {merchant}</Text>
+        <Text style={styles.text}>Receiver: {ownername}</Text>
         <Text style={styles.text}>Amount: ₱ {price}</Text>
       </View>
       <TouchableOpacity
@@ -85,7 +85,7 @@ export default function PaymentGateway({route, navigation}) {
               tokenizationSpecification: {
                 type: 'PAYMENT_GATEWAY',
                 gateway: 'example',
-                gatewayMerchantId: merchantid,
+                gatewayMerchantId: ownerref,
               },
               allowedCardNetworks,
               allowedCardAuthMethods,
@@ -95,7 +95,7 @@ export default function PaymentGateway({route, navigation}) {
               totalPriceStatus: 'FINAL',
               currencyCode: 'PHP',
             },
-            merchantName: merchant,
+            merchantName: ownername,
           };
 
           // Set the environment before the payment request
@@ -113,14 +113,10 @@ export default function PaymentGateway({route, navigation}) {
                   const formData = new FormData();
                   formData.append('tag', 'payment');
                   formData.append('token', token);
-                  // formData.append('merchantName', requestData.merchantName);
-                  formData.append('payor', payor); // sender
-                  formData.append(
-                    'merchant',
-                    requestData.cardPaymentMethod.tokenizationSpecification
-                      .gatewayMerchantId, // reciever
-                  );
-                  formData.append('dorm', dorm);
+                  formData.append('userref', userref);
+                  formData.append('ownerref', requestData.cardPaymentMethod.tokenizationSpecification.gatewayMerchantId);
+                  formData.append('ownername', requestData.merchantName);
+                  formData.append('dormref', dormref);
                   formData.append('amount', requestData.transaction.totalPrice);
 
                   await axios
