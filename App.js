@@ -293,7 +293,6 @@ export default function App() {
   const handleLogin = async user => {
     try {
       AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
-        console.log('login user:', user);
         setUser(user.id);
         setMode(user.mode);
         if (user.mode === 'user') {
@@ -303,6 +302,11 @@ export default function App() {
       setMode(user.mode);
     } catch (error) {
       console.log('Login Failed:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'StudyHive',
+        text2: `An error occured. Please try again.`,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -317,6 +321,11 @@ export default function App() {
       });
     } catch (error) {
       console.log('Logout failed:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'StudyHive',
+        text2: `An error occured. Please try again.`,
+      });
     }
   };
 
@@ -335,6 +344,11 @@ export default function App() {
       });
     } catch (error) {
       console.error('Error checking login status:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'StudyHive',
+        text2: `An error occured. Please try again.`,
+      });
     } finally {
       setInterval(() => {
         setIsLoading(false);
@@ -357,7 +371,6 @@ export default function App() {
           JSON.stringify(fetchedStatus),
         ).then(() => {
           const status = parseInt(fetchedStatus, 10);
-          // console.log('converted:', Boolean(status));
           setVerified(Boolean(status));
         });
       });
