@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "232767448599",
-    "project_id": "studyhive-e5303",
-    "storage_bucket": "studyhive-e5303.appspot.com"
+    "project_number": "1006950499044",
+    "project_id": "studyhive-notif",
+    "storage_bucket": "studyhive-notif.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:232767448599:android:86077ae3873395d6121e52",
+        "mobilesdk_app_id": "1:1006950499044:android:137c8d4aafafea7fbc22f1",
         "android_client_info": {
           "package_name": "com.dormfinder"
         }
       },
       "oauth_client": [
         {
-          "client_id": "232767448599-eium8sglogn6bpd4hvt332nrkci3cjfp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dormfinder",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "232767448599-9kc9mhpe3qo3rt7q82f93m8s7t3v7pmo.apps.googleusercontent.com",
+          "client_id": "1006950499044-o16pv162ck6b1nshl53vimckognecata.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAKUvJrUgwDnGEhrlkakHwqnLmMy1cjOQg"
+          "current_key": "AIzaSyCs0XCyjBMOJgNf0kzZI3lUTxwHHY4MDmI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "232767448599-9kc9mhpe3qo3rt7q82f93m8s7t3v7pmo.apps.googleusercontent.com",
+              "client_id": "1006950499044-o16pv162ck6b1nshl53vimckognecata.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -28,6 +28,9 @@ import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
 
+import messaging from '@react-native-firebase/messaging';
+
+
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
   webClientId: '836752097415-ooigkh9tvt94h0t382gi8q16uicnnd85.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -145,11 +148,13 @@ export default function Login({onLogin}) {
       signIn();
     } else if (mode === 'user') {
       if (validateLogin()) {
+        const token = await messaging().getToken();
         setIsLoading(true);
         const formData = new FormData();
         formData.append('tag', 'login_app');
         formData.append('username', username);
         formData.append('password', password);
+        formData.append('fcm', token);
 
         await axios
           .post(BASE_URL, formData, {

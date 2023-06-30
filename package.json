@@ -16,6 +16,8 @@
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/geolocation": "^3.0.6",
+    "@react-native-firebase/app": "^18.1.0",
+    "@react-native-firebase/messaging": "^18.1.0",
     "@react-native-google-signin/google-signin": "^9.0.2",
     "@react-native-masked-view/masked-view": "^0.2.9",
     "@react-navigation/bottom-tabs": "^6.5.7",

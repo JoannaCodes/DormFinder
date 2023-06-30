@@ -45,6 +45,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Toast from 'react-native-toast-message';
 import { CheckBox, RadioButton, RadioGroup } from "react-native-radio-check"
 import { useFocusEffect } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
 
 
 const HomeScreen = ({navigation, route}) => {
@@ -69,107 +70,38 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredHei, setFilteredHei] = useState('');
   const [filteredHeiIndex, setFilteredHeiIndex] = useState(0);
 
-  PushNotification.createChannel(
-    {
-      channelId: 'channel-id', // (required)
-      channelName: 'My channel', // (required)
-      channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
-      playSound: false, // (optional) default: true
-      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-      importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-    },
-    created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-  );
-
   const {user, mode} = route.params;
 
-  PushNotificationConfig.configure();
+  async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
 
   useEffect(() => {
+    requestUserPermission();
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === 'background') {
-        // App is transitioning to the background
+    useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Check if the notification is for the specific topic
+  if (remoteMessage.data && remoteMessage.data.topic === 'news') {
+    // Handle the notification here
+    console.log('specific topic!:', remoteMessage.notification);
+  } else {
+    Alert.alert('StudyHive', remoteMessage.notification['body']);
+  }
+  
+      
+    });
 
-        // Execute your background task here
-        performBackgroundTask();
-      }
-      if (nextAppState === 'active') {
-        // App is transitioning to the background
-
-        // Execute your background task here
-        performBackgroundTask();
-      }
-      if (nextAppState === 'inactive') {
-        // App is transitioning to the background
-
-        // Execute your background task here
-        performBackgroundTask();
-      }
-    };
-
-    const performBackgroundTask = async () => {
-      try {
-        // Your Axios request
-        // const response = await axios.get('https://api.example.com/data');
-           try {
-            let URL = BASE_URL;
-            axios
-              .get(URL + '?tag=fetch_saved_notif&user_ref=' + user)
-              .then(res => {
-                var output = JSON.parse(res.data);
-                try {
-                  if (output.length !== 0) {
-                    for (var key in output) {
-                      let test = output[key].scheduled;
-                      if (test !== '' || test !== null) {
-                        var javascript_date = new Date(Date.parse(test));
-                        var unix = javascript_date.getTime() / 1000;
-                        PushNotification.localNotificationSchedule({
-                          id: output[key].unix_time,
-                          title: 'DormFinder',
-                          message: output[key].ndesc,
-                          channelId: 'channel-id',
-                          date: new Date(unix * 1000),
-                          allowWhileIdle: true,
-                        });
-                      }
-                    }
-                  }
-                } catch (error) {
-                  console.log('error:' + error);
-                }
-              })
-              .catch(error => {
-                console.log('error:' + error);
-              });
-          } catch (error) {
-            console.log('error:' + error);
-          }
-
-        // Process the response or perform any other operations
-        // console.log(response.data);
-      } catch (error) {
-        // Handle any errors
-        console.error(error);
-      }
-    };
-
-    // Add an app state change listener
-    AppState.addEventListener('change', handleAppStateChange);
-
-    // Handle Android's back button press when the app is in the background
-    const handleBackButtonPressAndroid = () => {
-      // Prevent the app from being closed when back button is pressed in the background
-      return true;
-    };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonPressAndroid);
-
- 
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -192,7 +124,6 @@ const HomeScreen = ({navigation, route}) => {
     var q = filteredHei;
 
     if (selectedCategoryIndex === 0) {
-      _fetchNotif();
       fetchDormsByCategory(
         'popular_dorm',
         a,
@@ -278,7 +209,7 @@ const HomeScreen = ({navigation, route}) => {
     filteredHeiIndex
   ]);
 
-  const _fetchNotif = async () => {
+  const _fetchNotif1 = async () => {
     try {
       let URL = BASE_URL;
       axios
