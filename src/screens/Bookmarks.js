@@ -187,7 +187,7 @@ const Bookmarks = ({route, navigation}) => {
                 ellipsizeMode="tail">
                 {item.name}
               </Text>
-              <Text style={styles.cardText}>₱{item.price}</Text>
+              <Text style={styles.cardText}>₱ {item.price}</Text>
             </View>
             <Separator />
             <View style={styles.action}>
