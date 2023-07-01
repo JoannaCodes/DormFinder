@@ -109,7 +109,7 @@ const ReviewForm = ({visible, onClose, onSubmit, userref, dormref}) => {
         <View style={styles.container}>
           <View style={styles.modal}>
             <View style={styles.header}>
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 20, fontFamily: 'Poppins-SemiBold'}}>
                 Dorm Review
               </Text>
               <TouchableOpacity onPress={handleDismiss}>

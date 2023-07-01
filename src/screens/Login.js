@@ -20,7 +20,6 @@ import COLORS from '../../constants/colors';
 
 import BackgroundImg from '../../assets/img/bg1.png';
 import Google from '../../assets/img/google-logo.png';
-import Facebook from '../../assets/img/facebook-logo.png';
 import {BASE_URL} from '../../constants/index';
 import ForgotPasswordModal from '../components/modals/ForgotPasswordModal';
 import { API_URL, AUTH_KEY, CLIENT_ID } from '../../constants/index';
@@ -304,40 +303,28 @@ export default function Login({onLogin}) {
             {/*  */}
 
             
-          <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
-            <TouchableOpacity
-              style={[
-                styles.squareButton,
-                {
-                  backgroundColor: COLORS.white,
-                  flex: 1,
-                  marginRight: 10,
-                  marginLeft: 3,
-                },
-              ]}
-              onPress={() => {
-                handleLogin('google');
-              }}
-            >
-              <Image source={Google} style={styles.squareButtonIcon} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[
-                styles.squareButton,
-                {
-                  backgroundColor: COLORS.white,
-                  flex: 1,
-                  marginRight: 5,
-                },
-              ]}
-              onPress={() => {
-                handleLogin('facebook');
-              }}
-            >
-              <Image source={Facebook} style={styles.squareButtonIconFb} />
-            </TouchableOpacity>
-          </View>
+  
+            <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+              <TouchableOpacity
+                style={[
+                  styles.squareButton,
+                  {
+                    backgroundColor: COLORS.white,
+                    flex: 1,
+                    marginRight: 5,
+                    marginLeft: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  },
+                ]}
+                onPress={() => {
+                  handleLogin('google');
+                }}
+              >
+                <Image source={Google} style={styles.squareButtonIcon} />
+                <Text style={styles.squareButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+            </View>
 
             {/*  */}
             {/*  */}
@@ -356,7 +343,7 @@ export default function Login({onLogin}) {
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
                 <Text style={{color: 'black', fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: -2}}>
-                  Don't Have An Account?
+                  Don't have an account?
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
@@ -368,7 +355,7 @@ export default function Login({onLogin}) {
                       color: COLORS.teal,
                       fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: 4, marginTop: -1
                     }}>
-                    Signup
+                    Sign up
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -462,21 +449,24 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   squareButton: {
-    width: 50,
-    height: 50,
+    width: 47,
+    height: 47,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
     marginHorizontal: 10,
     elevation: 3,
   },
   squareButtonIcon: {
-    height: 27,
-    width: 26,
+    height: 26,
+    width: 25,
+    marginLeft: -20
   },
-  squareButtonIconFb: {
-    height: 32,
-    width: 32,
+  squareButtonText: {
+    color: 'black',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 15,
+    marginLeft: 20,
+    marginTop: 2
   },
-    
 });

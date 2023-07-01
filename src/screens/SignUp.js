@@ -16,7 +16,6 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
-import Facebook from '../../assets/img/facebook-logo.png';
 import {BASE_URL} from '../../constants/index';
 import COLORS from '../../constants/colors';
 
@@ -254,44 +253,31 @@ export default function Signup() {
             <Separator title={'Or'} />
 
             <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
-            <TouchableOpacity
-              style={[
-                styles.squareButton,
-                {
-                  backgroundColor: COLORS.white,
-                  flex: 1,
-                  marginRight: 10,
-                  marginLeft: 3,
-                },
-              ]}
-              onPress={() => {
-                handleLogin('google');
-              }}
-            >
-              <Image source={Google} style={styles.squareButtonIcon} />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.squareButton,
+                  {
+                    backgroundColor: COLORS.white,
+                    flex: 1,
+                    marginRight: 5,
+                    marginLeft: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  },
+                ]}
+                onPress={() => {
+                  handleLogin('google');
+                }}
+              >
+                <Image source={Google} style={styles.squareButtonIcon} />
+                <Text style={styles.squareButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+            </View>
             
-            <TouchableOpacity
-              style={[
-                styles.squareButton,
-                {
-                  backgroundColor: COLORS.white,
-                  flex: 1,
-                  marginRight: 5,
-                },
-              ]}
-              onPress={() => {
-                handleLogin('facebook');
-              }}
-            >
-              <Image source={Facebook} style={styles.squareButtonIconFb} />
-            </TouchableOpacity>
-          </View>
-
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <View style={{flexDirection: 'row', marginVertical: 10}}>
                 <Text style={{color: 'black', fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: -2, marginTop: -5,}}>
-                  Already Have An Account?
+                  Already have an account?
                 </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text
@@ -389,20 +375,24 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   squareButton: {
-    width: 50,
-    height: 50,
+    width: 47,
+    height: 47,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
     marginHorizontal: 10,
     elevation: 3,
   },
   squareButtonIcon: {
-    height: 27,
-    width: 26,
+    height: 26,
+    width: 25,
+    marginLeft: -20
   },
-  squareButtonIconFb: {
-    height: 32,
-    width: 32,
+  squareButtonText: {
+    color: 'black',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 15,
+    marginLeft: 20,
+    marginTop: 2
   },
 });
