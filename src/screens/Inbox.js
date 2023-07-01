@@ -123,44 +123,46 @@ const Inbox = ({navigation}) => {
           data={searchQuery ? filteredMessages : chatRooms}
           keyExtractor={item => item?.id}
           renderItem={({item}) => (
-            <Card
-              onPress={() =>
-                navigation.navigate('Chat Room', {
-                  navigation: navigation,
-                  anotherImageUrl: item.imageUrl,
-                  username: item.username,
-                  unique_code: item.unique_code,
-                  chatroom_code: item.chatroom_code,
-                  myid: myInfo.id,
-                  myusername: myInfo.username,
-                  anotherid: item?.user_id,
-                  user: user,
-                })
-              }>
-              <UserInfo>
-                <UserImgWrapper>
-                  <UserImg source={{uri: item.imageUrl}} />
-                </UserImgWrapper>
-                <TextSection >
-                  <UserInfoText>
-                    <UserName style={{ fontFamily: 'Poppins-Regular'}}>
-                      {item.username}
-                    </UserName>
-                    <PostTime style={{ fontFamily: 'Poppins-Regular' }}>
-                      {item.time !== 0
-                        ? moment
-                            .unix(item.time)
-                            .utcOffset('+0800')
-                            .format('hh:mm A')
-                        : 'NEW'}
-                    </PostTime>
-                  </UserInfoText>
-                  <MessageText style={{ fontFamily: 'Poppins-Regular'}}>
-                    {item.message}
-                  </MessageText>
-                </TextSection>
-              </UserInfo>
-            </Card>
+            item.message != '' ? (
+              <Card
+                onPress={() =>
+                  navigation.navigate('Chat Room', {
+                    navigation: navigation,
+                    anotherImageUrl: item.imageUrl,
+                    username: item.username,
+                    unique_code: item.unique_code,
+                    chatroom_code: item.chatroom_code,
+                    myid: myInfo.id,
+                    myusername: myInfo.username,
+                    anotherid: item?.user_id,
+                    user: user,
+                  })
+                }>
+                <UserInfo>
+                  <UserImgWrapper>
+                    <UserImg source={{uri: item.imageUrl}} />
+                  </UserImgWrapper>
+                  <TextSection >
+                    <UserInfoText>
+                      <UserName style={{ fontFamily: 'Poppins-Regular'}}>
+                        {item.username}
+                      </UserName>
+                      <PostTime style={{ fontFamily: 'Poppins-Regular' }}>
+                        {item.time !== 0
+                          ? moment
+                              .unix(item.time)
+                              .utcOffset('+0800')
+                              .format('hh:mm A')
+                          : 'NEW'}
+                      </PostTime>
+                    </UserInfoText>
+                    <MessageText style={{ fontFamily: 'Poppins-Regular'}}>
+                      {item.message}
+                    </MessageText>
+                  </TextSection>
+                </UserInfo>
+              </Card>
+            ) : null
           )}
         />
       ) : (
