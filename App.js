@@ -313,7 +313,7 @@ export default function App() {
       Toast.show({
         type: 'error',
         text1: 'StudyHive',
-        text2: `An error occured. Please try again.`,
+        text2: 'An error occured. Please try again.',
       });
     } finally {
       setIsLoading(false);
@@ -322,17 +322,29 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.clear().then(() => {
-        setUser(null);
-        setVerified(null);
-        setMode(null);
-      });
+      const formData = new FormData();
+      formData.append('tag', 'logout_app');
+      formData.append('userref', user);
+      axios
+        .post(BASE_URL, formData, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(async () => {
+          await AsyncStorage.clear().then(() => {
+            setUser(null);
+            setVerified(null);
+            setMode(null);
+          });
+        });
     } catch (error) {
       console.log('Logout failed:', error);
       Toast.show({
         type: 'error',
         text1: 'StudyHive',
-        text2: `An error occured. Please try again.`,
+        text2: 'An error occured. Please try again.',
       });
     }
   };
@@ -355,7 +367,7 @@ export default function App() {
       Toast.show({
         type: 'error',
         text1: 'StudyHive',
-        text2: `An error occured. Please try again.`,
+        text2: 'An error occured. Please try again.',
       });
     } finally {
       setInterval(() => {
