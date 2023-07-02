@@ -69,10 +69,20 @@ export default function Verification({route, navigation}) {
             }
           })
           .catch(error => {
-            Alert.alert(error);
+            Toast.show({
+              type: 'error',
+              text1: 'StudyHive',
+              text2: 'An error occured. Please try again.',
+            });
+            navigation.navigate('Profile Tab');
           });
       } catch (error) {
-        Alert.alert(error);
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: 'An error occured. Please try again.',
+        });
+        navigation.navigate('Profile Tab');
       }
     };
 
