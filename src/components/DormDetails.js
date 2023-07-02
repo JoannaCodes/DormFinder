@@ -665,8 +665,7 @@ return (
 
 
 {/* footer container */}
-{mode === 'guest' ? null : (
-  <View style={style.footer}>
+<View style={style.footer}>
     <View>
       <Text
         style={{color: COLORS.teal, fontFamily: 'Poppins-SemiBold', fontSize: 18}}>
@@ -680,7 +679,13 @@ return (
     {user.id !== dorms.userref ? 
     <TouchableOpacity
       style={style.bookNowBtn}
-      onPress={handleMessageNow}>
+      onPress={() => {
+        if (mode !== 'guest') {
+          handleMessageNow();
+        } else {
+          navigation.navigate('Guest Modal');
+        }
+      }}>
       <Text style={{color: COLORS.white, fontFamily: 'Poppins-Regular',}}>Message Now</Text>
     </TouchableOpacity>
     :
@@ -691,7 +696,6 @@ return (
     </TouchableOpacity>
     }
   </View>
-)}
 
 </View>
 </ScrollView>
