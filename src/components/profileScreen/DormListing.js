@@ -99,7 +99,7 @@ const DormListing = ({route, navigation}) => {
   const _deleteDorm = dormref => {
     Alert.alert(
       'Dorm Finder',
-      'Are you sure you want to delete this dorm listing? This action cannot be undone.',
+      'Are you sure you want to delete this listing? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
         {
@@ -125,7 +125,7 @@ const DormListing = ({route, navigation}) => {
                   Toast.show({
                     type: 'success',
                     text1: 'StudyHive',
-                    text2: 'Dorm listing deleted',
+                    text2: 'Listing deleted',
                   });
 
                   setLoading(true);
@@ -147,8 +147,8 @@ const DormListing = ({route, navigation}) => {
 
   const handleHideOption = dormref => {
     Alert.alert(
-      'Dorm Finder',
-      'Are you sure you want to hide this dorm listing? This action cannot be undone.',
+      'StudyHive',
+      'Are you sure you want to hide this listing? This action cannot be undone.',
       [
         {text: 'Cancel', style: 'cancel'},
         {
@@ -312,7 +312,7 @@ const DormListing = ({route, navigation}) => {
               resizeMode="cover"
             />
             <Text style={styles.title}>
-              Cannot retrieve dorm listing at this time.
+              Cannot retrieve listing at this time.
             </Text>
             <Text style={styles.message}>Please try again later.</Text>
             <TouchableOpacity
@@ -329,16 +329,21 @@ const DormListing = ({route, navigation}) => {
           </>
         ) : (
           <>
-            <Image
-              source={require('../../../assets/house_upsketch.png')}
-              style={{height: 360, width: 360}}
-              resizeMode="cover"
-            />
-            <Text style={styles.title}>No Dorm Listing</Text>
+
+
+<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+  <Image
+    source={require('../../../assets/house_upsketch.png')}
+    style={{ height: 360, width: 360, resizeMode: 'contain' }}
+  />
+</View>
+
+
+            <Text style={styles.title}>No Listing</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={styles.message}>Tap "</Text>
               <Icon name="add" size={18} color={COLORS.teal} />
-              <Text style={styles.message}>" to Add Your Dorm</Text>
+              <Text style={styles.message}>" to add your housing</Text>
             </View>
           </>
         )}

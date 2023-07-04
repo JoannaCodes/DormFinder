@@ -262,7 +262,7 @@ const Bookmarks = ({route, navigation}) => {
               <Text style={styles.message}>Tap "</Text>
               <Icon name="favorite" size={18} color={COLORS.red} />
               <Text style={styles.message}>
-                " to add the dorm that interests you
+                " to add the housing that interests you
               </Text>
             </View>
           </>

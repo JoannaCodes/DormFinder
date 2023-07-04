@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: 10,
     fontFamily: 'Poppins-Regular',
   },
   button: {

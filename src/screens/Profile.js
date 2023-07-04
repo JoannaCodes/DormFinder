@@ -65,12 +65,12 @@ export default function Profile({user, verified, onLogout}) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Dorm Listing Settings</Text>
+          <Text style={styles.label}>Student Accommodation Listing Settings</Text>
           <TouchableOpacity
             style={styles.profilebtn}
-            onPress={() => navigation.navigate('Dorm Listing')}>
+            onPress={() => navigation.navigate('Student Accommodation')}>
             <Icon name="add-business" size={20} color={COLORS.darkgrey} />
-            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Dorm Listing</Text>
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>Student Accommodation Listing</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.profilebtn}

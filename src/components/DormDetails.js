@@ -32,7 +32,7 @@ import ViewReviews from '../components/ViewReviews';
 
 import axios from 'axios';
 
-const DormDetails = ({navigation, route}) => {
+const HousingDetails = ({navigation, route}) => {
   const dormref = route.params.dormref;
   const userref = route.params.userref;
   const mode = route.params.mode;
@@ -545,7 +545,7 @@ return (
 {/*Description*/}
   <View style={{marginTop: 22}}>
     <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold', marginBottom: 7}}>
-      About this dormitory
+      About this housing
     </Text>
     <Text style={{fontSize: 15, color: COLORS.black}}>
       {dorms.desc}
@@ -821,4 +821,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default DormDetails;
+export default HousingDetails;

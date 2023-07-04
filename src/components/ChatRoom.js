@@ -381,7 +381,7 @@ const ChatRoom = props => {
               }}>
               <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                View Dorm Details
+                View Housing Details
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

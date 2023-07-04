@@ -468,7 +468,7 @@ const HomeScreen = ({navigation, route}) => {
       <Pressable
         activeOpacity={0.8}
         onPress={() =>
-          navigation.navigate('Dorm Details', {
+          navigation.navigate('Housing Details', {
             dormref: item.id,
             userref: user,
             mode: mode,

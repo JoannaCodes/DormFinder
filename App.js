@@ -24,7 +24,7 @@ import InboxScreen from './src/screens/Inbox';
 import NotificationsScreen from './src/screens/Notifications';
 import ProfileScreen from './src/screens/Profile';
 
-import DormDetailsComponent from './src/components/DormDetails';
+import HousingDetailsComponent from './src/components/DormDetails';
 
 import ChatRoomComponent from './src/components/ChatRoom';
 
@@ -32,7 +32,7 @@ import EditProfileComponent from './src/components/profileScreen/EditProfile';
 import ChangePasswordComponent from './src/components/profileScreen/ChangePassword';
 import PaymentGatewayComponent from './src/components/profileScreen/PaymentGateway';
 import VerificationComponent from './src/components/profileScreen/Verification';
-import DormListingComponent from './src/components/profileScreen/DormListing';
+import StudentAccommodationComponent from './src/components/profileScreen/DormListing';
 import ListingFormComponent from './src/components/ListingForm';
 import GuestModeModal from './src/components/modals/GuestModeModal';
 import HelpComponent from './src/components/profileScreen/Help';
@@ -223,8 +223,8 @@ function RootApp({user, mode, verified, onLogout}) {
         options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen
-        name="Dorm Listing"
-        component={DormListingComponent}
+        name="Student Accommodation"
+        component={StudentAccommodationComponent}
         initialParams={{user, verified}}
         options={{headerTitleStyle: titleStyle.title1}}
       />
@@ -263,8 +263,8 @@ function RootApp({user, mode, verified, onLogout}) {
         options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen 
-        name="Dorm Details" 
-        component={DormDetailsComponent}
+        name="Housing Details" 
+        component={HousingDetailsComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen 
