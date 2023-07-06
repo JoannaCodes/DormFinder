@@ -133,14 +133,6 @@ const HomeScreen = ({navigation, route}) => {
       // eslint-disable-next-line prettier/prettier
       fetchDormsByCategory('nearest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
     }
-
-    let isMounted = true;
-    const intervalId = setInterval(() => fetchData(), 3000);
-
-    return () => {
-      clearInterval(intervalId);
-      isMounted = false;
-    };
   }, [
     selectedCategoryIndex,
     filteredAircon,

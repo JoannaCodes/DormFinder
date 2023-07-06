@@ -129,23 +129,22 @@ export default function Notifications({route, navigation}) {
       ) : (
         <View style={{marginBottom: 20}}>
           <Text style={styles.label}>STARTING TODAY</Text>
-          <View style={styles.notifWrapper}>
-            <FlatList
-              data={notifContainer}
-              renderItem={({item}) => renderTodayNotif(item)}
-              ListEmptyComponent={renderEmpty}
-              numColumns={1}
-              initialNumToRender={100}
-              keyExtractor={(item, index) => String(index)}
-              refreshControl={
-                <RefreshControl
-                  //refresh control used for the Pull to Refresh
-                  refreshing={isLoading}
-                  onRefresh={fetchData}
-                />
-              }
-            />
-          </View>
+          <FlatList
+            contentContainerStyle={styles.cardContainer}
+            data={notifContainer}
+            renderItem={({item}) => renderTodayNotif(item)}
+            ListEmptyComponent={renderEmpty}
+            numColumns={1}
+            initialNumToRender={100}
+            keyExtractor={(item, index) => String(index)}
+            refreshControl={
+              <RefreshControl
+                //refresh control used for the Pull to Refresh
+                refreshing={isLoading}
+                onRefresh={fetchData}
+              />
+            }
+          />
         </View>
       )}
     </View>
@@ -154,7 +153,7 @@ export default function Notifications({route, navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 10,
+    flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
     backgroundColor: COLORS.white,
@@ -164,7 +163,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     backgroundColor: COLORS.white,
-    flexDirection: 'column',
+  },
+  cardContainer: {
+    flexGrow: 1,
+    paddingBottom: 16,
   },
   label: {
     fontSize: 15,
