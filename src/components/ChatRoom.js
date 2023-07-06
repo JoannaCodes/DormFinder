@@ -220,6 +220,32 @@ const ChatRoom = props => {
       });
   };
 
+  // Enable/disable
+  const enableDisableThis = async () => {
+    const formdata = new FormData();
+
+    formdata.append('action', 'enable_disable_payment');
+    formdata.append('chatroom_code', props.route.params.chatroom_code);
+
+    await axios.post(API_URL, formdata, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        props.route.params.navigation.navigate('InboxTab');
+        Toast.show({
+          type: 'info',
+          text1: 'StudyHive',
+          text2: 'Successfully!',
+        });
+      })
+      .catch(ex => {
+        return false;
+      });
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -387,6 +413,7 @@ const ChatRoom = props => {
             {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 0 &&
               // Enable payment
               <TouchableOpacity
+              onPress={() => enableDisableThis()}
               style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
                 <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
@@ -397,6 +424,7 @@ const ChatRoom = props => {
             {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 1 &&
               // Disable payment
               <TouchableOpacity
+              onPress={() => enableDisableThis()}
               style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
                 <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>

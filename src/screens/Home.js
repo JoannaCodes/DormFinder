@@ -105,34 +105,42 @@ const HomeScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    var a = filteredAircon;
-    var b = filteredElevator;
-    var c = filteredBeddings;
-    var d = filteredKitchen;
-    var e = filteredLaundry;
-    var f = filteredLounge;
-    var g = filteredParking;
-    var h = filteredSecurity;
-    var i = filteredStudyRoom;
-    var j = filteredWifi;
-    var k = filteredPet;
-    var l = filteredVisitor;
-    var m = filteredCurfew;
-    var n = filteredRatings;
-    var o = filteredMinPrice;
-    var p = filteredMaxPrice;
-    var q = filteredHei;
+    let isMounted = true;
+    const intervalId = setInterval(() => {
+      var a = filteredAircon;
+      var b = filteredElevator;
+      var c = filteredBeddings;
+      var d = filteredKitchen;
+      var e = filteredLaundry;
+      var f = filteredLounge;
+      var g = filteredParking;
+      var h = filteredSecurity;
+      var i = filteredStudyRoom;
+      var j = filteredWifi;
+      var k = filteredPet;
+      var l = filteredVisitor;
+      var m = filteredCurfew;
+      var n = filteredRatings;
+      var o = filteredMinPrice;
+      var p = filteredMaxPrice;
+      var q = filteredHei;
 
-    if (selectedCategoryIndex === 0) {
-      // eslint-disable-next-line prettier/prettier
-      fetchDormsByCategory('popular_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
-    } else if (selectedCategoryIndex === 1) {
-      // eslint-disable-next-line prettier/prettier
-      fetchDormsByCategory('latest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
-    } else if (selectedCategoryIndex === 2) {
-      // eslint-disable-next-line prettier/prettier
-      fetchDormsByCategory('nearest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
-    }
+      if (selectedCategoryIndex === 0) {
+        // eslint-disable-next-line prettier/prettier
+        fetchDormsByCategory('popular_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
+      } else if (selectedCategoryIndex === 1) {
+        // eslint-disable-next-line prettier/prettier
+        fetchDormsByCategory('latest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
+      } else if (selectedCategoryIndex === 2) {
+        // eslint-disable-next-line prettier/prettier
+        fetchDormsByCategory('nearest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+      isMounted = false;
+    };
   }, [
     selectedCategoryIndex,
     filteredAircon,
@@ -313,7 +321,6 @@ const HomeScreen = ({navigation, route}) => {
         console.log('Error requesting location permission:', error);
       }
     } else {
-      setLoading(prev => ({...prev, [tag]: true}));
       let formdata = new FormData();
       formdata.append('action', tag);
       formdata.append('aircon', a ?? 0);
@@ -333,6 +340,8 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('min_price', o ?? 0);
       formdata.append('max_price', p ?? 0);
       formdata.append('hei', q ?? '');
+
+      setLoading(prev => ({...prev, [tag]: true}));
 
       const response = await fetch(API_URL, {
         method: 'POST',
