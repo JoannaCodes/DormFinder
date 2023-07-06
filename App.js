@@ -213,7 +213,7 @@ function RootApp({user, mode, verified, onLogout}) {
       <AppStack.Screen
         name="Home"
         component={RootNavigator}
-        options={{headerShown: false , headerTitleStyle: titleStyle.title1}}
+        options={{headerShown: false, headerTitleStyle: titleStyle.title1}}
         initialParams={{user, mode}}
       />
       <AppStack.Screen
@@ -234,51 +234,54 @@ function RootApp({user, mode, verified, onLogout}) {
         initialParams={{user}}
         options={{headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Payment Transactions" 
+      <AppStack.Screen
+        name="Payment Transactions"
         component={PaymentTransactionComponent}
-        initialParams={{user}}
+        initialParams={{user, verified}}
         options={{headerTitleStyle: titleStyle.title1}}
       />
       <AppStack.Screen name="Guest Modal" options={{headerShown: false}}>
         {() => <GuestModeModal onLogout={onLogout} />}
       </AppStack.Screen>
-      <AppStack.Screen name="Profile Tab" options={{title: 'Profile' , headerTitleStyle: titleStyle.title1}}>
+      <AppStack.Screen
+        name="Profile Tab"
+        options={{title: 'Profile', headerTitleStyle: titleStyle.title1}}>
         {() => (
           <ProfileScreen user={user} verified={verified} onLogout={onLogout} />
         )}
       </AppStack.Screen>
-      <AppStack.Screen 
-      name="Edit Profile"
-      options={{headerTitleStyle: titleStyle.title1}}>
+      <AppStack.Screen
+        name="Edit Profile"
+        options={{headerTitleStyle: titleStyle.title1}}>
         {() => <EditProfileComponent user={user} onLogout={onLogout} />}
       </AppStack.Screen>
-      <AppStack.Screen 
-        name="Chat Room" component={ChatRoomComponent}
-        options={{headerShown: false , headerTitleStyle: titleStyle.title1}}
+      <AppStack.Screen
+        name="Chat Room"
+        component={ChatRoomComponent}
+        options={{headerShown: false, headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Payments" 
+      <AppStack.Screen
+        name="Payments"
         component={PaymentGatewayComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Housing Details" 
+      <AppStack.Screen
+        name="Housing Details"
         component={HousingDetailsComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Listing Form" 
+      <AppStack.Screen
+        name="Listing Form"
         component={ListingFormComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Help" 
+      <AppStack.Screen
+        name="Help"
         component={HelpComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />
-      <AppStack.Screen 
-        name="Terms and Privacy Policy" 
+      <AppStack.Screen
+        name="Terms and Privacy Policy"
         component={TermsAndPrivacyComponent}
         options={{headerTitleStyle: titleStyle.title1}}
       />

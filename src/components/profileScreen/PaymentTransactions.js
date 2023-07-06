@@ -22,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReviewForm from '../../components/ReviewForm';
 
 export default function PaymentGateway({route, navigation}) {
-  const {user} = route.params;
+  const {user, verified} = route.params;
   const [history, setHistory] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [status, setStatus] = useState('success');
@@ -35,11 +35,14 @@ export default function PaymentGateway({route, navigation}) {
 
   const fetchData = async () => {
     await axios
-      .get(`${BASE_URL}?tag=get_transactions&userref=${user}`, {
-        headers: {
-          'Auth-Key': AUTH_KEY,
+      .get(
+        `${BASE_URL}?tag=get_transactions&userref=${user}&is_owner=${verified}`,
+        {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+          },
         },
-      })
+      )
       .then(response => {
         const data = JSON.parse(response.data);
         setHistory(data);
@@ -78,6 +81,9 @@ export default function PaymentGateway({route, navigation}) {
             style={styles.cardImage}
           />
           <View style={styles.transaction}>
+            <Text style={{fontSize: 10}}>
+              {verified ? 'Received money from' : 'Sent money via'}
+            </Text>
             <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
               {item.token}
             </Text>
@@ -88,7 +94,7 @@ export default function PaymentGateway({route, navigation}) {
             <Text style={styles.date}>{item.timestamp}</Text>
           </View>
         </View>
-        {item.has_reviewed == '1' ? null : (
+        {verified ? null : item.has_reviewed == '1' ? null : (
           <TouchableOpacity
             style={styles.btnContainer}
             onPress={() => {
@@ -217,6 +223,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 6,
     fontFamily: 'Poppins-Regular',
+    color: COLORS.black,
   },
   rowContainer: {
     flexDirection: 'row',
