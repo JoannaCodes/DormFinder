@@ -22,14 +22,11 @@ import BackgroundImg from '../../assets/img/bg1.png';
 import Google from '../../assets/img/google-logo.png';
 import {BASE_URL} from '../../constants/index';
 import ForgotPasswordModal from '../components/modals/ForgotPasswordModal';
-import { API_URL, AUTH_KEY, CLIENT_ID } from '../../constants/index';
+import {API_URL, AUTH_KEY, CLIENT_ID} from '../../constants/index';
 
-import {
-  GoogleSignin,
-} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import messaging from '@react-native-firebase/messaging';
-
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
@@ -56,60 +53,122 @@ const Separator = ({title}) => {
 
 export default function Login({onLogin}) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isloading, setLoading] = useState({
+    login: false,
+    google: false,
+    guest: false,
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [userData, setUserData] = useState({});
   const navigation = useNavigation();
 
   const signIn = async () => {
     GoogleSignin.configure({
-        androidClientId: CLIENT_ID,
+      androidClientId: CLIENT_ID,
     });
-    GoogleSignin.hasPlayServices().then((hasPlayService) => {
-      if (hasPlayService) {
-        GoogleSignin.signIn().then( async (userInfo) => {
-          const token = await messaging().getToken();
-          let formdata = new FormData();
-          formdata.append('action',  'checkLogin');
-          formdata.append('email',  userInfo.user.email);
-          formdata.append('fcm', token);
-          
-          await axios.post(API_URL, formdata, {
-            headers: {
-              'Auth-Key': AUTH_KEY,
-              'Content-Type': 'multipart/form-data'
-            },
-          }).then(response => {
-            const data = response.data.data;
-            const code = response.data.code;
-            if(code === 200) {
-              onLogin(data);
+    GoogleSignin.hasPlayServices()
+      .then(hasPlayService => {
+        if (hasPlayService) {
+          setLoading(prev => ({...prev, google: true}));
+          GoogleSignin.signIn()
+            .then(async userInfo => {
+              const token = await messaging().getToken();
+              let formdata = new FormData();
+              formdata.append('action', 'checkLogin');
+              formdata.append('email', userInfo.user.email);
+              formdata.append('fcm', token);
+
+              await axios
+                .post(API_URL, formdata, {
+                  headers: {
+                    'Auth-Key': AUTH_KEY,
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then(response => {
+                  const data = response.data.data;
+                  const code = response.data.code;
+                  if (code === 200) {
+                    onLogin(data);
+                    Toast.show({
+                      type: 'success',
+                      text1: 'StudyHive',
+                      text2: `Welcome, ${data.username}.`,
+                    });
+                  }
+                });
+            })
+            .catch(error => {
               Toast.show({
-                type: 'success',
+                type: 'error',
                 text1: 'StudyHive',
-                text2: `Welcome, ${data.username}.`,
+                text2: error.message,
               });
-            }
-          });
-        }).catch((e) => {
-          Toast.show({
-            type: 'error',
-            text1: `Your account doesn\'t exist!`,
-            text2: `Register your Google Account in Signup section first`,
-          });
-        })
-      }
-    }).catch((e) => {
-        console.log("ERROR IS: " + JSON.stringify(e));
-    })
+            })
+            .finally(() => {
+              setLoading(prev => ({...prev, google: false}));
+            });
+        }
+      })
+      .catch(e => {
+        console.log('ERROR IS: ' + JSON.stringify(e));
+      });
   };
 
-  const handleLogin = async mode => {
-    if (mode === 'guest') {
+  const guest = async () => {
+    setLoading(prev => ({...prev, guest: true}));
+    const formData = new FormData();
+    formData.append('tag', 'login_app_guest');
+
+    await axios
+      .post(BASE_URL, formData, {
+        headers: {
+          'Auth-Key': AUTH_KEY,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        const user = response.data;
+
+        if (user.status) {
+          onLogin(user);
+          Toast.show({
+            type: 'success',
+            text1: 'StudyHive',
+            text2: `Welcome, ${user.username}.`,
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'StudyHive',
+            text2: 'Unable to enter guest mode.',
+          });
+        }
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'StudyHive',
+          text2: 'Please check your network and try again.',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+        setLoading(prev => ({...prev, guest: false}));
+      });
+  };
+
+  const login = async () => {
+    if (validateLogin()) {
+      setLoading(prev => ({...prev, login: true}));
+      const token = await messaging().getToken();
+      setLoading(true);
       const formData = new FormData();
-      formData.append('tag', 'login_app_guest');
+      formData.append('tag', 'login_app');
+      formData.append('username', username);
+      formData.append('password', password);
+      formData.append('fcm', token);
 
       await axios
         .post(BASE_URL, formData, {
@@ -126,13 +185,13 @@ export default function Login({onLogin}) {
             Toast.show({
               type: 'success',
               text1: 'StudyHive',
-              text2: `Welcome, ${user.username}.`,
+              text2: `Hello, ${user.username}.`,
             });
           } else {
             Toast.show({
               type: 'error',
               text1: 'StudyHive',
-              text2: 'Unable to enter guest mode.',
+              text2: 'User not found.',
             });
           }
         })
@@ -144,58 +203,21 @@ export default function Login({onLogin}) {
           });
         })
         .finally(() => {
-          setIsLoading(false);
+          setLoading(false);
+          setLoading(prev => ({...prev, login: false}));
         });
+    } else {
+      Alert.alert('Incomplete Fields', 'Please fill in all the fields.');
+    }
+  };
+
+  const handleLogin = mode => {
+    if (mode === 'guest') {
+      guest();
     } else if (mode === 'google') {
       signIn();
     } else if (mode === 'user') {
-      if (validateLogin()) {
-        const token = await messaging().getToken();
-        setIsLoading(true);
-        const formData = new FormData();
-        formData.append('tag', 'login_app');
-        formData.append('username', username);
-        formData.append('password', password);
-        formData.append('fcm', token);
-
-        await axios
-          .post(BASE_URL, formData, {
-            headers: {
-              'Auth-Key': AUTH_KEY,
-              'Content-Type': 'multipart/form-data'
-            },
-          })
-          .then(response => {
-            const user = response.data;
-
-            if (user.status) {
-              onLogin(user);
-              Toast.show({
-                type: 'success',
-                text1: 'StudyHive',
-                text2: `Hello, ${user.username}.`,
-              });
-            } else {
-              Toast.show({
-                type: 'error',
-                text1: 'StudyHive',
-                text2: 'User not found.',
-              });
-            }
-          })
-          .catch(error => {
-            Toast.show({
-              type: 'error',
-              text1: 'StudyHive',
-              text2: 'Please check your network and try again.',
-            });
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      } else {
-        Alert.alert('Incomplete Fields', 'Please fill in all the fields.');
-      }
+      login();
     }
   };
 
@@ -210,165 +232,215 @@ export default function Login({onLogin}) {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-    <View style={styles.container}>
-      <StatusBar hidden={true} />
-      <View style={styles.topBackgroundImgContainer}>
-        <Image
-          source={BackgroundImg}
-          style={styles.backgroundImg}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={styles.bottomBackgroundImgContainer} />
-      <View style={styles.formContainer}>
-        <View style={styles.formTopContainer}>
-          <Text style={{color: 'black', fontSize: 30, marginTop: 20, fontFamily: 'Poppins-Regular'}}>
-            Welcome!
-          </Text>
+      <View style={styles.container}>
+        <StatusBar hidden={true} />
+        <View style={styles.topBackgroundImgContainer}>
+          <Image
+            source={BackgroundImg}
+            style={styles.backgroundImg}
+            resizeMode="contain"
+          />
         </View>
-        <View style={styles.formBottomContainer}>
-          <View style={styles.formBottomSubContainer}>
-            {/*  */}
-            <View style={styles.customInputContainer}>
-              <TextInput
-                style={{padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
-                placeholder="Email or Username"
-                onChangeText={text => setUsername(text)}
-                keyboardType={'email-address'}
-                autoCapitalize="none"
-              />
-            </View>
-            {/*  */}
-            {/*  */}
-            <View style={styles.customInputContainer}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={styles.bottomBackgroundImgContainer} />
+        <View style={styles.formContainer}>
+          <View style={styles.formTopContainer}>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 30,
+                marginTop: 20,
+                fontFamily: 'Poppins-Regular',
+              }}>
+              Welcome!
+            </Text>
+          </View>
+          <View style={styles.formBottomContainer}>
+            <View style={styles.formBottomSubContainer}>
+              {/*  */}
+              <View style={styles.customInputContainer}>
                 <TextInput
-                  style={{ flex: 1, padding: 0, fontFamily: 'Poppins-Regular', marginBottom: -2}}
-                  placeholder="Password"
-                  secureTextEntry={!isPasswordVisible}
-                  onChangeText={text => setPassword(text)}
+                  style={{
+                    padding: 0,
+                    fontFamily: 'Poppins-Regular',
+                    marginBottom: -2,
+                  }}
+                  placeholder="Email or Username"
+                  onChangeText={text => setUsername(text)}
+                  keyboardType={'email-address'}
                   autoCapitalize="none"
                 />
-                <TouchableOpacity
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <Icon
-                    name={isPasswordVisible ? 'visibility' : 'visibility-off'}
-                    size={20}
-                  />
-                </TouchableOpacity>
               </View>
-            </View>
-            {/*  */}
-            {/*  */}
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => {
-                handleLogin('user');
-              }}>
-              {isLoading ? (
-                <ActivityIndicator color={COLORS.white} size={'small'} />
-              ) : (
-                <Text
+              {/*  */}
+              {/*  */}
+              <View style={styles.customInputContainer}>
+                <View
                   style={{
-                    color: COLORS.white,
-                    fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  Login
-                </Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      padding: 0,
+                      fontFamily: 'Poppins-Regular',
+                      marginBottom: -2,
+                    }}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    onChangeText={text => setPassword(text)}
+                    autoCapitalize="none"
+                  />
+                  <TouchableOpacity
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                    <Icon
+                      name={isPasswordVisible ? 'visibility' : 'visibility-off'}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {/*  */}
+              {/*  */}
+              <TouchableOpacity
+                style={styles.loginButton}
+                disabled={isloading.login}
+                onPress={() => {
+                  handleLogin('user');
+                }}>
+                {isloading.login ? (
+                  <ActivityIndicator color={COLORS.white} size={'small'} />
+                ) : (
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      fontSize: 15,
+                      fontFamily: 'Poppins-SemiBold',
+                      marginBottom: -2,
+                    }}>
+                    Login
+                  </Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => {
                   setModalVisible(true);
                 }}
                 style={{
-                  alignSelf: 'flex-end', 
-                  marginTop: 10, 
+                  alignSelf: 'flex-end',
+                  marginTop: 10,
                   marginBottom: -7,
                 }}>
                 <Text
                   style={{
                     color: '#454545',
                     marginTop: -10,
-                    fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: -2
+                    fontSize: 13,
+                    fontFamily: 'Poppins-SemiBold',
+                    marginBottom: -2,
                   }}>
                   Forgot Password?
                 </Text>
               </TouchableOpacity>
-            {/*  */}
-            {/*  */}
-            <Separator title={'Or'} />
-            {/*  */}
-            {/*  */}
-
-            
-  
-            <View style={[styles.buttonContainer, { justifyContent: 'center', alignItems: 'center' }]}>
-              <TouchableOpacity
+              {/*  */}
+              {/*  */}
+              <Separator title={'Or'} />
+              {/*  */}
+              {/*  */}
+              <View
                 style={[
-                  styles.squareButton,
-                  {
-                    backgroundColor: COLORS.white,
-                    flex: 1,
-                    marginRight: 5,
-                    marginLeft: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  },
-                ]}
-                onPress={() => {
-                  handleLogin('google');
-                }}
-              >
-                <Image source={Google} style={styles.squareButtonIcon} />
-                <Text style={styles.squareButtonText}>Continue with Google</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/*  */}
-            {/*  */}
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => {
-                handleLogin('guest');
-              }}>
-              <Text
-                style={{color: COLORS.white, fontSize: 15, fontFamily: 'Poppins-SemiBold', marginBottom: -2}}>
-                Continue as Guest
-              </Text>
-            </TouchableOpacity>
-            {/*  */}
-            {/*  */}
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <Text style={{color: 'black', fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: -2}}>
-                  Don't have an account?
-                </Text>
+                  styles.buttonContainer,
+                  {justifyContent: 'center', alignItems: 'center'},
+                ]}>
                 <TouchableOpacity
+                  style={[
+                    styles.squareButton,
+                    {
+                      backgroundColor: COLORS.white,
+                      flex: 1,
+                      marginRight: 5,
+                      marginLeft: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    },
+                  ]}
+                  disabled={isloading.google}
                   onPress={() => {
-                    navigation.navigate('Signup');
+                    handleLogin('google');
                   }}>
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: COLORS.teal,
-                      fontSize: 13, fontFamily: 'Poppins-SemiBold', marginBottom: 4, marginTop: -1
-                    }}>
-                    Sign up
-                  </Text>
+                  {isloading.google ? (
+                    <ActivityIndicator color={COLORS.teal} size={'small'} />
+                  ) : (
+                    <>
+                      <Image source={Google} style={styles.squareButtonIcon} />
+                      <Text style={styles.squareButtonText}>
+                        Continue with Google
+                      </Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
+              {/*  */}
+              {/*  */}
+              <TouchableOpacity
+                style={styles.loginButton}
+                disabled={isloading.guest}
+                onPress={() => {
+                  handleLogin('guest');
+                }}>
+                {isloading.guest ? (
+                  <ActivityIndicator color={COLORS.white} size={'small'} />
+                ) : (
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      fontSize: 15,
+                      fontFamily: 'Poppins-SemiBold',
+                      marginBottom: -2,
+                    }}>
+                    Continue as Guest
+                  </Text>
+                )}
+              </TouchableOpacity>
+              {/*  */}
+              {/*  */}
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', marginVertical: 10}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 13,
+                      fontFamily: 'Poppins-Regular',
+                      marginBottom: -2,
+                    }}>
+                    Don't have an account?
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('Signup');
+                    }}>
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        color: COLORS.teal,
+                        fontSize: 13,
+                        fontFamily: 'Poppins-SemiBold',
+                        marginBottom: 4,
+                        marginTop: -1,
+                      }}>
+                      Sign up
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {/*  */}
             </View>
-            {/*  */}
           </View>
         </View>
+        <ForgotPasswordModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+        />
       </View>
-      <ForgotPasswordModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-      />
-    </View>
     </ScrollView>
   );
 }
@@ -460,13 +532,13 @@ const styles = StyleSheet.create({
   squareButtonIcon: {
     height: 26,
     width: 25,
-    marginLeft: -20
+    marginLeft: -20,
   },
   squareButtonText: {
     color: 'black',
     fontFamily: 'Poppins-Regular',
     fontSize: 15,
     marginLeft: 20,
-    marginTop: 2
+    marginTop: 2,
   },
 });
