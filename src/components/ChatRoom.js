@@ -384,22 +384,45 @@ const ChatRoom = props => {
                 View Housing Details
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
-              onPress={() => {
-                props.route.params.navigation.navigate('Payments', {
-                  userref: props.route.params.myid,
-                  ownerref: getDorm?.userref,
-                  ownername: props.route.params.username,
-                  dormref: props.route.params.unique_code,
-                  price: getDorm?.price,
-                });
-              }}>
-              <Text
+            {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 0 &&
+              // Enable payment
+              <TouchableOpacity
+              style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
+                <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                Pay Rent
-              </Text>
-            </TouchableOpacity>
+                  Enable payment
+                </Text>
+              </TouchableOpacity>
+            }
+            {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 1 &&
+              // Disable payment
+              <TouchableOpacity
+              style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
+                <Text
+                style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+                  Disabled payment
+                </Text>
+              </TouchableOpacity>
+            }
+            {props.route.params.myid !== getDorm.userref && props.route.params.pay_rent === 1 &&
+              // Pay now
+              <TouchableOpacity
+                style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
+                onPress={() => {
+                  props.route.params.navigation.navigate('Payments', {
+                    userref: props.route.params.myid,
+                    ownerref: getDorm?.userref,
+                    ownername: props.route.params.username,
+                    dormref: props.route.params.unique_code,
+                    price: getDorm?.price,
+                  });
+                }}>
+                <Text
+                  style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+                  Pay Rent
+                </Text>
+              </TouchableOpacity>
+            }
           </View>
         </View>
         {messages.length !== 0 ? (

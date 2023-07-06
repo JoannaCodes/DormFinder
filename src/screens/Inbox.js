@@ -136,6 +136,8 @@ const Inbox = ({navigation}) => {
                     myusername: myInfo.username,
                     anotherid: item?.user_id,
                     user: user,
+                    ownerid: item.ownerid,
+                    pay_rent: item.pay_rent
                   })
                 }>
                 <UserInfo>
