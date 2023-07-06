@@ -93,11 +93,13 @@ const HomeScreen = ({navigation, route}) => {
         console.log('specific topic!:', remoteMessage.notification);
       } else {
         //Alert.alert('StudyHive', remoteMessage.notification['body']);
-        Toast.show({
-          type: 'info',
-          text1: 'StudyHive',
-          text2: remoteMessage.notification['body'],
-        });
+        if(remoteMessage.notification['user_ref'] === user) {
+          Toast.show({
+            type: 'info',
+            text1: 'StudyHive',
+            text2: remoteMessage.notification['body'],
+          });
+        }
       }
     });
 
