@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
-import {BASE_URL, AUTH_KEY} from '../../constants';
+import {BASE_URL, AUTH_KEY, API_URL} from '../../constants';
 import COLORS from '../../constants/colors';
 
 export default function Notifications({route, navigation}) {
@@ -53,6 +53,19 @@ export default function Notifications({route, navigation}) {
           var output = JSON.parse(res.data);
           setNotifContainer(output);
           AsyncStorage.setItem('notifications', JSON.stringify(output));
+        });
+
+        // read
+        let formdata = new FormData();
+        formdata.append('action', 'read_notification');
+        formdata.append('user_ref', user);
+      
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Auth-Key': AUTH_KEY,
+          },
+          body: formdata,
         });
     } catch (error) {
       console.error('Error occurred during the Axios request:', error);

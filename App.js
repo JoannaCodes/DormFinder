@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
+import {TouchableOpacity, StyleSheet,View,Text} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
@@ -47,7 +47,8 @@ import SplashScreen from './src/screens/SplashScreen';
 
 import {LogBox} from 'react-native';
 import {useEffect} from 'react';
-import {BASE_URL, AUTH_KEY} from './constants/index';
+import {BASE_URL, API_URL, AUTH_KEY} from './constants/index';
+
 import axios from 'axios';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreLogs([/Warning: /]);
@@ -110,6 +111,41 @@ const toastConfig = {
 const Tab = createBottomTabNavigator();
 
 function RootNavigator({route}) {
+  const [getNotification, setNotification] = useState(0);
+  const fetchData = async () => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+  
+    let formdata = new FormData();
+    formdata.append('action', 'get_notification_count');
+    formdata.append('user_ref', convertData.id);
+  
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Auth-Key': AUTH_KEY,
+      },
+      body: formdata,
+    });
+  
+    const json = await response.json();
+    if (json.code === 200) {
+      setNotification(json.data)
+    } else {
+      setNotification(0)
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    const intervalId = setInterval(() => fetchData(), 3000);
+
+    return () => {
+      clearInterval(intervalId);
+      isMounted = false;
+    };
+  }, [useState]);
+
   const {user, mode} = route.params;
   return (
     <Tab.Navigator
@@ -143,7 +179,25 @@ function RootNavigator({route}) {
             iconName = 'mail';
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          var returns = <Icon name={iconName} size={size} color={color} />
+          var returnsNotif = <View style={{position:'relative'}}>
+            <Icon name={iconName} size={size} color={color} />
+            {getNotification != 0 &&
+              <View style={{position:'absolute',
+                backgroundColor:"red",
+                padding: 3,
+                top: 0,
+                right: 0,
+                alignContent:"center",
+                alignSelf:"center",
+                alignItems:"center",
+                borderRadius: 10
+              }}>
+                <Text style={{color:'white',textAlign:'center',fontSize: 8,fontWeight:'bold'}}>{getNotification}</Text>
+              </View>
+            }
+          </View>
+          return iconName !== 'notifications' ? returns : returnsNotif;
         },
         tabBarActiveTintColor: '#0E898B',
         tabBarInactiveTintColor: 'gray',
