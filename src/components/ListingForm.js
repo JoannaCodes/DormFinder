@@ -325,6 +325,18 @@ const ListingForm = ({route, navigation}) => {
       }
     }
 
+    if (!initialValues.address.includes('Manila')) {
+      newErrors.address = true;
+      isValid = false;
+      Toast.show({
+        type: 'info',
+        text1: 'StudyHive',
+        text2: 'The scope of the app is limited to Manila City only.',
+      });
+    } else {
+      newErrors.address = false;
+    }
+
     // Upload images is optional on edit mode
     if (!editmode) {
       if (images.length === 0) {
@@ -355,12 +367,18 @@ const ListingForm = ({route, navigation}) => {
     setErrors(newErrors);
 
     if (!isValid) {
+      let toastMessage = '';
+      if (!initialValues.address || !initialValues.address.includes('Manila')) {
+        toastMessage = 'Please enter a valid address within Manila city.';
+      } else {
+        toastMessage =
+          'Validation Error. Please fill in all the required fields.';
+      }
       Toast.show({
         type: 'error',
         text1: 'StudyHive',
-        text2: 'Validation Error. Please fill in all the required fields',
+        text2: toastMessage,
       });
-    } else {
     }
 
     return isValid;
