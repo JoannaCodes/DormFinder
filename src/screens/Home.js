@@ -19,8 +19,7 @@ import {
   Linking,
   PermissionsAndroid,
   LogBox,
-  AppState,
-  BackHandler
+  ActivityIndicator,
 } from 'react-native';
 
 LogBox.ignoreLogs(['Warning: ...']);
@@ -36,17 +35,15 @@ import axios from 'axios';
 import {API_URL, BASE_URL, DORM_UPLOADS, AUTH_KEY} from '../../constants/index';
 
 import PushNotificationConfig from '../components/PushNotificationConfig';
-import PushNotification, {Importance} from 'react-native-push-notification';
+import PushNotification from 'react-native-push-notification';
 
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Toast from 'react-native-toast-message';
-import { CheckBox, RadioButton, RadioGroup } from "react-native-radio-check"
-import { useFocusEffect } from '@react-navigation/native';
+import {RadioButton, RadioGroup} from 'react-native-radio-check';
 import messaging from '@react-native-firebase/messaging';
-
 
 const HomeScreen = ({navigation, route}) => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
@@ -73,37 +70,35 @@ const HomeScreen = ({navigation, route}) => {
   const {user, mode} = route.params;
 
   async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
   }
-}
 
   useEffect(() => {
     requestUserPermission();
     fetchData();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       // Check if the notification is for the specific topic
-  if (remoteMessage.data && remoteMessage.data.topic === 'news') {
-    // Handle the notification here
-    console.log('specific topic!:', remoteMessage.notification);
-  } else {
-    //Alert.alert('StudyHive', remoteMessage.notification['body']);
-    Toast.show({
-      type: 'info',
-      text1: 'StudyHive',
-      text2: remoteMessage.notification['body'],
-    });
-  }
-  
-      
+      if (remoteMessage.data && remoteMessage.data.topic === 'news') {
+        // Handle the notification here
+        console.log('specific topic!:', remoteMessage.notification);
+      } else {
+        //Alert.alert('StudyHive', remoteMessage.notification['body']);
+        Toast.show({
+          type: 'info',
+          text1: 'StudyHive',
+          text2: remoteMessage.notification['body'],
+        });
+      }
     });
 
     return unsubscribe;
@@ -129,69 +124,23 @@ const HomeScreen = ({navigation, route}) => {
     var q = filteredHei;
 
     if (selectedCategoryIndex === 0) {
-      fetchDormsByCategory(
-        'popular_dorm',
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i,
-        j,
-        k,
-        l,
-        m,
-        n,
-        o,
-        p,
-        q
-      );
+      // eslint-disable-next-line prettier/prettier
+      fetchDormsByCategory('popular_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
     } else if (selectedCategoryIndex === 1) {
-      fetchDormsByCategory(
-        'latest_dorm',
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i,
-        j,
-        k,
-        l,
-        m,
-        n,
-        o,
-        p,
-        q
-      );
+      // eslint-disable-next-line prettier/prettier
+      fetchDormsByCategory('latest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
     } else if (selectedCategoryIndex === 2) {
-      fetchDormsByCategory(
-        'nearest_dorm',
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i,
-        j,
-        k,
-        l,
-        m,
-        n,
-        o,
-        p,
-        q
-      );
+      // eslint-disable-next-line prettier/prettier
+      fetchDormsByCategory('nearest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
     }
+
+    let isMounted = true;
+    const intervalId = setInterval(() => fetchData(), 3000);
+
+    return () => {
+      clearInterval(intervalId);
+      isMounted = false;
+    };
   }, [
     selectedCategoryIndex,
     filteredAircon,
@@ -211,7 +160,7 @@ const HomeScreen = ({navigation, route}) => {
     filteredMinPrice,
     filteredMaxPrice,
     filteredHei,
-    filteredHeiIndex
+    filteredHeiIndex,
   ]);
 
   const _fetchNotif1 = async () => {
@@ -259,7 +208,9 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredDorms, setFilteredDorms] = useState([]);
   const [dorms, setDorms] = useState([]);
   const [modal, setModal] = useState(false);
+  const [isLoading, setLoading] = useState({popular: false, latest: false, nearest: false});
 
+  // eslint-disable-next-line prettier/prettier
   const fetchData = async (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q) => {
     let formdata = new FormData();
     formdata.append('action', 'popular_dorm');
@@ -279,26 +230,8 @@ const HomeScreen = ({navigation, route}) => {
     }
   };
 
-  const fetchDormsByCategory = async (
-    tag,
-    a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g,
-    h,
-    i,
-    j,
-    k,
-    l,
-    m,
-    n,
-    o,
-    p,
-    q
-  ) => {
+  // eslint-disable-next-line prettier/prettier
+  const fetchDormsByCategory = async (tag, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q) => {
     if (tag === 'nearest_dorm') {
       setSelectedCategoryIndex(
         categoryList.findIndex(category => category.tag === tag),
@@ -309,6 +242,7 @@ const HomeScreen = ({navigation, route}) => {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          setLoading(prev => ({...prev, nearest: true}));
           // Permission granted, fetch dorms based on user's location
           Geolocation.getCurrentPosition(
             async position => {
@@ -332,7 +266,7 @@ const HomeScreen = ({navigation, route}) => {
               formdata.append('rating', n ?? 0);
               formdata.append('min_price', o ?? 0);
               formdata.append('max_price', p ?? 0);
-              formdata.append('hei', q ?? "");
+              formdata.append('hei', q ?? '');
               formdata.append('latitude', latitude);
               formdata.append('longitude', longitude);
 
@@ -350,6 +284,7 @@ const HomeScreen = ({navigation, route}) => {
               if (json.code === 200) {
                 setDorms([]);
                 setDorms(json.data);
+                setLoading(prev => ({...prev, nearest: false}));
               } else if (json.code === 403) {
                 setDorms([]);
                 Toast.show({
@@ -386,6 +321,7 @@ const HomeScreen = ({navigation, route}) => {
         console.log('Error requesting location permission:', error);
       }
     } else {
+      setLoading(prev => ({...prev, [tag]: true}));
       let formdata = new FormData();
       formdata.append('action', tag);
       formdata.append('aircon', a ?? 0);
@@ -404,7 +340,7 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('rating', n ?? 0);
       formdata.append('min_price', o ?? 0);
       formdata.append('max_price', p ?? 0);
-      formdata.append('hei', q ?? "");
+      formdata.append('hei', q ?? '');
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -418,6 +354,7 @@ const HomeScreen = ({navigation, route}) => {
       if (json.code === 200) {
         setDorms([]);
         setDorms(json.data);
+        setLoading(prev => ({...prev, [tag]: false}));
       } else if (json.code === 403) {
         setDorms([]);
         Toast.show({
@@ -459,11 +396,10 @@ const HomeScreen = ({navigation, route}) => {
     );
   };
 
-
-  const Card = ({ item }) => {
+  const Card = ({item}) => {
     const images = item.images ? item.images.split(',') : [];
     const isAvailable = item.slots > 0;
-  
+
     return (
       <Pressable
         activeOpacity={0.8}
@@ -473,8 +409,7 @@ const HomeScreen = ({navigation, route}) => {
             userref: user,
             mode: mode,
           })
-        }
-      >
+        }>
         <View
           style={[
             styles.card,
@@ -482,15 +417,11 @@ const HomeScreen = ({navigation, route}) => {
               backgroundColor: isAvailable ? '#F5F5F5' : '#E8E8E8',
               opacity: isAvailable ? 1 : 0.5,
             },
-          ]}
-        >
+          ]}>
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: `${DORM_UPLOADS}/${item.id}/${images[0]}` }}
-              style={[
-                styles.cardImage,
-                { opacity: isAvailable ? 1 : 0.8 },
-              ]}
+              source={{uri: `${DORM_UPLOADS}/${item.id}/${images[0]}`}}
+              style={[styles.cardImage, {opacity: isAvailable ? 1 : 0.8}]}
             />
             {!isAvailable && (
               <View style={styles.unavailableOverlay}>
@@ -498,48 +429,43 @@ const HomeScreen = ({navigation, route}) => {
               </View>
             )}
           </View>
-          <View style={{ marginTop: 10 }}>
+          <View style={{marginTop: 10}}>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 5,
-              }}
-            >
+              }}>
               <Text
                 style={[
                   styles.cardName,
-                  { color: isAvailable ? 'black' : COLORS.grey },
-                ]}
-              >
+                  {color: isAvailable ? 'black' : COLORS.grey},
+                ]}>
                 {item.name}
               </Text>
               <Text
                 style={[
                   styles.cardPrice,
-                  { color: isAvailable ? COLORS.teal : COLORS.grey },
-                ]}
-              >
+                  {color: isAvailable ? COLORS.teal : COLORS.grey},
+                ]}>
                 ₱ {item.price}
               </Text>
             </View>
             <Text
               style={[
                 styles.cardAddress,
-                { color: isAvailable ? 'black' : COLORS.grey },
-              ]}
-            >
+                {color: isAvailable ? 'black' : COLORS.grey},
+              ]}>
               {item.address}
             </Text>
-            <View style={{ marginTop: 10, flexDirection: 'row' }}>
+            <View style={{marginTop: 10, flexDirection: 'row'}}>
               <View style={styles.facility}>
                 <Icon name="hotel" size={18} />
                 <Text
                   style={[
                     styles.facilityText,
-                    { color: isAvailable ? 'black' : COLORS.grey },
-                  ]}
-                >
+                    {color: isAvailable ? 'black' : COLORS.grey},
+                  ]}>
                   Availability:{' '}
                   {isAvailable
                     ? `${item.slots} ${item.slots > 1 ? 'slots' : 'slot'}`
@@ -553,30 +479,30 @@ const HomeScreen = ({navigation, route}) => {
     );
   };
 
-
-
   const filter = () => {};
 
   const handleSearch = text => {
     setSearchQuery(text);
-    const filtered = dorms.filter(data =>
-      data.name.toLowerCase().includes(text.toLowerCase()) || data.address.toLowerCase().includes(text.toLowerCase()),
+    const filtered = dorms.filter(
+      data =>
+        data.name.toLowerCase().includes(text.toLowerCase()) ||
+        data.address.toLowerCase().includes(text.toLowerCase()),
     );
     setFilteredDorms(filtered);
   };
 
-  const onPressRatings = (rating) => {
+  const onPressRatings = rating => {
     setFilteredRatings(rating);
-    console.log(rating)
-  }
+    console.log(rating);
+  };
 
   const onChanged = (text, s) => {
-      if(s == 0 ) {
-        setFilteredMinPrice(text.replace(/[^0-9]/g, ''));
-      } else {
-        setFilteredMaxPrice(text.replace(/[^0-9]/g, ''));
-      }
-  }
+    if (s == 0) {
+      setFilteredMinPrice(text.replace(/[^0-9]/g, ''));
+    } else {
+      setFilteredMaxPrice(text.replace(/[^0-9]/g, ''));
+    }
+  };
 
   const clearFilter = () => {
     setFilteredAircon(0);
@@ -596,15 +522,12 @@ const HomeScreen = ({navigation, route}) => {
     setFilteredMinPrice(0);
     setFilteredMaxPrice(0);
     setFilteredHeiIndex(0);
-    setFilteredHei("");
+    setFilteredHei('');
     setModal(false);
-  }
-  TouchableOpacity
+  };
+
   return (
-    
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
-
-
       <Modal
         animationType={'fade'}
         transparent={true}
@@ -637,10 +560,15 @@ const HomeScreen = ({navigation, route}) => {
               borderRadius: 10,
               height: 400,
             }}>
-        
-            <View style={{ borderBottomColor: '#ddd', borderBottomWidth: 2 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 }}>
-                <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{borderBottomColor: '#ddd', borderBottomWidth: 2}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 10,
+                }}>
+                <View style={{flex: 1, alignItems: 'center'}}>
                   <Text
                     style={{
                       size: 1,
@@ -656,41 +584,54 @@ const HomeScreen = ({navigation, route}) => {
               </View>
             </View>
 
-
             <ScrollView>
-
-
               {/* PRICE */}
               <View style={styles.sectionContainer}>
-                  <Text
+                <Text
+                  style={{
+                    textAlign: 'left',
+                    color: '#000',
+                    paddingVertical: 5,
+                    fontFamily: 'Poppins-SemiBold',
+                  }}>
+                  Price Range
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TextInput
                     style={{
-                      textAlign: 'left',
-                      color: '#000',
+                      width: 100,
                       paddingVertical: 5,
-                      fontFamily: 'Poppins-SemiBold',
-                    }}>
-                    Price Range
-                  </Text>
-                  <View style={{flexDirection:'row'}}>
-                    <TextInput
-                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10,marginRight: 10, fontFamily: 'Poppins-Regular',}}
-                      placeholder={'Min. Price'}
-                      value={filteredMinPrice}
-                      onChangeText={(data) => onChanged(data, 0)}
-                      keyboardType={'numeric'}
-                      numeric
-                    />
-                    <TextInput
-                      style={{width: 100,paddingVertical: 5,paddingHorizontal: 10, backgroundColor:"#eee",borderRadius: 10,fontSize: 10, fontFamily: 'Poppins-Regular',}}
-                      placeholder={'Max. Price'}
-                      value={filteredMaxPrice}
-                      onChangeText={(data) => onChanged(data, 1)}
-                      keyboardType={'numeric'}
-                      numeric
-                    />
-                  </View>
+                      paddingHorizontal: 10,
+                      backgroundColor: '#eee',
+                      borderRadius: 10,
+                      fontSize: 10,
+                      marginRight: 10,
+                      fontFamily: 'Poppins-Regular',
+                    }}
+                    placeholder={'Min. Price'}
+                    value={filteredMinPrice}
+                    onChangeText={data => onChanged(data, 0)}
+                    keyboardType={'numeric'}
+                    numeric
+                  />
+                  <TextInput
+                    style={{
+                      width: 100,
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      backgroundColor: '#eee',
+                      borderRadius: 10,
+                      fontSize: 10,
+                      fontFamily: 'Poppins-Regular',
+                    }}
+                    placeholder={'Max. Price'}
+                    value={filteredMaxPrice}
+                    onChangeText={data => onChanged(data, 1)}
+                    keyboardType={'numeric'}
+                    numeric
+                  />
+                </View>
               </View>
-
 
               {/* RATINGS */}
               <View style={styles.sectionContainer}>
@@ -703,25 +644,44 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   Ratings
                 </Text>
-                <View style={{flexDirection:'row'}}>
-                <TouchableOpacity onPress={() => onPressRatings(1)}>
-                  {1 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onPressRatings(2)}>
-                  {2 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onPressRatings(3)}>
-                  {3 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onPressRatings(4)}>
-                  {4 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onPressRatings(5)}>
-                  {5 <= filteredRatings ? <Icon name="star" size={20}  color={'#ff9900'}/> : <Icon name="star-border" size={20}  color={'gray'}/> }
-                </TouchableOpacity>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity onPress={() => onPressRatings(1)}>
+                    {1 <= filteredRatings ? (
+                      <Icon name="star" size={20} color={'#ff9900'} />
+                    ) : (
+                      <Icon name="star-border" size={20} color={'gray'} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => onPressRatings(2)}>
+                    {2 <= filteredRatings ? (
+                      <Icon name="star" size={20} color={'#ff9900'} />
+                    ) : (
+                      <Icon name="star-border" size={20} color={'gray'} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => onPressRatings(3)}>
+                    {3 <= filteredRatings ? (
+                      <Icon name="star" size={20} color={'#ff9900'} />
+                    ) : (
+                      <Icon name="star-border" size={20} color={'gray'} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => onPressRatings(4)}>
+                    {4 <= filteredRatings ? (
+                      <Icon name="star" size={20} color={'#ff9900'} />
+                    ) : (
+                      <Icon name="star-border" size={20} color={'gray'} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => onPressRatings(5)}>
+                    {5 <= filteredRatings ? (
+                      <Icon name="star" size={20} color={'#ff9900'} />
+                    ) : (
+                      <Icon name="star-border" size={20} color={'gray'} />
+                    )}
+                  </TouchableOpacity>
                 </View>
               </View>
-
 
               {/* HEI */}
               <View style={styles.sectionContainer}>
@@ -734,36 +694,55 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   Higher Education Institution
                 </Text>
-                
+
                 <View style={styles.checkboxContainer}>
                   <RadioGroup
-                    style={{ flexDirection: 'column', marginTop: 10 }}
+                    style={{flexDirection: 'column', marginTop: 10}}
                     checkedId={filteredHeiIndex ?? 0}
                     icon={{
                       normal: require('../../assets/img/square-regular.png'),
-                      checked: require('../../assets/img/square-check-regular.png')
+                      checked: require('../../assets/img/square-check-regular.png'),
                     }}
-                    iconStyle={{width: 13,height:13,marginTop: 10}}
-                    textStyle={{ marginLeft: 5,marginTop: 10,fontSize: 13}}
+                    iconStyle={{width: 13, height: 13, marginTop: 10}}
+                    textStyle={{marginLeft: 5, marginTop: 10, fontSize: 13}}
                     onChecked={(id, value) => {
                       setFilteredHeiIndex(id);
                       setFilteredHei(value);
                     }}>
-                    <RadioButton text="None" value={''} style={{display: 'none',marginTop: -10}}/>
-                    <RadioButton text="Polytechnic University of the Philippines" value={'PUP'} style={{marginTop: -10}}/>
-                    <RadioButton text="University of the Philippines" value={'UP'} />
+                    <RadioButton
+                      text="None"
+                      value={''}
+                      style={{display: 'none', marginTop: -10}}
+                    />
+                    <RadioButton
+                      text="Polytechnic University of the Philippines"
+                      value={'PUP'}
+                      style={{marginTop: -10}}
+                    />
+                    <RadioButton
+                      text="University of the Philippines"
+                      value={'UP'}
+                    />
                     <RadioButton text="Far Eastern University" value={'FEU'} />
-                    <RadioButton text="University of Santo Tomas" value={'UST'} />
+                    <RadioButton
+                      text="University of Santo Tomas"
+                      value={'UST'}
+                    />
                     <RadioButton text="National University" value={'NU'} />
                     <RadioButton text="San Beda University" value={'SBU'} />
-                    <RadioButton text="Centro Escolar University" value={'CEU'} />
-                    <RadioButton text="Technological University of the Philippines" value={'TUP'} />
+                    <RadioButton
+                      text="Centro Escolar University"
+                      value={'CEU'}
+                    />
+                    <RadioButton
+                      text="Technological University of the Philippines"
+                      value={'TUP'}
+                    />
                     <RadioButton text="De La Salle University" value={'DSLU'} />
                     <RadioButton text="Adamson University" value={'AdU'} />
                   </RadioGroup>
                 </View>
               </View>
-
 
               {/* AMENITIES */}
               <View style={styles.sectionContainer1}>
@@ -998,7 +977,6 @@ const HomeScreen = ({navigation, route}) => {
                 </View>
               </View>
 
-
               {/* ESTABLISHMENT RULES */}
               <View style={styles.sectionContainer}>
                 <Text
@@ -1068,19 +1046,18 @@ const HomeScreen = ({navigation, route}) => {
               </View>
             </ScrollView>
             <View style={styles.clearAllContainer}>
-              <TouchableOpacity onPress={() => {
-                                clearFilter();
-                                Toast.show({
-                                    type: 'success',
-                                    text1: 'StudyHive',
-                                    text2: 'Your filter has been cleared.',
-                                });
-                            }}
-                            >
-                              <Text style={styles.clearAllButtonText}>Clear all</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  clearFilter();
+                  Toast.show({
+                    type: 'success',
+                    text1: 'StudyHive',
+                    text2: 'Your filter has been cleared.',
+                  });
+                }}>
+                <Text style={styles.clearAllButtonText}>Clear all</Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
       </Modal>
@@ -1091,8 +1068,15 @@ const HomeScreen = ({navigation, route}) => {
       />
       <View style={styles.header}>
         <View>
-          <Text style={{fontFamily: 'Poppins-Regular', marginTop: -10}}>Location</Text>
-          <Text style={{color: COLORS.teal, fontSize: 20, fontFamily: 'Poppins-SemiBold'}}>
+          <Text style={{fontFamily: 'Poppins-Regular', marginTop: -10}}>
+            Location
+          </Text>
+          <Text
+            style={{
+              color: COLORS.teal,
+              fontSize: 20,
+              fontFamily: 'Poppins-SemiBold',
+            }}>
             Manila, Philippines
           </Text>
         </View>
@@ -1104,9 +1088,14 @@ const HomeScreen = ({navigation, route}) => {
           paddingHorizontal: 20,
         }}>
         <View style={styles.searchInputContainer}>
-          <Icon name="search" color={COLORS.grey} size={25} style={styles.searchIcon}/>
+          <Icon
+            name="search"
+            color={COLORS.grey}
+            size={25}
+            style={styles.searchIcon}
+          />
           <TextInput
-           style={{padding: 0, flex: 1, fontFamily: 'Poppins-Regular'}}
+            style={{padding: 0, flex: 1, fontFamily: 'Poppins-Regular'}}
             placeholder="Search address, city, location"
             value={searchQuery}
             onChangeText={handleSearch}
@@ -1119,16 +1108,22 @@ const HomeScreen = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
       <ListCategories />
-      <FlatList
-        snapToInterval={width - 20}
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
-        horizontal={false}
-        data={searchQuery ? filteredDorms : dorms}
-        ListHeaderComponent={() => <View />}
-        renderItem={Card}
-        keyExtractor={item => item.id}
-      />
+      {isLoading.popular || isLoading.latest || isLoading.nearest ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#0E898B" />
+        </View>
+      ) : (
+        <FlatList
+          snapToInterval={width - 20}
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
+          horizontal={false}
+          data={searchQuery ? filteredDorms : dorms}
+          ListHeaderComponent={() => <View />}
+          renderItem={Card}
+          keyExtractor={item => item.id}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -1228,7 +1223,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.grey,
   },
   facility: {flexDirection: 'row', marginRight: 15, color: 'black'},
-  facilityText: {marginLeft: 5, color: 'black',},
+  facilityText: {marginLeft: 5, color: 'black'},
   checkboxContainer: {
     flexDirection: 'row',
     marginBottom: 20,
@@ -1302,7 +1297,12 @@ const styles = StyleSheet.create({
   cardAddress: {
     color: COLORS.grey,
     fontSize: 14,
-    marginTop: 5
+    marginTop: 5,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
