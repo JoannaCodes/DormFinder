@@ -1,4 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
+* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {
@@ -143,13 +143,14 @@ const Inbox = ({navigation}) => {
                 <UserInfo>
                   <UserImgWrapper>
                     <UserImg source={{uri: item.imageUrl}} />
+                    <View style={{position:'absolute', bottom:14,right:0,width:15,height:15,borderRadius:100,backgroundColor:item.is_online == 0 ? 'red' : 'green'}}></View>
                   </UserImgWrapper>
                   <TextSection >
                     <UserInfoText>
                       <UserName style={{ fontFamily: 'Poppins-Regular'}}>
                         {item.username}
                       </UserName>
-                      <PostTime style={{ fontFamily: 'Poppins-Regular' }}>
+                      <PostTime style={{ marginRight: 30, fontFamily: 'Poppins-Regular' }}>
                         {item.time !== 0
                           ? moment
                               .unix(item.time)

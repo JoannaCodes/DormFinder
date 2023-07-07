@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TouchableOpacity, StyleSheet,View,Text} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
@@ -36,17 +36,16 @@ import StudentAccommodationComponent from './src/components/profileScreen/DormLi
 import ListingFormComponent from './src/components/ListingForm';
 import GuestModeModal from './src/components/modals/GuestModeModal';
 import HelpComponent from './src/components/profileScreen/Help';
-import PaymentTransactionComponent from './src/components/profileScreen/PaymentTransactions'; 
+import PaymentTransactionComponent from './src/components/profileScreen/PaymentTransactions';
 
-//
 import TermsAndPrivacyComponent from './src/components/profileScreen/TermsAndPrivacy';
 
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import SplashScreen from './src/screens/SplashScreen';
 
-import {LogBox} from 'react-native';
-import {useEffect} from 'react';
+import {AppState, LogBox} from 'react-native';
+import {useEffect, useRef} from 'react';
 import {BASE_URL, API_URL, AUTH_KEY} from './constants/index';
 
 import axios from 'axios';
@@ -115,11 +114,11 @@ function RootNavigator({route}) {
   const fetchData = async () => {
     const data = await AsyncStorage.getItem('user');
     const convertData = JSON.parse(data);
-  
+
     let formdata = new FormData();
     formdata.append('action', 'get_notification_count');
     formdata.append('user_ref', convertData.id);
-  
+
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -127,12 +126,12 @@ function RootNavigator({route}) {
       },
       body: formdata,
     });
-  
+
     const json = await response.json();
     if (json.code === 200) {
-      setNotification(json.data)
+      setNotification(json.data);
     } else {
-      setNotification(0)
+      setNotification(0);
     }
   };
 
@@ -145,6 +144,48 @@ function RootNavigator({route}) {
       isMounted = false;
     };
   }, [useState]);
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const setOnlineOffline = async status => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+    let formdata = new FormData();
+    formdata.append('action', 'setOnlineOffline');
+    formdata.append('status', status);
+    formdata.append('id', convertData.id);
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Auth-Key': AUTH_KEY,
+      },
+      body: formdata,
+    });
+  };
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+        setOnlineOffline('online');
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log('AppState', appState.current);
+      if (appState.currentState === 'background') {
+        setOnlineOffline('offline');
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const {user, mode} = route.params;
   return (
@@ -179,44 +220,56 @@ function RootNavigator({route}) {
             iconName = 'mail';
           }
 
-          var returns = <Icon name={iconName} size={size} color={color} />
-          var returnsNotif = <View style={{position:'relative'}}>
-            <Icon name={iconName} size={size} color={color} />
-            {getNotification != 0 &&
-              <View style={{position:'absolute',
-                backgroundColor:"red",
-                padding: 3,
-                top: 0,
-                right: 0,
-                alignContent:"center",
-                alignSelf:"center",
-                alignItems:"center",
-                borderRadius: 10
-              }}>
-                <Text style={{color:'white',textAlign:'center',fontSize: 8,fontWeight:'bold'}}>{getNotification}</Text>
-              </View>
-            }
-          </View>
+          var returns = <Icon name={iconName} size={size} color={color} />;
+          var returnsNotif = (
+            <View style={{position: 'relative'}}>
+              <Icon name={iconName} size={size} color={color} />
+              {/* eslint-disable-next-line eqeqeq */}
+              {getNotification != 0 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    backgroundColor: 'red',
+                    padding: 3,
+                    top: 0,
+                    right: 0,
+                    alignContent: 'center',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    borderRadius: 10,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      textAlign: 'center',
+                      fontSize: 8,
+                      fontWeight: 'bold',
+                    }}>
+                    {getNotification}
+                  </Text>
+                </View>
+              )}
+            </View>
+          );
           return iconName !== 'notifications' ? returns : returnsNotif;
         },
         tabBarActiveTintColor: '#0E898B',
         tabBarInactiveTintColor: 'gray',
         headerRightContainerStyle: {paddingRight: 16},
         tabBarLabelStyle: {
-          fontFamily: 'Poppins-Regular'
+          fontFamily: 'Poppins-Regular',
         },
       })}>
       <Tab.Screen
         name="ExploreTab"
         component={HomeScreen}
-        options={{title: 'Explore' , headerTitleStyle: titleStyle.title}}
+        options={{title: 'Explore', headerTitleStyle: titleStyle.title}}
         initialParams={{user, mode}}
       />
       <Tab.Screen
         name="BookmarksTab"
         component={BookmarksScreen}
-        options={{title: 'Bookmarks',
-        headerTitleStyle: titleStyle.title,}}
+        options={{title: 'Bookmarks', headerTitleStyle: titleStyle.title}}
         initialParams={{user}}
         listeners={({navigation}) => ({
           tabPress: e => {
@@ -511,10 +564,9 @@ export default function App() {
 const titleStyle = StyleSheet.create({
   title: {
     fontFamily: 'Poppins-SemiBold',
-    marginTop: 10
+    marginTop: 10,
   },
   title1: {
     fontFamily: 'Poppins-SemiBold',
   },
-  
 });

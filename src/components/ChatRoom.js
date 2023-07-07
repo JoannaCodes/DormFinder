@@ -41,6 +41,7 @@ const ChatRoom = props => {
   const [getDorm, setDorm] = useState([]);
   const [getLastID, setGetLastID] = useState('');
   const [getLastPreviouslyID, setLastPreviouslyID] = useState(0);
+  const [getCheckStatus, setCheckStatus] = useState(0);
   const [sending, setSending] = useState(false);
 
   const onSend = useCallback(async (message = []) => {
@@ -288,6 +289,26 @@ const ChatRoom = props => {
         .catch(ex => {
           return false;
         });
+
+      const formdata2 = new FormData();
+
+      formdata2.append('action', 'checkStatus');
+      formdata2.append('id', props.route.params.anotherid);
+
+      await axios
+        .post(API_URL, formdata2, {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          const json = response.data.data;
+          setCheckStatus(json);
+        })
+        .catch(ex => {
+          return false;
+        });
     }, 1000);
 
     return () => {
@@ -371,11 +392,14 @@ const ChatRoom = props => {
             onPress={() => props.route.params.navigation.navigate('InboxTab')}>
             <Icon name="arrow-back" size={25} color={COLORS.dark} />
           </TouchableOpacity>
-          <Image
-            style={[styles.chatAvatar, {marginHorizontal: 5}]}
-            source={{uri: props.route.params.anotherImageUrl}}
-            resizeMode="contain"
-          />
+          <View style={{position:'relative'}}>
+            <Image
+              style={[styles.chatAvatar, {marginHorizontal: 5}]}
+              source={{uri: props.route.params.anotherImageUrl}}
+              resizeMode="contain"
+            />
+            <View style={{position:'absolute', bottom:0,right:0,width:15,height:15,borderRadius:100,backgroundColor:getCheckStatus == 0 ? 'red' : 'green'}}></View>
+          </View>
           <Text style={styles.headerText}>{props.route.params.username}</Text>
         </View>
         <View style={styles.dormDetails}>
