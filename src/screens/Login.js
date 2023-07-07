@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -91,6 +92,7 @@ export default function Login({onLogin}) {
                   const code = response.data.code;
                   if (code === 200) {
                     onLogin(data);
+                    status();
                     Toast.show({
                       type: 'success',
                       text1: 'StudyHive',
@@ -182,6 +184,7 @@ export default function Login({onLogin}) {
 
           if (user.status) {
             onLogin(user);
+            status();
             Toast.show({
               type: 'success',
               text1: 'StudyHive',
@@ -209,6 +212,23 @@ export default function Login({onLogin}) {
     } else {
       Alert.alert('Incomplete Fields', 'Please fill in all the fields.');
     }
+  };
+
+  const status = async () => {
+    const data = await AsyncStorage.getItem('user');
+    const convertData = JSON.parse(data);
+    let formdata = new FormData();
+    formdata.append('action', 'setOnlineOffline');
+    formdata.append('status', 'online');
+    formdata.append('id', convertData.id);
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Auth-Key': AUTH_KEY,
+      },
+      body: formdata,
+    });
   };
 
   const handleLogin = mode => {

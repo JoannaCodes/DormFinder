@@ -146,7 +146,6 @@ function RootNavigator({route}) {
   }, [useState]);
 
   const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const setOnlineOffline = async status => {
     const data = await AsyncStorage.getItem('user');
     const convertData = JSON.parse(data);
@@ -164,26 +163,21 @@ function RootNavigator({route}) {
     });
   };
 
+  const [aState, setAppState] = useState(AppState.currentState);
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        console.log('App has come to the foreground!');
-        setOnlineOffline('online');
-      }
-
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-      console.log('AppState', appState.current);
-      if (appState.currentState === 'background') {
-        setOnlineOffline('offline');
-      }
-    });
-
+    const appStateListener = AppState.addEventListener(
+      'change',
+      nextAppState => {
+        setAppState(nextAppState);
+        if (nextAppState === 'active') {
+          setOnlineOffline('online');
+        } else {
+          setOnlineOffline('offline');
+        }
+      },
+    );
     return () => {
-      subscription.remove();
+      appStateListener?.remove();
     };
   }, []);
 

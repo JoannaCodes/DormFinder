@@ -67,7 +67,7 @@ const Inbox = ({navigation}) => {
 
   useEffect(() => {
     let isMounted = true;
-    const intervalId = setInterval(() => fetchData(), 3000);
+    const intervalId = setInterval(() => fetchData(), 1500);
 
     return () => {
       clearInterval(intervalId);
