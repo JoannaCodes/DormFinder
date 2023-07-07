@@ -163,6 +163,8 @@ function RootNavigator({route}) {
     });
   };
 
+  setOnlineOffline('online');
+
   const [aState, setAppState] = useState(AppState.currentState);
   useEffect(() => {
     const appStateListener = AppState.addEventListener(

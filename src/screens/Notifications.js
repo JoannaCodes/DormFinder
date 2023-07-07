@@ -55,18 +55,18 @@ export default function Notifications({route, navigation}) {
           AsyncStorage.setItem('notifications', JSON.stringify(output));
         });
 
-        // read
-        let formdata = new FormData();
-        formdata.append('action', 'read_notification');
-        formdata.append('user_ref', user);
-      
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Auth-Key': AUTH_KEY,
-          },
-          body: formdata,
-        });
+      // read
+      let formdata = new FormData();
+      formdata.append('action', 'read_notification');
+      formdata.append('user_ref', user);
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Auth-Key': AUTH_KEY,
+        },
+        body: formdata,
+      });
     } catch (error) {
       console.error('Error occurred during the Axios request:', error);
       const storedNotifs = await AsyncStorage.getItem('notifications');
