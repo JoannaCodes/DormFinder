@@ -93,7 +93,7 @@ const HomeScreen = ({navigation, route}) => {
         console.log('specific topic!:', remoteMessage.notification);
       } else {
         //Alert.alert('StudyHive', remoteMessage.notification['body']);
-        if(remoteMessage.notification['user_ref'] === user) {
+        if (remoteMessage.notification['user_ref'] === user) {
           Toast.show({
             type: 'info',
             text1: 'StudyHive',
@@ -137,7 +137,7 @@ const HomeScreen = ({navigation, route}) => {
         // eslint-disable-next-line prettier/prettier
         fetchDormsByCategory('nearest_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
       }
-    }, 5000);
+    }, 1500);
 
     return () => {
       clearInterval(intervalId);
@@ -210,7 +210,11 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredDorms, setFilteredDorms] = useState([]);
   const [dorms, setDorms] = useState([]);
   const [modal, setModal] = useState(false);
-  const [isLoading, setLoading] = useState({popular: false, latest: false, nearest: false});
+  const [isLoading, setLoading] = useState({
+    popular: false,
+    latest: false,
+    nearest: false,
+  });
 
   // eslint-disable-next-line prettier/prettier
   const fetchData = async (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q) => {
@@ -289,6 +293,7 @@ const HomeScreen = ({navigation, route}) => {
                 setLoading(prev => ({...prev, nearest: false}));
               } else if (json.code === 403) {
                 setDorms([]);
+                setLoading(prev => ({...prev, [tag]: false}));
                 Toast.show({
                   type: 'error',
                   text1: 'StudyHive',
@@ -360,6 +365,7 @@ const HomeScreen = ({navigation, route}) => {
         setLoading(prev => ({...prev, [tag]: false}));
       } else if (json.code === 403) {
         setDorms([]);
+        setLoading(prev => ({...prev, [tag]: false}));
         Toast.show({
           type: 'error',
           text1: 'StudyHive',

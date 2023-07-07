@@ -84,12 +84,20 @@ export default function PaymentGateway({route, navigation}) {
             <Text style={{fontSize: 10}}>
               {verified ? 'Received money from' : 'Sent money via'}
             </Text>
-            <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
-              {item.token}
-            </Text>
+            {verified ? (
+              <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
+                {item.token} {item.userref ? null : '(Deleted User)'}
+              </Text>
+            ) : (
+              <Text style={[styles.title, {fontFamily: 'Poppins-Bold'}]}>
+                {item.token}
+              </Text>
+            )}
             <View style={styles.rowContainer}>
               <Text style={styles.amount}>₱ {item.amount}</Text>
-              <Text style={styles.amount}>{item.ownername}</Text>
+              <Text style={styles.amount}>
+                {item.ownername ? item.ownername : 'Deleted User'}
+              </Text>
             </View>
             <Text style={styles.date}>{item.timestamp}</Text>
           </View>
