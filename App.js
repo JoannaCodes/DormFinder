@@ -549,6 +549,11 @@ export default function App() {
                   presentation: 'formSheet',
                 }}
               />
+              <Stack.Screen
+                name="Terms and Privacy Policy"
+                component={TermsAndPrivacyComponent}
+                options={{headerTitleStyle: titleStyle.title1}}
+              />
             </>
           )}
         </Stack.Navigator>

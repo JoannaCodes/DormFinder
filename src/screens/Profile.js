@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -122,6 +123,14 @@ export default function Profile({user, verified, onLogout}) {
             <Icon name="help" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>
               Help
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profilebtn}
+            onPress={() => Linking.openURL('https://studyhive.social')}>
+            <Icon name="web" size={20} color={COLORS.darkgrey} />
+            <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>
+              Visit StudyHive Website
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

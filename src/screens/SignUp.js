@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-// import Axios from 'axios';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundImg from '../../assets/img/bg2.png';
 import Google from '../../assets/img/google-logo.png';
@@ -29,7 +29,8 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-  webClientId: '836752097415-ooigkh9tvt94h0t382gi8q16uicnnd85.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+  webClientId:
+    '836752097415-ooigkh9tvt94h0t382gi8q16uicnnd85.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
   hostedDomain: 'http://studyhive.x10.mx/', // specifies a hosted domain restriction
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
@@ -56,6 +57,7 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [agreement, setAgreement] = useState(false);
   const navigation = useNavigation();
 
   const signUp = async () => {
@@ -286,9 +288,29 @@ export default function Signup() {
                 </View>
               </View>
 
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <BouncyCheckbox
+                  disableBuiltInState
+                  isChecked={agreement}
+                  onPress={() => setAgreement(!agreement)}
+                  fillColor={COLORS.teal}
+                  unfillColor={COLORS.white}
+                  iconStyle={{borderColor: COLORS.teal}}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Terms and Privacy Policy')
+                  }>
+                  <Text style={{color: COLORS.black}}>I accept the terms and privacy policy.</Text>
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity
-                style={styles.loginButton}
-                disabled={isLoading.signUp}
+                style={[
+                  styles.loginButton,
+                  isLoading.signUp || (!agreement && {opacity: 0.5}),
+                ]}
+                disabled={isLoading.signUp || !agreement}
                 onPress={() => handleSignUp()}>
                 {isLoading.signUp ? (
                   <ActivityIndicator color={COLORS.white} size={'small'} />
