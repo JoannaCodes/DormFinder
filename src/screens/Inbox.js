@@ -143,7 +143,7 @@ const Inbox = ({navigation}) => {
                 <UserInfo>
                   <UserImgWrapper>
                     <UserImg source={{uri: item.imageUrl}} />
-                    <View style={{position:'absolute', bottom:14,right:0,width:15,height:15,borderRadius:100,backgroundColor:item.is_online == 0 ? 'red' : 'green'}}></View>
+                    <View style={{position:'absolute', bottom:14,right:0,width:15,height:15,borderRadius:100,backgroundColor:item.is_online == 0 ? 'gray' : 'green'}}></View>
                   </UserImgWrapper>
                   <TextSection >
                     <UserInfoText>
