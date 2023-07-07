@@ -398,7 +398,7 @@ const ChatRoom = props => {
               source={{uri: props.route.params.anotherImageUrl}}
               resizeMode="contain"
             />
-            <View style={{position:'absolute', bottom:0,right:0,width:15,height:15,borderRadius:100,backgroundColor:getCheckStatus == 0 ? 'red' : 'green'}}></View>
+            <View style={{position:'absolute', bottom:0,right:0,width:15,height:15,borderRadius:100,backgroundColor:getCheckStatus == 0 ? 'gray' : 'green'}}></View>
           </View>
           <Text style={styles.headerText}>{props.route.params.username}</Text>
         </View>
