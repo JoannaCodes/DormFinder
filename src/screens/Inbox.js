@@ -1,4 +1,4 @@
-* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {
