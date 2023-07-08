@@ -92,7 +92,7 @@ export default function Verification({route, navigation}) {
   const handleDocumentSelection = async label => {
     try {
       const results = await DocumentPicker.pickMultiple({
-        type: [DocumentPicker.types.pdf, DocumentPicker.types.docx],
+        type: [DocumentPicker.types.pdf, DocumentPicker.types.docx, DocumentPicker.types.doc, DocumentPicker.types.images],
       });
 
       // Check if document is already selected
@@ -174,7 +174,7 @@ export default function Verification({route, navigation}) {
           Please upload the following documents to proceed on posting a listing
         </Text>
         <Text style={{textAlign: 'center', marginBottom: -20}}>
-          Only PDF, DOC, and DOCX are allowed
+          Only PDF, DOC, DOCX, JPG, and PNG are allowed
         </Text>
       </View>
       <View
