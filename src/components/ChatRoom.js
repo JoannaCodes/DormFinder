@@ -424,14 +424,14 @@ const ChatRoom = props => {
             <TouchableOpacity
               style={[styles.dormDetailsButton, {flex: 1, marginRight: 5}]}
               onPress={() => {
-                props.route.params.navigation.navigate('Dorm Details', {
+                props.route.params.navigation.navigate('Housing Details', {
                   dormref: props.route.params.unique_code,
                   userref: props.route.params.myid,
                 });
               }}>
               <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                View Housing Details
+                View Details
               </Text>
             </TouchableOpacity>
             {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 0 &&

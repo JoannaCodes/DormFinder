@@ -167,7 +167,7 @@ const Bookmarks = ({route, navigation}) => {
         activeOpacity={0.5}
         underlayColor={COLORS.grey}
         onPress={() =>
-          navigation.navigate('Dorm Details', {
+          navigation.navigate('Housing Details', {
             dormref: item.id,
             userref: user,
           })
