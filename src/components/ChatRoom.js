@@ -452,7 +452,7 @@ const ChatRoom = props => {
               style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
                 <Text
                 style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                  Disabled payment
+                  Disable payment
                 </Text>
               </TouchableOpacity>
             }

@@ -301,7 +301,7 @@ export default function Signup() {
                   onPress={() =>
                     navigation.navigate('Terms and Privacy Policy')
                   }>
-                  <Text style={{color: COLORS.black}}>I accept the terms and privacy policy.</Text>
+                  <Text style={{color: '#3A3b3c' , fontFamily: 'Poppins-Regular'}}>I accept the terms and privacy policy.</Text>
                 </TouchableOpacity>
               </View>
 

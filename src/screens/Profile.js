@@ -130,7 +130,7 @@ export default function Profile({user, verified, onLogout}) {
             onPress={() => Linking.openURL('https://studyhive.social')}>
             <Icon name="web" size={20} color={COLORS.darkgrey} />
             <Text style={{marginStart: 10, fontFamily: 'Poppins-Regular'}}>
-              Visit StudyHive Website
+              Visit StudyHive Page
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

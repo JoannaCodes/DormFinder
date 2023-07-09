@@ -173,7 +173,7 @@ export default function PaymentGateway({route, navigation}) {
       <Separator title={'Or'} />
       <TouchableOpacity style={styles.button} onPress={openGCashApp}>
         <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
-          Continue with Gcash
+          Continue with GCash
         </Text>
       </TouchableOpacity>
     </ScrollView>
