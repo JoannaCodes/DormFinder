@@ -281,6 +281,7 @@ const HomeScreen = ({navigation, route}) => {
                 body: formdata,
               });
               const json = await response.json();
+              console.log(json.code)
               if (json.code === 200) {
                 setDorms([]);
                 setDorms(json.data);
@@ -338,7 +339,7 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('rating', n ?? 0);
       formdata.append('min_price', o ?? 0);
       formdata.append('max_price', p ?? 0);
-      formdata.append('hei', q);
+      formdata.append('hei', q ?? '');
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -349,10 +350,7 @@ const HomeScreen = ({navigation, route}) => {
         body: formdata,
       });
       const json = await response.json();
-      
-      console.log(json)
-      
-      console.log("HEHE")
+      console.log(json.code)
       if (json.code === 200) {
         setDorms([]);
         setDorms(json.data);
