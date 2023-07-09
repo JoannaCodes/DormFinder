@@ -159,7 +159,7 @@ const Inbox = ({navigation}) => {
                           : 'NEW'}
                       </PostTime>
                     </UserInfoText>
-                    <MessageText style={{ fontFamily: 'Poppins-Regular'}}>
+                    <MessageText style={{ fontFamily: 'Poppins-Regular'}} numberOfLines={1} ellipsizeMode="tail">
                       {item.message}
                     </MessageText>
                   </TextSection>
