@@ -71,6 +71,7 @@ const HomeScreen = ({navigation, route}) => {
   const [heiOpen, setHeiOpen] = useState(false);
   const [selectedHei, setSelectedHei] = useState([]);
   const [hei, setHei] = useState(HEI);
+  const [loading, setLoading] = useState(false);
 
   const {user, mode} = route.params;
 
@@ -269,7 +270,7 @@ const HomeScreen = ({navigation, route}) => {
               formdata.append('rating', n ?? 0);
               formdata.append('min_price', o ?? 0);
               formdata.append('max_price', p ?? 0);
-              formdata.append('hei', q);
+              formdata.append('hei', q ?? "");
               formdata.append('latitude', latitude);
               formdata.append('longitude', longitude);
               const response = await fetch(API_URL, {
@@ -281,6 +282,8 @@ const HomeScreen = ({navigation, route}) => {
                 body: formdata,
               });
               const json = await response.json();
+              console.log(latitude, " latitude")
+              console.log(longitude, " longitude")
               console.log(json.code)
               if (json.code === 200) {
                 setDorms([]);
@@ -380,7 +383,10 @@ const HomeScreen = ({navigation, route}) => {
         {categoryList.map((category, index) => (
           <Pressable
             key={index}
-            onPress={() => fetchDormsByCategory(category.tag)}>
+            onPress={() => {
+              fetchDormsByCategory(category.tag);
+              setDorms([]);
+            }}>
             <Text
               style={[
                 styles.categoryListText,
@@ -1085,6 +1091,13 @@ const HomeScreen = ({navigation, route}) => {
         ListHeaderComponent={() => <View />}
         renderItem={Card}
         keyExtractor={item => item.id}
+        ListEmptyComponent={() => {
+          return (
+            <View style={{marginLeft: 0}}>
+              <ActivityIndicator size={'large'} color={COLORS.teal} />
+            </View>
+          );
+        }}
       />
     </SafeAreaView>
   );
