@@ -210,11 +210,6 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredDorms, setFilteredDorms] = useState([]);
   const [dorms, setDorms] = useState([]);
   const [modal, setModal] = useState(false);
-  const [isLoading, setLoading] = useState({
-    popular: false,
-    latest: false,
-    nearest: false,
-  });
 
   // eslint-disable-next-line prettier/prettier
   const fetchData = async (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q) => {
@@ -248,7 +243,6 @@ const HomeScreen = ({navigation, route}) => {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          setLoading(prev => ({...prev, nearest: true}));
           // Permission granted, fetch dorms based on user's location
           Geolocation.getCurrentPosition(
             async position => {
@@ -290,10 +284,8 @@ const HomeScreen = ({navigation, route}) => {
               if (json.code === 200) {
                 setDorms([]);
                 setDorms(json.data);
-                setLoading(prev => ({...prev, nearest: false}));
               } else if (json.code === 403) {
                 setDorms([]);
-                setLoading(prev => ({...prev, [tag]: false}));
                 Toast.show({
                   type: 'error',
                   text1: 'StudyHive',
@@ -348,8 +340,6 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('max_price', p ?? 0);
       formdata.append('hei', q ?? '');
 
-      setLoading(prev => ({...prev, [tag]: true}));
-
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -362,10 +352,8 @@ const HomeScreen = ({navigation, route}) => {
       if (json.code === 200) {
         setDorms([]);
         setDorms(json.data);
-        setLoading(prev => ({...prev, [tag]: false}));
       } else if (json.code === 403) {
         setDorms([]);
-        setLoading(prev => ({...prev, [tag]: false}));
         Toast.show({
           type: 'error',
           text1: 'StudyHive',
