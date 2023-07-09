@@ -239,7 +239,7 @@ const ChatRoom = props => {
         Toast.show({
           type: 'info',
           text1: 'StudyHive',
-          text2: 'Successfully!',
+          text2: 'Sucessfull',
         });
       })
       .catch(ex => {

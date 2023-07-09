@@ -71,7 +71,6 @@ const HomeScreen = ({navigation, route}) => {
   const [heiOpen, setHeiOpen] = useState(false);
   const [selectedHei, setSelectedHei] = useState([]);
   const [hei, setHei] = useState(HEI);
-  const [loading, setLoading] = useState(false);
 
   const {user, mode} = route.params;
 
@@ -529,6 +528,8 @@ const HomeScreen = ({navigation, route}) => {
     setModal(false);
     setSelectedHei([])
   };
+  const windowHeight = Dimensions.get('window').height;
+
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
@@ -1083,6 +1084,7 @@ const HomeScreen = ({navigation, route}) => {
       </View>
       <ListCategories />
       <FlatList
+        style={{flex:1}}
         snapToInterval={width - 20}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
@@ -1093,8 +1095,14 @@ const HomeScreen = ({navigation, route}) => {
         keyExtractor={item => item.id}
         ListEmptyComponent={() => {
           return (
-            <View style={{marginLeft: 0}}>
-              <ActivityIndicator size={'large'} color={COLORS.teal} />
+            <View style={{flex: 1,flexDirection: "row",height:windowHeight/2.65,}}>
+              <View style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center"}}
+              >
+                <ActivityIndicator size={'large'} color={COLORS.teal}/>
+              </View>
             </View>
           );
         }}

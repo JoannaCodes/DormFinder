@@ -152,7 +152,7 @@ const DormListing = ({route, navigation}) => {
       [
         {text: 'Cancel', style: 'cancel'},
         {
-          text: 'OK',
+          text: 'Hide',
           style: 'default',
           onPress: async () => {
             const formData = new FormData();
