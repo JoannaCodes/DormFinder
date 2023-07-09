@@ -1105,22 +1105,16 @@ const HomeScreen = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
       <ListCategories />
-      {isLoading.popular || isLoading.latest || isLoading.nearest ? (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#0E898B" />
-        </View>
-      ) : (
-        <FlatList
-          snapToInterval={width - 20}
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
-          horizontal={false}
-          data={searchQuery ? filteredDorms : dorms}
-          ListHeaderComponent={() => <View />}
-          renderItem={Card}
-          keyExtractor={item => item.id}
-        />
-      )}
+      <FlatList
+        snapToInterval={width - 20}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
+        horizontal={false}
+        data={searchQuery ? filteredDorms : dorms}
+        ListHeaderComponent={() => <View />}
+        renderItem={Card}
+        keyExtractor={item => item.id}
+      />
     </SafeAreaView>
   );
 };
