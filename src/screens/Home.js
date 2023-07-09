@@ -40,10 +40,13 @@ import PushNotification from 'react-native-push-notification';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
+import {HEI} from '../../constants/values';
+
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Toast from 'react-native-toast-message';
 import {RadioButton, RadioGroup} from 'react-native-radio-check';
 import messaging from '@react-native-firebase/messaging';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const HomeScreen = ({navigation, route}) => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
@@ -64,8 +67,10 @@ const HomeScreen = ({navigation, route}) => {
   const [filteredPet, setFilteredPet] = useState(0);
   const [filteredVisitor, setFilteredVisitor] = useState(0);
   const [filteredCurfew, setFilteredCurfew] = useState(0);
-  const [filteredHei, setFilteredHei] = useState('');
-  const [filteredHeiIndex, setFilteredHeiIndex] = useState(0);
+
+  const [heiOpen, setHeiOpen] = useState(false);
+  const [selectedHei, setSelectedHei] = useState([]);
+  const [hei, setHei] = useState(HEI);
 
   const {user, mode} = route.params;
 
@@ -125,8 +130,7 @@ const HomeScreen = ({navigation, route}) => {
       var n = filteredRatings;
       var o = filteredMinPrice;
       var p = filteredMaxPrice;
-      var q = filteredHei;
-
+      var q = selectedHei.length != 0 ? selectedHei.join(',').toString() : "";
       if (selectedCategoryIndex === 0) {
         // eslint-disable-next-line prettier/prettier
         fetchDormsByCategory('popular_dorm', a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
@@ -161,8 +165,7 @@ const HomeScreen = ({navigation, route}) => {
     filteredRatings,
     filteredMinPrice,
     filteredMaxPrice,
-    filteredHei,
-    filteredHeiIndex,
+    selectedHei
   ]);
 
   const _fetchNotif1 = async () => {
@@ -266,10 +269,9 @@ const HomeScreen = ({navigation, route}) => {
               formdata.append('rating', n ?? 0);
               formdata.append('min_price', o ?? 0);
               formdata.append('max_price', p ?? 0);
-              formdata.append('hei', q ?? '');
+              formdata.append('hei', q);
               formdata.append('latitude', latitude);
               formdata.append('longitude', longitude);
-
               const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -278,9 +280,7 @@ const HomeScreen = ({navigation, route}) => {
                 },
                 body: formdata,
               });
-
               const json = await response.json();
-
               if (json.code === 200) {
                 setDorms([]);
                 setDorms(json.data);
@@ -338,7 +338,7 @@ const HomeScreen = ({navigation, route}) => {
       formdata.append('rating', n ?? 0);
       formdata.append('min_price', o ?? 0);
       formdata.append('max_price', p ?? 0);
-      formdata.append('hei', q ?? '');
+      formdata.append('hei', q);
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -349,6 +349,10 @@ const HomeScreen = ({navigation, route}) => {
         body: formdata,
       });
       const json = await response.json();
+      
+      console.log(json)
+      
+      console.log("HEHE")
       if (json.code === 200) {
         setDorms([]);
         setDorms(json.data);
@@ -518,9 +522,8 @@ const HomeScreen = ({navigation, route}) => {
     setFilteredRatings(0);
     setFilteredMinPrice(0);
     setFilteredMaxPrice(0);
-    setFilteredHeiIndex(0);
-    setFilteredHei('');
     setModal(false);
+    setSelectedHei([])
   };
 
   return (
@@ -693,51 +696,21 @@ const HomeScreen = ({navigation, route}) => {
                 </Text>
 
                 <View style={styles.checkboxContainer}>
-                  <RadioGroup
-                    style={{flexDirection: 'column', marginTop: 10}}
-                    checkedId={filteredHeiIndex ?? 0}
-                    icon={{
-                      normal: require('../../assets/img/square-regular.png'),
-                      checked: require('../../assets/img/square-check-regular.png'),
-                    }}
-                    iconStyle={{width: 13, height: 13, marginTop: 10}}
-                    textStyle={{marginLeft: 5, marginTop: 10, fontSize: 13}}
-                    onChecked={(id, value) => {
-                      setFilteredHeiIndex(id);
-                      setFilteredHei(value);
-                    }}>
-                    <RadioButton
-                      text="None"
-                      value={''}
-                      style={{display: 'none', marginTop: -10}}
-                    />
-                    <RadioButton
-                      text="Polytechnic University of the Philippines"
-                      value={'PUP'}
-                      style={{marginTop: -10}}
-                    />
-                    <RadioButton
-                      text="University of the Philippines"
-                      value={'UP'}
-                    />
-                    <RadioButton text="Far Eastern University" value={'FEU'} />
-                    <RadioButton
-                      text="University of Santo Tomas"
-                      value={'UST'}
-                    />
-                    <RadioButton text="National University" value={'NU'} />
-                    <RadioButton text="San Beda University" value={'SBU'} />
-                    <RadioButton
-                      text="Centro Escolar University"
-                      value={'CEU'}
-                    />
-                    <RadioButton
-                      text="Technological University of the Philippines"
-                      value={'TUP'}
-                    />
-                    <RadioButton text="De La Salle University" value={'DSLU'} />
-                    <RadioButton text="Adamson University" value={'AdU'} />
-                  </RadioGroup>
+                  <DropDownPicker
+                    mode="BADGE"
+                    listMode="SCROLLVIEW"
+                    placeholder="Select Nearby HEIs"
+                    zIndex={3000}
+                    zIndexInverse={1000}
+                    containerStyle={{marginVertical: 8}}
+                    open={heiOpen}
+                    value={selectedHei}
+                    items={hei}
+                    setOpen={setHeiOpen}
+                    setValue={setSelectedHei}
+                    setItems={setHei}
+                    multiple={true}
+                  />
                 </View>
               </View>
 
