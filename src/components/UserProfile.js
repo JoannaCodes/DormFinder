@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
     marginRight: 5,
-    marginTop: 3
+    marginTop: 3,
   },
   input: {
     width: '100%',
