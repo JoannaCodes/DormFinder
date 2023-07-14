@@ -14,6 +14,7 @@ import {GooglePay} from 'react-native-google-pay';
 
 import COLORS from '../../../constants/colors';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
 import {BASE_URL, AUTH_KEY} from '../../../constants';
 
@@ -38,7 +39,23 @@ const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({route, navigation}) {
-  const {userref, ownerref, ownername, dormref, price} = route.params;
+  const {
+    userref,
+    paycount,
+    ownerref,
+    ownername,
+    dormref,
+    price,
+    advance,
+    security,
+  } = route.params;
+
+  const addonAmount =
+    parseInt(price, 10) +
+    parseInt(advance ? advance : 0, 10) +
+    parseInt(security ? security : 0, 10);
+
+  const origamount = parseInt(price, 10);
 
   const openGCashApp = () => {
     openInStore({
@@ -58,12 +75,12 @@ export default function PaymentGateway({route, navigation}) {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Image
-        source={require('../../../assets/payment_upsketch.png')}
-        style={{height: 270, width: 270}}
-        resizeMode="cover"
-      />
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Image
+          source={require('../../../assets/payment_upsketch.png')}
+          style={{height: 270, width: 270}}
+          resizeMode="cover"
+        />
       </View>
       <View
         style={{
@@ -75,7 +92,28 @@ export default function PaymentGateway({route, navigation}) {
         }}>
         <Text style={styles.heading}>Payment Details</Text>
         <Text style={styles.text}>Receiver: {ownername}</Text>
-        <Text style={styles.text}>Amount: ₱ {price}</Text>
+        <Text style={styles.text}>
+          Amount: ₱{paycount >= 1 ? origamount : addonAmount}.00
+        </Text>
+        <View
+          style={{
+            backgroundColor: COLORS.teal,
+            padding: 5,
+            borderRadius: 5,
+            marginTop: 5,
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon name="info" color={COLORS.white} size={16} />
+            <Text
+              style={[
+                styles.label,
+                {fontSize: 12, marginStart: 5, color: COLORS.white},
+              ]}>
+              For listing that has advance deposits and/or security deposits.
+              They will be included for the first payment.
+            </Text>
+          </View>
+        </View>
       </View>
       <TouchableOpacity
         style={styles.button}
@@ -114,10 +152,15 @@ export default function PaymentGateway({route, navigation}) {
                   formData.append('tag', 'payment');
                   formData.append('token', token);
                   formData.append('userref', userref);
-                  formData.append('ownerref', requestData.cardPaymentMethod.tokenizationSpecification.gatewayMerchantId);
+                  formData.append(
+                    'ownerref',
+                    requestData.cardPaymentMethod.tokenizationSpecification
+                      .gatewayMerchantId,
+                  );
                   formData.append('ownername', requestData.merchantName);
                   formData.append('dormref', dormref);
                   formData.append('amount', requestData.transaction.totalPrice);
+                  formData.append('paycount', paycount);
 
                   await axios
                     .post(BASE_URL, formData, {
@@ -201,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
-    color: 'black'
+    color: 'black',
   },
   text: {
     fontSize: 16,

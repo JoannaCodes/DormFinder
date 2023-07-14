@@ -16,13 +16,13 @@ import {
   View,
 } from 'react-native';
 import {BASE_URL, AUTH_KEY} from '../../constants';
-import {HEI} from '../../constants/values';
+import {HEI, PAYMENTINTERVAL} from '../../constants/values';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import Toast from 'react-native-toast-message';
 import COLORS from '../../constants/colors';
 
@@ -40,12 +40,24 @@ const ListingForm = ({route, navigation}) => {
   const {dormref, userref, editmode} = route.params;
 
   const [heiOpen, setHeiOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+
+  const onHeiOpen = useCallback(() => {
+    setPaymentOpen(false);
+  }, []);
+
+  const onPaymentOpen = useCallback(() => {
+    setHeiOpen(false);
+  }, []);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [hei, setHei] = useState(HEI);
+  const [payment, setPayment] = useState(PAYMENTINTERVAL);
 
   const [images, setImages] = useState([]);
   const [selectedHei, setSelectedHei] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState('');
   const [initialValues, setInitialValues] = useState({
     address: '',
     advance_deposit: '',
@@ -55,7 +67,7 @@ const ListingForm = ({route, navigation}) => {
     price: '',
     security_deposit: '',
     slots: '',
-    utilities: '',
+    payment_policy: '',
   });
   const [rules, setRules] = React.useState({
     pets: false,
@@ -100,6 +112,8 @@ const ListingForm = ({route, navigation}) => {
     images: false,
     hei: false,
     amenities: false,
+    payment_duration: false,
+    payment_policy: false,
   });
 
   useEffect(() => {
@@ -188,6 +202,9 @@ const ListingForm = ({route, navigation}) => {
         formData.append(key, rules[key]);
       }
 
+      // Append Payment Duration
+      formData.append('payment_duration', selectedPayment);
+
       // Append images
       images.forEach((item, i) => {
         formData.append('images[]', {
@@ -259,6 +276,9 @@ const ListingForm = ({route, navigation}) => {
         formData.append(key, rules[key]);
       }
 
+      // Append payment Duration
+      formData.append('payment_duration', selectedPayment);
+
       // Append amenities
       for (const key in amenities) {
         formData.append(key, amenities[key]);
@@ -312,7 +332,14 @@ const ListingForm = ({route, navigation}) => {
   }
 
   const validateInputs = () => {
-    const requiredFields = ['name', 'price', 'slots', 'address', 'desc'];
+    const requiredFields = [
+      'name',
+      'price',
+      'slots',
+      'address',
+      'desc',
+      'payment_policy',
+    ];
     const newErrors = {};
 
     let isValid = true;
@@ -352,6 +379,13 @@ const ListingForm = ({route, navigation}) => {
       isValid = false;
     } else {
       newErrors.hei = false;
+    }
+
+    if (selectedPayment === '') {
+      newErrors.payment_duration = true;
+      isValid = false;
+    } else {
+      newErrors.payment_duration = false;
     }
 
     const amenitiesValues = Object.values(amenities);
@@ -584,14 +618,52 @@ const ListingForm = ({route, navigation}) => {
           multiline
           onChangeText={value => handleTextInputChange('desc', value)}
         />
+        {/* Payment Duration */}
+        <DropDownPicker
+          mode="BADGE"
+          listMode="SCROLLVIEW"
+          placeholder="Select payment period"
+          placeholderStyle={[styles.label, {color: COLORS.grey}]}
+          open={paymentOpen}
+          onOpen={onPaymentOpen}
+          badgeColors={[COLORS.teal]}
+          badgeDotColors={[COLORS.white]}
+          badgeTextStyle={[styles.label, {color: COLORS.white}]}
+          style={[styles.dropdown, errors.payment_duration && styles.error]}
+          containerStyle={{marginVertical: 8}}
+          dropDownContainerStyle={{
+            borderWidth: 0,
+            borderTopWidth: 1,
+            borderTopColor: COLORS.grey,
+            marginTop: 5,
+            elevation: 2,
+          }}
+          textStyle={[styles.label, {color: COLORS.darkgrey}]}
+          value={selectedPayment}
+          items={payment}
+          setOpen={setPaymentOpen}
+          setValue={setSelectedPayment}
+          setItems={setPayment}
+        />
+        {/* Payment Terms */}
+        <TextInput
+          style={[styles.input, errors.payment_policy && styles.error]}
+          value={initialValues.payment_policy}
+          placeholder="Listing Payment Policy"
+          placeholderTextColor={COLORS.grey}
+          height={150}
+          textAlignVertical="top"
+          multiline
+          onChangeText={value => handleTextInputChange('payment_policy', value)}
+        />
         {/* HEIs */}
         <DropDownPicker
           mode="BADGE"
           listMode="SCROLLVIEW"
           placeholder="Select Nearby HEIs"
           placeholderStyle={[styles.label, {color: COLORS.grey}]}
-          zIndex={3000}
-          zIndexInverse={1000}
+          open={heiOpen}
+          onOpen={onHeiOpen}
           badgeColors={[COLORS.teal]}
           badgeDotColors={[COLORS.white]}
           badgeTextStyle={[styles.label, {color: COLORS.white}]}
@@ -605,7 +677,6 @@ const ListingForm = ({route, navigation}) => {
             elevation: 2,
           }}
           textStyle={[styles.label, {color: COLORS.darkgrey}]}
-          open={heiOpen}
           value={selectedHei}
           items={hei}
           setOpen={setHeiOpen}
@@ -750,18 +821,7 @@ const ListingForm = ({route, navigation}) => {
             />
           </View>
         </View>
-        <View style={styles.section}>
-          {/* Utility Exclusivity */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={initialValues.utilities}
-              placeholder="Utility Exclusivity"
-              placeholderTextColor={COLORS.grey}
-              onChangeText={value => handleTextInputChange('utilities', value)}
-            />
-          </View>
-          <View style={{width: 16}} />
+        <View style={[styles.section, {alignItems: 'center'}]}>
           {/* Minimum Stay */}
           <View style={styles.inputContainer}>
             <TextInput

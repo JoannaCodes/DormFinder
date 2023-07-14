@@ -11,6 +11,13 @@ const HEI = [
   {label: 'Adamson University', value: 'ADU'},
 ];
 
+const PAYMENTINTERVAL = [
+  {label: 'Monthly', value: 'monthly'},
+  {label: 'Quarterly', value: 'quarterly'},
+  {label: 'Semi-Annually', value: 'semiAnnually'},
+  {label: 'Annually', value: 'annually'},
+];
+
 const GENERALGUIDESECTIONS = [
   {
     title: 'Register',
@@ -160,4 +167,4 @@ const OWNERSECTIONS_FIL = [
   },
 ];
 
-export {HEI, GENERALGUIDESECTIONS, GENERALGUIDESECTIONS_FIL, TENANTSECTIONS, TENANTSECTIONS_FIL, OWNERSECTIONS, OWNERSECTIONS_FIL};
+export {HEI, PAYMENTINTERVAL, GENERALGUIDESECTIONS, GENERALGUIDESECTIONS_FIL, TENANTSECTIONS, TENANTSECTIONS_FIL, OWNERSECTIONS, OWNERSECTIONS_FIL};

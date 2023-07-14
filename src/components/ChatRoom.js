@@ -463,10 +463,13 @@ const ChatRoom = props => {
                 onPress={() => {
                   props.route.params.navigation.navigate('Payments', {
                     userref: props.route.params.myid,
+                    paycount: props.route.params.pay_count,
                     ownerref: getDorm?.userref,
                     ownername: props.route.params.username,
                     dormref: props.route.params.unique_code,
                     price: getDorm?.price,
+                    advance: getDorm?.adv_dep,
+                    security: getDorm?.sec_dep,
                   });
                 }}>
                 <Text
