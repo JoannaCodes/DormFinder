@@ -593,6 +593,11 @@ return (
         Payment & Duration Terms
     </Text>
     <View style={{ flexDirection: 'column', marginTop: 5 }}>
+    <View style={style.facility1}>
+      <Icon name="calendar-today" size={18} />
+      <Text style={style.facilityText2}>Payment Duration:</Text>
+      <Text style={style.facilityText2}>{dorms.payment_duration}</Text>
+    </View>
   {dorms.adv_dep !== '' && (
     <View style={style.facility1}>
       <Icon name="payments" size={18} />
@@ -625,6 +630,15 @@ return (
     <Text style={{ fontStyle: 'italic' , fontSize: 14}}>No Terms for Payment and Duration</Text>
   )}
     </View>
+  </View>
+
+  <View style={{marginTop: 22}}>
+    <Text style={{fontSize: 17, color: 'black', fontFamily: 'Poppins-SemiBold', marginBottom: 7}}>
+      Payment Policy
+    </Text>
+    <Text style={{fontSize: 15, color: COLORS.black}}>
+      {dorms.payment_policy}
+    </Text>
   </View>
 
   <Text style={{ fontSize: 17, fontFamily: 'Poppins-SemiBold', marginTop: 15 , color: 'black'}}> Where you'll be </Text>
