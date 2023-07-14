@@ -138,7 +138,6 @@ const Inbox = ({navigation}) => {
                     user: user,
                     ownerid: item.ownerid,
                     pay_rent: item.pay_rent,
-                    pay_count: item.pay_count,
                   })
                 }>
                 <UserInfo>

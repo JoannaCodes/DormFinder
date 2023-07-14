@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -39,16 +40,9 @@ const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({route, navigation}) {
-  const {
-    userref,
-    paycount,
-    ownerref,
-    ownername,
-    dormref,
-    price,
-    advance,
-    security,
-  } = route.params;
+  const {userref, ownerref, ownername, dormref, price, advance, security} = route.params;
+  const [count, setCount] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
   const addonAmount =
     parseInt(price, 10) +
@@ -73,6 +67,27 @@ export default function PaymentGateway({route, navigation}) {
     });
   };
 
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(
+        `${BASE_URL}?tag=get_transactions&userref=${userref}&is_owner=${false}`,
+        {
+          headers: {
+            'Auth-Key': AUTH_KEY,
+          },
+        },
+      )
+      .then(response => {
+        const data = JSON.parse(response.data);
+        setCount(data);
+        setLoading(false);
+      })
+      .catch(async error => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -93,7 +108,10 @@ export default function PaymentGateway({route, navigation}) {
         <Text style={styles.heading}>Payment Details</Text>
         <Text style={styles.text}>Receiver: {ownername}</Text>
         <Text style={styles.text}>
-          Amount: ₱{paycount >= 1 ? origamount : addonAmount}.00
+          Amount:{' '}
+          {isLoading
+            ? 'Loading...'
+            : `₱${count.length >= 1 ? origamount : addonAmount}.00`}
         </Text>
         <View
           style={{
@@ -160,7 +178,6 @@ export default function PaymentGateway({route, navigation}) {
                   formData.append('ownername', requestData.merchantName);
                   formData.append('dormref', dormref);
                   formData.append('amount', requestData.transaction.totalPrice);
-                  formData.append('paycount', paycount);
 
                   await axios
                     .post(BASE_URL, formData, {
@@ -178,6 +195,7 @@ export default function PaymentGateway({route, navigation}) {
                           text1: 'StudyHive',
                           text2: 'Payment Sucessful',
                         });
+                        navigation.goBack();
                       } else {
                         Toast.show({
                           type: 'error',
