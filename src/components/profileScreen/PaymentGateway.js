@@ -81,10 +81,12 @@ export default function PaymentGateway({route, navigation}) {
       .then(response => {
         const data = JSON.parse(response.data);
         setCount(data);
-        setLoading(false);
       })
       .catch(async error => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -134,7 +136,8 @@ export default function PaymentGateway({route, navigation}) {
         </View>
       </View>
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, isLoading && {opacity: 0.5}]}
+        disabled={isLoading}
         onPress={() => {
           const requestData = {
             cardPaymentMethod: {
