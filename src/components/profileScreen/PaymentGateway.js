@@ -40,16 +40,29 @@ const allowedCardNetworks = ['AMEX', 'VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
 export default function PaymentGateway({route, navigation}) {
-  const {userref, ownerref, ownername, dormref, price, advance, security} = route.params;
-  const [count, setCount] = useState(0);
+  const {
+    userref,
+    ownerref,
+    ownername,
+    dormref,
+    price,
+    advance,
+    security,
+    payment_duration,
+    chatroom_code,
+  } = route.params;
+  const [transactions, setTransactions] = useState('');
   const [isLoading, setLoading] = useState(false);
 
-  const addonAmount =
-    parseInt(price, 10) +
-    parseInt(advance ? advance : 0, 10) +
-    parseInt(security ? security : 0, 10);
+  const paymentDurationFactor = {
+    monthly: 1,
+    quarterly: 2,
+    annually: 4,
+  };
 
-  const origamount = parseInt(price, 10);
+  const origamount = parseInt(price, 10) * paymentDurationFactor[payment_duration];
+
+  const addonAmount = origamount + parseInt(advance ? advance : 0, 10) + parseInt(security ? security : 0, 10);
 
   const openGCashApp = () => {
     openInStore({
@@ -80,7 +93,7 @@ export default function PaymentGateway({route, navigation}) {
       )
       .then(response => {
         const data = JSON.parse(response.data);
-        setCount(data);
+        setTransactions(data);
       })
       .catch(async error => {
         console.log(error);
@@ -113,7 +126,7 @@ export default function PaymentGateway({route, navigation}) {
           Amount:{' '}
           {isLoading
             ? 'Loading...'
-            : `₱${count.length >= 1 ? origamount : addonAmount}.00`}
+            : `₱${transactions.length >= 1 ? origamount : addonAmount}.00`}
         </Text>
         <View
           style={{
@@ -150,7 +163,10 @@ export default function PaymentGateway({route, navigation}) {
               allowedCardAuthMethods,
             },
             transaction: {
-              totalPrice: price,
+              totalPrice: (transactions.length >= 1
+                ? origamount
+                : addonAmount
+              ).toString(),
               totalPriceStatus: 'FINAL',
               currencyCode: 'PHP',
             },
@@ -181,6 +197,8 @@ export default function PaymentGateway({route, navigation}) {
                   formData.append('ownername', requestData.merchantName);
                   formData.append('dormref', dormref);
                   formData.append('amount', requestData.transaction.totalPrice);
+                  formData.append('payment_duration', payment_duration);
+                  formData.append('chatroom_code', chatroom_code);
 
                   await axios
                     .post(BASE_URL, formData, {

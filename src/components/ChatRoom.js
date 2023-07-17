@@ -422,7 +422,7 @@ const ChatRoom = props => {
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <TouchableOpacity
-              style={[styles.dormDetailsButton, {flex: 1, marginRight: 5}]}
+              style={[styles.dormDetailsButton, {flex: 1}]}
               onPress={() => {
                 props.route.params.navigation.navigate('Housing Details', {
                   dormref: props.route.params.unique_code,
@@ -456,7 +456,7 @@ const ChatRoom = props => {
                 </Text>
               </TouchableOpacity>
             }
-            {props.route.params.myid !== getDorm.userref && props.route.params.pay_rent === 1 &&
+            {props.route.params.myid !== getDorm.userref && props.route.params.pay_rent === 2 &&
               // Pay now
               <TouchableOpacity
                 style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
@@ -469,6 +469,8 @@ const ChatRoom = props => {
                     price: getDorm?.price,
                     advance: getDorm?.adv_dep,
                     security: getDorm?.sec_dep,
+                    payment_duration: getDorm?.payment_duration,
+                    chatroom_code: props.route.params.chatroom_code,
                   });
                 }}>
                 <Text
