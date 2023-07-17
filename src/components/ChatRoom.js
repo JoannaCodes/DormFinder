@@ -445,40 +445,40 @@ const ChatRoom = props => {
                 </Text>
               </TouchableOpacity>
             }
-            {props.route.params.myid === getDorm.userref && props.route.params.pay_rent === 1 &&
-              // Disable payment
-              <TouchableOpacity
-              onPress={() => enableDisableThis()}
-              style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
-                <Text
-                style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                  Disable payment
-                </Text>
-              </TouchableOpacity>
-            }
             {props.route.params.myid !== getDorm.userref && props.route.params.pay_rent === 2 &&
-              // Pay now
-              <TouchableOpacity
-                style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
-                onPress={() => {
-                  props.route.params.navigation.navigate('Payments', {
-                    userref: props.route.params.myid,
-                    ownerref: getDorm?.userref,
-                    ownername: props.route.params.username,
-                    dormref: props.route.params.unique_code,
-                    price: getDorm?.price,
-                    advance: getDorm?.adv_dep,
-                    security: getDorm?.sec_dep,
-                    payment_duration: getDorm?.payment_duration,
-                    chatroom_code: props.route.params.chatroom_code,
-                  });
-                }}>
-                <Text
-                  style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
-                  Pay Rent
-                </Text>
-              </TouchableOpacity>
-            }
+  // Disable payment
+  <TouchableOpacity
+  onPress={() => enableDisableThis()}
+  style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}>
+    <Text
+    style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+      Disable payment
+    </Text>
+  </TouchableOpacity>
+}
+{props.route.params.myid !== getDorm.userref && props.route.params.pay_rent === 1 &&
+  // Pay now
+  <TouchableOpacity
+    style={[styles.dormDetailsButton, {flex: 1, marginLeft: 5}]}
+    onPress={() => {
+      props.route.params.navigation.navigate('Payments', {
+        userref: props.route.params.myid,
+        ownerref: getDorm?.userref,
+        ownername: props.route.params.username,
+        dormref: props.route.params.unique_code,
+        price: getDorm?.price,
+        advance: getDorm?.adv_dep,
+        security: getDorm?.sec_dep,
+        payment_duration: getDorm?.payment_duration,
+        chatroom_code: props.route.params.chatroom_code,
+      });
+    }}>
+    <Text
+      style={{color: 'white', fontFamily: 'Poppins-SemiBold', textAlign: 'center', marginTop: 3}}>
+      Pay Rent
+    </Text>
+  </TouchableOpacity>
+}
           </View>
         </View>
         {messages.length !== 0 ? (
