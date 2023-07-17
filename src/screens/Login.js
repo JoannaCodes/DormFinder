@@ -105,7 +105,7 @@ export default function Login({onLogin}) {
               Toast.show({
                 type: 'error',
                 text1: 'StudyHive',
-                text2: error.message,
+                text2: 'User not found',
               });
             })
             .finally(() => {
@@ -183,13 +183,21 @@ export default function Login({onLogin}) {
           const user = response.data;
 
           if (user.status) {
-            onLogin(user);
-            status();
-            Toast.show({
-              type: 'success',
-              text1: 'StudyHive',
-              text2: `Hello, ${user.username}.`,
-            });
+            if (user.is_email_verified === 1) {
+              onLogin(user);
+              status();
+              Toast.show({
+                type: 'success',
+                text1: 'StudyHive',
+                text2: `Hello, ${user.username}.`,
+              });
+            } else {
+              Toast.show({
+                type: 'error',
+                text1: 'StudyHive',
+                text2: 'Please verify your email.',
+              });
+            }
           } else {
             Toast.show({
               type: 'error',

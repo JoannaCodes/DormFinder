@@ -559,7 +559,7 @@ const ListingForm = ({route, navigation}) => {
             <TextInput
               style={[styles.input, errors.price && styles.error]}
               value={initialValues.price}
-              placeholder="Price"
+              placeholder="Rent per month"
               placeholderTextColor={COLORS.grey}
               keyboardType="numeric"
               onChangeText={value => handleTextInputChange('price', value)}

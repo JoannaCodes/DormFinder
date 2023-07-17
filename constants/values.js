@@ -14,7 +14,6 @@ const HEI = [
 const PAYMENTINTERVAL = [
   {label: 'Monthly', value: 'monthly'},
   {label: 'Quarterly', value: 'quarterly'},
-  {label: 'Semi-Annually', value: 'semiAnnually'},
   {label: 'Annually', value: 'annually'},
 ];
 

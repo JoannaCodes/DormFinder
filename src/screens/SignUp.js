@@ -133,7 +133,7 @@ export default function Signup() {
       }
 
       if (validateSignup()) {
-        setLoading(prev => ({...prev, signIn: true}));
+        setLoading(prev => ({...prev, signUp: true}));
         const formData = new FormData();
         formData.append('tag', 'signup_app');
         formData.append('email', email);
@@ -150,10 +150,13 @@ export default function Signup() {
           .then(response => {
             const message = response.data;
             console.log(message);
-            if (message === 1) {
-              Alert.alert('Account created!', 'Your account has been created.');
+            if (message === 'success') {
+              Alert.alert(
+                'Account created!',
+                'Your account has been created. Please verify your email to login.',
+              );
               navigation.navigate('Login');
-            } else if (message === 0) {
+            } else {
               Alert.alert(
                 'Unable to create account!',
                 'Username/Email is already taken. Please choose a different username/email.',
@@ -167,7 +170,7 @@ export default function Signup() {
             );
           })
           .finally(() => {
-            setLoading(prev => ({...prev, signIn: false}));
+            setLoading(prev => ({...prev, signUp: false}));
           });
       }
     }
