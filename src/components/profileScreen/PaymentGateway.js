@@ -60,9 +60,13 @@ export default function PaymentGateway({route, navigation}) {
     annually: 4,
   };
 
-  const origamount = parseInt(price, 10) * paymentDurationFactor[payment_duration];
+  const origamount =
+    parseInt(price, 10) * paymentDurationFactor[payment_duration];
 
-  const addonAmount = origamount + parseInt(advance ? advance : 0, 10) + parseInt(security ? security : 0, 10);
+  const addonAmount =
+    origamount +
+    parseInt(advance ? advance : 0, 10) +
+    parseInt(security ? security : 0, 10);
 
   const openGCashApp = () => {
     openInStore({
@@ -78,6 +82,27 @@ export default function PaymentGateway({route, navigation}) {
         ],
       );
     });
+  };
+
+  const requestData = {
+    cardPaymentMethod: {
+      tokenizationSpecification: {
+        type: 'PAYMENT_GATEWAY',
+        gateway: 'example',
+        gatewayMerchantId: ownerref,
+      },
+      allowedCardNetworks,
+      allowedCardAuthMethods,
+    },
+    transaction: {
+      totalPrice: (transactions.length >= 1
+        ? origamount
+        : addonAmount
+      ).toString(),
+      totalPriceStatus: 'FINAL',
+      currencyCode: 'PHP',
+    },
+    merchantName: ownername,
   };
 
   useEffect(() => {
@@ -105,6 +130,15 @@ export default function PaymentGateway({route, navigation}) {
 
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity
+        onPress={() => {
+          Alert.alert(
+            'Payment Policy',
+            '- After receiving this notification, you are granted a one-day period to fulfill the rent payment.\n- If you paid externally you can tap the record button to keep record of your payments. There wont be a charge.',
+          );
+        }}>
+        <Icon name="help" color={COLORS.teal} size={32} />
+      </TouchableOpacity>
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           source={require('../../../assets/payment_upsketch.png')}
@@ -138,10 +172,12 @@ export default function PaymentGateway({route, navigation}) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="info" color={COLORS.white} size={16} />
             <Text
-              style={[
-                styles.label,
-                {fontSize: 12, marginStart: 5, color: COLORS.white},
-              ]}>
+              style={{
+                fontSize: 12,
+                marginHorizontal: 5,
+                color: COLORS.white,
+                fontFamily: 'Poppins-Regular',
+              }}>
               For listing that has advance deposits and/or security deposits.
               They will be included for the first payment.
             </Text>
@@ -152,27 +188,6 @@ export default function PaymentGateway({route, navigation}) {
         style={[styles.button, isLoading && {opacity: 0.5}]}
         disabled={isLoading}
         onPress={() => {
-          const requestData = {
-            cardPaymentMethod: {
-              tokenizationSpecification: {
-                type: 'PAYMENT_GATEWAY',
-                gateway: 'example',
-                gatewayMerchantId: ownerref,
-              },
-              allowedCardNetworks,
-              allowedCardAuthMethods,
-            },
-            transaction: {
-              totalPrice: (transactions.length >= 1
-                ? origamount
-                : addonAmount
-              ).toString(),
-              totalPriceStatus: 'FINAL',
-              currencyCode: 'PHP',
-            },
-            merchantName: ownername,
-          };
-
           // Set the environment before the payment request
           GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
 
@@ -253,11 +268,75 @@ export default function PaymentGateway({route, navigation}) {
         </Text>
       </TouchableOpacity>
       <Separator title={'Or'} />
-      <TouchableOpacity style={styles.button} onPress={openGCashApp}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={async () => {
+          const formData = new FormData();
+          formData.append('tag', 'payment');
+          formData.append('token', 'External Payment');
+          formData.append('userref', userref);
+          formData.append(
+            'ownerref',
+            requestData.cardPaymentMethod.tokenizationSpecification
+              .gatewayMerchantId,
+          );
+          formData.append('ownername', requestData.merchantName);
+          formData.append('dormref', dormref);
+          formData.append('amount', requestData.transaction.totalPrice);
+          formData.append('payment_duration', payment_duration);
+          formData.append('chatroom_code', chatroom_code);
+
+          await axios
+            .post(BASE_URL, formData, {
+              headers: {
+                'Auth-Key': AUTH_KEY,
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            .then(response => {
+              const message = response.data;
+
+              if (message === 'success') {
+                Toast.show({
+                  type: 'success',
+                  text1: 'StudyHive',
+                  text2: 'Payment Recorded',
+                });
+                navigation.goBack();
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'StudyHive',
+                  text2: 'Unable to record payment. Please try again.',
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error occurred during the Axios request:', error);
+              Toast.show({
+                type: 'error',
+                text1: 'StudyHive',
+                text2: 'An error occured',
+              });
+            });
+        }}>
         <Text style={{color: COLORS.white, fontFamily: 'Poppins-SemiBold'}}>
-          Continue with GCash
+          Already Paid? Update payment records
         </Text>
       </TouchableOpacity>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Icon name="info" color={COLORS.white} size={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            marginHorizontal: 5,
+            color: COLORS.white,
+            fontFamily: 'Poppins-Regular',
+          }}>
+          For listing that has advance deposits and/or security deposits. They
+          will be included for the first payment.
+        </Text>
+      </View>
     </ScrollView>
   );
 }
