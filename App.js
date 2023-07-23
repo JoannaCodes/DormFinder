@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Toast, {
   BaseToast,
   ErrorToast,
@@ -44,9 +44,9 @@ import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import SplashScreen from './src/screens/SplashScreen';
 
-import {AppState, LogBox} from 'react-native';
-import {useEffect, useRef} from 'react';
-import {BASE_URL, API_URL, AUTH_KEY} from './constants/index';
+import { AppState, LogBox } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { BASE_URL, API_URL, AUTH_KEY } from './constants/index';
 
 import axios from 'axios';
 LogBox.ignoreLogs(['Warning: ...']);
@@ -54,10 +54,10 @@ LogBox.ignoreLogs([/Warning: /]);
 
 const toastConfig = {
   // Success Toast
-  success: props => (
+  success: (props) => (
     <SuccessToast
       {...props}
-      style={{borderLeftColor: '#00C851', elevation: 50}}
+      style={{ borderLeftColor: '#00C851', elevation: 50 }}
       text1Style={{
         fontSize: 16,
       }}
@@ -67,10 +67,10 @@ const toastConfig = {
     />
   ),
   /* Error Toast */
-  error: props => (
+  error: (props) => (
     <ErrorToast
       {...props}
-      style={{borderLeftColor: '#ff4444', elevation: 50}}
+      style={{ borderLeftColor: '#ff4444', elevation: 50 }}
       text1Style={{
         fontSize: 16,
       }}
@@ -80,10 +80,10 @@ const toastConfig = {
     />
   ),
   /* Info Toast */
-  info: props => (
+  info: (props) => (
     <InfoToast
       {...props}
-      style={{borderLeftColor: '#33b5e5', elevation: 50}}
+      style={{ borderLeftColor: '#33b5e5', elevation: 50 }}
       text1Style={{
         fontSize: 16,
       }}
@@ -93,10 +93,10 @@ const toastConfig = {
     />
   ),
   /* Warning Toast */
-  warning: props => (
+  warning: (props) => (
     <BaseToast
       {...props}
-      style={{borderLeftColor: '#ffbb33', elevation: 50}}
+      style={{ borderLeftColor: '#ffbb33', elevation: 50 }}
       text1Style={{
         fontSize: 16,
       }}
@@ -109,7 +109,7 @@ const toastConfig = {
 
 const Tab = createBottomTabNavigator();
 
-function RootNavigator({route}) {
+function RootNavigator({ route }) {
   const [getNotification, setNotification] = useState(0);
   const fetchData = async () => {
     const data = await AsyncStorage.getItem('user');
@@ -146,7 +146,7 @@ function RootNavigator({route}) {
   }, [useState]);
 
   const appState = useRef(AppState.currentState);
-  const setOnlineOffline = async status => {
+  const setOnlineOffline = async (status) => {
     const data = await AsyncStorage.getItem('user');
     const convertData = JSON.parse(data);
     let formdata = new FormData();
@@ -169,7 +169,7 @@ function RootNavigator({route}) {
   useEffect(() => {
     const appStateListener = AppState.addEventListener(
       'change',
-      nextAppState => {
+      (nextAppState) => {
         setAppState(nextAppState);
         if (nextAppState === 'active') {
           setOnlineOffline('online');
@@ -183,11 +183,11 @@ function RootNavigator({route}) {
     };
   }, []);
 
-  const {user, mode} = route.params;
+  const { user, mode } = route.params;
   return (
     <Tab.Navigator
       initialRouteName={'ExploreTab'}
-      screenOptions={({route, navigation}) => ({
+      screenOptions={({ route, navigation }) => ({
         headerRight: () => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
           return routeName === 'Profile' ? null : (
@@ -198,12 +198,13 @@ function RootNavigator({route}) {
                 } else {
                   navigation.navigate('Profile Tab');
                 }
-              }}>
-              <Icon name="person" size={35} color="black" />
+              }}
+            >
+              <Icon name='person' size={35} color='black' />
             </TouchableOpacity>
           );
         },
-        tabBarIcon: ({color, size}) => {
+        tabBarIcon: ({ color, size }) => {
           let iconName;
 
           if (route.name === 'ExploreTab') {
@@ -218,7 +219,7 @@ function RootNavigator({route}) {
 
           var returns = <Icon name={iconName} size={size} color={color} />;
           var returnsNotif = (
-            <View style={{position: 'relative'}}>
+            <View style={{ position: 'relative' }}>
               <Icon name={iconName} size={size} color={color} />
               {/* eslint-disable-next-line eqeqeq */}
               {getNotification != 0 && (
@@ -233,14 +234,16 @@ function RootNavigator({route}) {
                     alignSelf: 'center',
                     alignItems: 'center',
                     borderRadius: 10,
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: 'white',
                       textAlign: 'center',
                       fontSize: 8,
                       fontWeight: 'bold',
-                    }}>
+                    }}
+                  >
                     {getNotification}
                   </Text>
                 </View>
@@ -251,24 +254,25 @@ function RootNavigator({route}) {
         },
         tabBarActiveTintColor: '#0E898B',
         tabBarInactiveTintColor: 'gray',
-        headerRightContainerStyle: {paddingRight: 16},
+        headerRightContainerStyle: { paddingRight: 16 },
         tabBarLabelStyle: {
           fontFamily: 'Poppins-Regular',
         },
-      })}>
+      })}
+    >
       <Tab.Screen
-        name="ExploreTab"
+        name='ExploreTab'
         component={HomeScreen}
-        options={{title: 'Explore', headerTitleStyle: titleStyle.title}}
-        initialParams={{user, mode}}
+        options={{ title: 'Explore', headerTitleStyle: titleStyle.title }}
+        initialParams={{ user, mode }}
       />
       <Tab.Screen
-        name="BookmarksTab"
+        name='BookmarksTab'
         component={BookmarksScreen}
-        options={{title: 'Bookmarks', headerTitleStyle: titleStyle.title}}
-        initialParams={{user}}
-        listeners={({navigation}) => ({
-          tabPress: e => {
+        options={{ title: 'Bookmarks', headerTitleStyle: titleStyle.title }}
+        initialParams={{ user }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
             if (mode === 'guest') {
               e.preventDefault();
               navigation.navigate('Guest Modal');
@@ -277,12 +281,12 @@ function RootNavigator({route}) {
         })}
       />
       <Tab.Screen
-        name="NotificationsTab"
+        name='NotificationsTab'
         component={NotificationsScreen}
-        options={{title: 'Notifications', headerTitleStyle: titleStyle.title}}
-        initialParams={{user}}
-        listeners={({navigation}) => ({
-          tabPress: e => {
+        options={{ title: 'Notifications', headerTitleStyle: titleStyle.title }}
+        initialParams={{ user }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
             if (mode === 'guest') {
               e.preventDefault();
               navigation.navigate('Guest Modal');
@@ -291,12 +295,12 @@ function RootNavigator({route}) {
         })}
       />
       <Tab.Screen
-        name="InboxTab"
+        name='InboxTab'
         component={InboxScreen}
-        options={{title: 'Inbox', headerTitleStyle: titleStyle.title}}
-        initialParams={{user}}
-        listeners={({navigation}) => ({
-          tabPress: e => {
+        options={{ title: 'Inbox', headerTitleStyle: titleStyle.title }}
+        initialParams={{ user }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
             if (mode === 'guest') {
               e.preventDefault();
               navigation.navigate('Guest Modal');
@@ -310,83 +314,85 @@ function RootNavigator({route}) {
 
 const AppStack = createNativeStackNavigator();
 
-function RootApp({user, mode, verified, onLogout}) {
+function RootApp({ user, mode, verified, onLogout }) {
   return (
     <AppStack.Navigator>
       <AppStack.Screen
-        name="Home"
+        name='Home'
         component={RootNavigator}
-        options={{headerShown: false, headerTitleStyle: titleStyle.title1}}
-        initialParams={{user, mode}}
+        options={{ headerShown: false, headerTitleStyle: titleStyle.title1 }}
+        initialParams={{ user, mode }}
       />
       <AppStack.Screen
-        name="Change Password"
+        name='Change Password'
         component={ChangePasswordComponent}
-        initialParams={{user}}
-        options={{headerTitleStyle: titleStyle.title1}}
+        initialParams={{ user }}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Student Accommodation"
+        name='Student Accommodation'
         component={StudentAccommodationComponent}
-        initialParams={{user, verified}}
-        options={{headerTitleStyle: titleStyle.title1}}
+        initialParams={{ user, verified }}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Verification"
+        name='Verification'
         component={VerificationComponent}
-        initialParams={{user}}
-        options={{headerTitleStyle: titleStyle.title1}}
+        initialParams={{ user }}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Payment Transactions"
+        name='Payment Transactions'
         component={PaymentTransactionComponent}
-        initialParams={{user, verified}}
-        options={{headerTitleStyle: titleStyle.title1}}
+        initialParams={{ user, verified }}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
-      <AppStack.Screen name="Guest Modal" options={{headerShown: false}}>
+      <AppStack.Screen name='Guest Modal' options={{ headerShown: false }}>
         {() => <GuestModeModal onLogout={onLogout} />}
       </AppStack.Screen>
       <AppStack.Screen
-        name="Profile Tab"
-        options={{title: 'Profile', headerTitleStyle: titleStyle.title1}}>
+        name='Profile Tab'
+        options={{ title: 'Profile', headerTitleStyle: titleStyle.title1 }}
+      >
         {() => (
           <ProfileScreen user={user} verified={verified} onLogout={onLogout} />
         )}
       </AppStack.Screen>
       <AppStack.Screen
-        name="Edit Profile"
-        options={{headerTitleStyle: titleStyle.title1}}>
+        name='Edit Profile'
+        options={{ headerTitleStyle: titleStyle.title1 }}
+      >
         {() => <EditProfileComponent user={user} onLogout={onLogout} />}
       </AppStack.Screen>
       <AppStack.Screen
-        name="Chat Room"
+        name='Chat Room'
         component={ChatRoomComponent}
-        options={{headerShown: false, headerTitleStyle: titleStyle.title1}}
+        options={{ headerShown: false, headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Payments"
+        name='Payments'
         component={PaymentGatewayComponent}
-        options={{headerTitleStyle: titleStyle.title1}}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Housing Details"
+        name='Housing Details'
         component={HousingDetailsComponent}
-        options={{headerTitleStyle: titleStyle.title1}}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Listing Form"
+        name='Listing Form'
         component={ListingFormComponent}
-        options={{headerTitleStyle: titleStyle.title1}}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Help"
+        name='Help'
         component={HelpComponent}
-        options={{headerTitleStyle: titleStyle.title1}}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
       <AppStack.Screen
-        name="Terms and Privacy Policy"
+        name='Terms and Privacy Policy'
         component={TermsAndPrivacyComponent}
-        options={{headerTitleStyle: titleStyle.title1}}
+        options={{ headerTitleStyle: titleStyle.title1 }}
       />
     </AppStack.Navigator>
   );
@@ -404,7 +410,7 @@ export default function App() {
     checkLoginStatus();
   }, []);
 
-  const handleLogin = async user => {
+  const handleLogin = async (user) => {
     try {
       AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
         setUser(user.id);
@@ -457,7 +463,7 @@ export default function App() {
 
   const checkLoginStatus = async () => {
     try {
-      await AsyncStorage.getItem('user').then(data => {
+      await AsyncStorage.getItem('user').then((data) => {
         if (data) {
           // console.log('async logged user:', data);
           const asyncUser = JSON.parse(data);
@@ -482,14 +488,14 @@ export default function App() {
     }
   };
 
-  const fetchVerification = uid => {
+  const fetchVerification = (uid) => {
     axios
       .get(`${BASE_URL}?tag=get_verification_status&userref=${uid}`, {
         headers: {
           'Auth-Key': AUTH_KEY,
         },
       })
-      .then(async response => {
+      .then(async (response) => {
         const data = JSON.parse(response.data);
         const fetchedStatus = data.is_verified;
         AsyncStorage.setItem(
@@ -512,12 +518,13 @@ export default function App() {
         <Stack.Navigator>
           {user ? (
             <Stack.Screen
-              name="App"
+              name='App'
               options={{
                 headerShown: false,
                 animation: 'flip',
                 animationTypeForReplace: user === null ? 'pop' : 'push',
-              }}>
+              }}
+            >
               {() => (
                 <RootApp
                   user={user}
@@ -530,17 +537,18 @@ export default function App() {
           ) : (
             <>
               <Stack.Screen
-                name="Login"
+                name='Login'
                 options={{
                   headerShown: false,
                   animation: 'slide_from_left',
                   animationTypeForReplace: user === null ? 'pop' : 'push',
                   presentation: 'formSheet',
-                }}>
+                }}
+              >
                 {() => <Login onLogin={handleLogin} />}
               </Stack.Screen>
               <Stack.Screen
-                name="Signup"
+                name='Signup'
                 component={SignUp}
                 options={{
                   headerShown: false,
@@ -550,9 +558,9 @@ export default function App() {
                 }}
               />
               <Stack.Screen
-                name="Terms and Privacy Policy"
+                name='Terms and Privacy Policy'
                 component={TermsAndPrivacyComponent}
-                options={{headerTitleStyle: titleStyle.title1}}
+                options={{ headerTitleStyle: titleStyle.title1 }}
               />
             </>
           )}
