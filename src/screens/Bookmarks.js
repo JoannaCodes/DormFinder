@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,11 +12,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {BASE_URL, DORM_UPLOADS, API_URL, AUTH_KEY} from '../../constants/index';
+import {
+  BASE_URL,
+  DORM_UPLOADS,
+  API_URL,
+  AUTH_KEY,
+} from '../../constants/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import COLORS from '../../constants/colors';
 import Toast from 'react-native-toast-message';
 
@@ -24,8 +29,8 @@ const Separator = () => {
   return <View height={1} width={'100%'} backgroundColor={COLORS.grey} />;
 };
 
-const Bookmarks = ({route, navigation}) => {
-  const {user} = route.params;
+const Bookmarks = ({ route, navigation }) => {
+  const { user } = route.params;
   let URL = BASE_URL;
 
   const [isLoading, setLoading] = useState(true);
@@ -61,17 +66,17 @@ const Bookmarks = ({route, navigation}) => {
           'Auth-Key': AUTH_KEY,
         },
       })
-      .then(response => {
+      .then((response) => {
         const data = JSON.parse(response.data);
         setDorms(data);
 
-        const dataWithoutImages = data.map(item => {
-          const {images, ...rest} = item;
+        const dataWithoutImages = data.map((item) => {
+          const { images, ...rest } = item;
           return rest;
         });
         AsyncStorage.setItem('bookmarks', JSON.stringify(dataWithoutImages));
       })
-      .catch(async error => {
+      .catch(async (error) => {
         const storedDorms = await AsyncStorage.getItem('bookmarks');
         if (storedDorms) {
           setDorms(JSON.parse(storedDorms));
@@ -84,7 +89,7 @@ const Bookmarks = ({route, navigation}) => {
       });
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     const images = item.images ? item.images.split(',') : [];
 
     const moveToMessage = async () => {
@@ -143,13 +148,13 @@ const Bookmarks = ({route, navigation}) => {
               'Content-Type': 'multipart/form-data',
             },
           })
-          .then(response => {
+          .then((response) => {
             const json = response.data;
             if (json.code === 200) {
               moveToMessage();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             moveToMessage();
           });
       } catch (error) {
@@ -184,7 +189,7 @@ const Bookmarks = ({route, navigation}) => {
               <Text
                 style={styles.cardTitle}
                 numberOfLines={1}
-                ellipsizeMode="tail">
+                ellipsizeMode='tail'>
                 {item.name}
               </Text>
               <Text style={styles.cardText}>₱ {item.price}</Text>
@@ -195,7 +200,7 @@ const Bookmarks = ({route, navigation}) => {
                 <TouchableOpacity
                   style={styles.btnContainer}
                   onPress={handleMessageNow}>
-                  <Icon name="message" size={18} color={COLORS.teal} />
+                  <Icon name='message' size={18} color={COLORS.teal} />
                   <Text
                     style={{
                       color: 'black',
@@ -209,7 +214,7 @@ const Bookmarks = ({route, navigation}) => {
                 <TouchableOpacity
                   style={styles.btnContainer}
                   onPress={() => navigation.navigate('InboxTab')}>
-                  <Icon name="message" size={18} color={COLORS.teal} />
+                  <Icon name='message' size={18} color={COLORS.teal} />
                   <Text
                     style={{
                       color: 'black',
@@ -234,15 +239,15 @@ const Bookmarks = ({route, navigation}) => {
           <>
             <Image
               source={require('../../assets/error_upsketch.png')}
-              style={{height: 360, width: 360}}
-              resizeMode="cover"
+              style={{ height: 360, width: 360 }}
+              resizeMode='cover'
             />
             <Text style={styles.title}>
               Cannot retrieve bookmarks at this time.
             </Text>
             <Text style={styles.message}>Please try again.</Text>
             <TouchableOpacity
-              style={[styles.btnContainer, {marginTop: 20, width: '100%'}]}
+              style={[styles.btnContainer, { marginTop: 20, width: '100%' }]}
               onPress={() => {
                 setLoading(true);
                 fetchData();
@@ -254,13 +259,13 @@ const Bookmarks = ({route, navigation}) => {
           <>
             <Image
               source={require('../../assets/empty_upsketch.png')}
-              style={{height: 360, width: 360}}
-              resizeMode="cover"
+              style={{ height: 360, width: 360 }}
+              resizeMode='cover'
             />
             <Text style={styles.title}>Add Bookmarks</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={styles.message}>Tap "</Text>
-              <Icon name="favorite" size={18} color={COLORS.red} />
+              <Icon name='favorite' size={18} color={COLORS.red} />
               <Text style={styles.message}>
                 " to add the housing that interests you
               </Text>
@@ -275,17 +280,17 @@ const Bookmarks = ({route, navigation}) => {
     <SafeAreaView style={styles.container}>
       {isLoading ? (
         <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#0E898B" />
+          <ActivityIndicator size='large' color='#0E898B' />
         </View>
       ) : (
         <FlatList
           contentContainerStyle={styles.cardContainer}
           data={dorms}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={renderEmpty}
           renderItem={renderItem}
           ItemSeparatorComponent={() => {
-            return <View style={{flex: 1, height: 16}} />;
+            return <View style={{ flex: 1, height: 16 }} />;
           }}
           refreshControl={
             <RefreshControl
